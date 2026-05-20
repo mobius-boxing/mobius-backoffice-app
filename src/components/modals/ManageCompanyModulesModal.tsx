@@ -72,7 +72,6 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
 
   const handleToggle = async (mod: CompanyModule) => {
     if (!company) return;
-    if (mod.module.isCore) return; // Defensive guard; the button is already disabled.
 
     setTogglingSlug(mod.module.slug);
     setError(null);
@@ -168,10 +167,7 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
 
               <button
                 onClick={() => handleToggle(mod)}
-                disabled={mod.module.isCore || togglingSlug === mod.module.slug}
-                title={
-                  mod.module.isCore ? t('modules.cannotDisableCore') : undefined
-                }
+                disabled={togglingSlug === mod.module.slug}
                 className="text-secondary-400 hover:text-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                 aria-label={
                   mod.enabled ? t('modules.disable') : t('modules.enable')

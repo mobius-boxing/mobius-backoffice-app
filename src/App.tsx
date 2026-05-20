@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/layout/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
@@ -20,7 +21,9 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
-                  <Dashboard />
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
                 </ProtectedRoute>
               }
             />
@@ -29,7 +32,9 @@ function App() {
               path="/users"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
-                  <Users />
+                  <Layout>
+                    <Users />
+                  </Layout>
                 </ProtectedRoute>
               }
             />
@@ -38,7 +43,9 @@ function App() {
               path="/companies"
               element={
                 <ProtectedRoute requiredRoles={['superAdmin']}>
-                  <Companies />
+                  <Layout>
+                    <Companies />
+                  </Layout>
                 </ProtectedRoute>
               }
             />
