@@ -161,7 +161,7 @@ export const companiesApi = {
   },
 
   updateCompanyStatus: async (id: string, isActive: boolean): Promise<Company> => {
-    const response: AxiosResponse<ApiResponse<Company>> = await api.put(`/api/companies/${id}/status`, { isActive });
+    const response: AxiosResponse<ApiResponse<Company>> = await api.put(`/api/companies/${id}`, { isActive });
     return response.data.data!;
   },
 

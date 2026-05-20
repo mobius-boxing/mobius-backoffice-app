@@ -119,6 +119,7 @@
     "updateButton": "Update Company",
     "createFailed": "Failed to create company",
     "updateFailed": "Failed to update company",
+    "toggleFailed": "Failed to change company status",
     "deleteConfirm": "Are you sure you want to delete {{name}}?",
     "noCompanies": "No companies found",
     "searchPlaceholder": "Search companies...",

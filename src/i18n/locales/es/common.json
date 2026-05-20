@@ -119,6 +119,7 @@
     "updateButton": "Actualizar Empresa",
     "createFailed": "Error al crear la empresa",
     "updateFailed": "Error al actualizar la empresa",
+    "toggleFailed": "No se pudo cambiar el estado de la empresa",
     "deleteConfirm": "¿Está seguro de que desea eliminar {{name}}?",
     "noCompanies": "No se encontraron empresas",
     "searchPlaceholder": "Buscar empresas...",
