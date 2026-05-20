@@ -41,26 +41,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">M</span>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-canvas py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-sm">
+            <span className="text-xl font-bold text-white">M</span>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-secondary-900">
+          <h2 className="mt-6 text-2xl font-bold tracking-tight text-secondary-900">
             {t('login.title')}
           </h2>
-          <p className="mt-2 text-center text-sm text-secondary-600">
+          <p className="mt-1.5 text-sm text-secondary-500">
             {t('login.subtitle')}
           </p>
         </div>
 
-        <div className="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10 border border-secondary-200">
+        <div className="bg-white py-8 px-6 shadow-lg rounded-2xl border border-secondary-200 sm:px-8">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
                 <p className="text-sm text-red-800">{error}</p>
               </div>
             )}

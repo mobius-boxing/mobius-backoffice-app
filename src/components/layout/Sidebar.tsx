@@ -64,14 +64,20 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="flex flex-col w-64 bg-white border-r border-secondary-200 h-full">
-      <div className="flex items-center justify-center h-16 px-4 border-b border-secondary-200">
-        <h1 className="text-xl font-bold text-primary-600">Mobius Backoffice</h1>
+      <div className="flex items-center gap-2.5 h-16 px-4 border-b border-secondary-200">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white text-sm font-bold shadow-sm">
+          M
+        </div>
+        <div className="leading-tight">
+          <span className="block text-sm font-bold tracking-tight text-secondary-900">Mobius</span>
+          <span className="block text-xs font-medium text-secondary-500">Backoffice</span>
+        </div>
       </div>
 
       <div className="p-4 border-b border-secondary-200 bg-secondary-50">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-primary-600">
+          <div className="w-9 h-9 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-sm font-semibold text-primary-700">
               {user?.firstName?.[0]}{user?.lastName?.[0]}
             </span>
           </div>
