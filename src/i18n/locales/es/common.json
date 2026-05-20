@@ -12,6 +12,7 @@
     "yes": "Sí",
     "no": "No",
     "confirm": "Confirmar",
+    "confirmDelete": "Confirmar Eliminación",
     "optional": "Opcional",
     "note": "Nota",
     "close": "Cerrar"
@@ -20,7 +21,17 @@
     "dashboard": "Panel",
     "userManagement": "Gestión de Usuarios",
     "companyManagement": "Gestión de Empresas",
-    "signOut": "Cerrar Sesión"
+    "signOut": "Cerrar Sesión",
+    "store": {
+      "title": "Tienda",
+      "boxes": "Cajas",
+      "rolls": "Rollos",
+      "users": "Usuarios de Tienda"
+    }
+  },
+  "companySelector": {
+    "label": "Empresa",
+    "placeholder": "Seleccione una empresa"
   },
   "login": {
     "title": "Portal de Administración",
@@ -156,6 +167,119 @@
       "fetchFailed": "Error al cargar los módulos",
       "toggleFailed": "Error al actualizar el módulo"
     }
+  },
+  "store": {
+    "selectCompany": {
+      "title": "Seleccione una empresa",
+      "message": "Elija una empresa en el selector para gestionar su tienda."
+    },
+    "fields": {
+      "status": "Estado",
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "boxes": {
+      "title": "Cajas",
+      "subtitle": "Gestione el catálogo de cajas",
+      "description": "Descripción",
+      "descriptionPlaceholder": "ej. 200 x 200 x 100",
+      "unitsPerPackage": "Unidades por paquete",
+      "unitsPerPallet": "Unidades por pallet",
+      "isActive": "Caja activa",
+      "create": "Agregar Caja",
+      "createTitle": "Agregar Nueva Caja",
+      "editTitle": "Editar Caja",
+      "createButton": "Crear Caja",
+      "updateButton": "Actualizar Caja",
+      "searchPlaceholder": "Buscar cajas...",
+      "noBoxes": "No se encontraron cajas",
+      "deleteConfirm": "¿Está seguro de que desea eliminar la caja \"{{description}}\"?",
+      "createFailed": "Error al crear la caja",
+      "updateFailed": "Error al actualizar la caja",
+      "deleteFailed": "Error al eliminar la caja",
+      "validation": {
+        "descriptionRequired": "La descripción es requerida",
+        "descriptionMaxLength": "La descripción debe tener menos de 255 caracteres",
+        "unitsPerPackageMin": "Las unidades por paquete deben ser al menos 1",
+        "unitsPerPalletMin": "Las unidades por pallet deben ser al menos 1"
+      }
+    },
+    "rolls": {
+      "title": "Rollos",
+      "subtitle": "Gestione el catálogo de rollos",
+      "description": "Descripción",
+      "descriptionPlaceholder": "ej. 1.20 m x 25 m",
+      "minQuantity": "Cantidad mínima",
+      "isActive": "Rollo activo",
+      "create": "Agregar Rollo",
+      "createTitle": "Agregar Nuevo Rollo",
+      "editTitle": "Editar Rollo",
+      "createButton": "Crear Rollo",
+      "updateButton": "Actualizar Rollo",
+      "searchPlaceholder": "Buscar rollos...",
+      "noRolls": "No se encontraron rollos",
+      "deleteConfirm": "¿Está seguro de que desea eliminar el rollo \"{{description}}\"?",
+      "createFailed": "Error al crear el rollo",
+      "updateFailed": "Error al actualizar el rollo",
+      "deleteFailed": "Error al eliminar el rollo",
+      "validation": {
+        "descriptionRequired": "La descripción es requerida",
+        "descriptionMaxLength": "La descripción debe tener menos de 255 caracteres",
+        "minQuantityMin": "La cantidad mínima debe ser al menos 1"
+      }
+    },
+    "users": {
+      "title": "Usuarios de Tienda",
+      "subtitle": "Gestione el acceso a la tienda",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "firstNamePlaceholder": "Ingrese el nombre",
+      "lastNamePlaceholder": "Ingrese el apellido",
+      "emailPlaceholder": "Ingrese el correo electrónico",
+      "createdAt": "Creado",
+      "isActive": "Usuario activo",
+      "create": "Agregar Usuario",
+      "createTitle": "Agregar Usuario de Tienda",
+      "editTitle": "Editar Usuario de Tienda",
+      "createButton": "Crear Usuario",
+      "updateButton": "Actualizar Usuario",
+      "password": "Contraseña",
+      "passwordOptionalHint": "Deje en blanco para enviar una invitación en lugar de establecer una contraseña",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "setPassword": "Establecer Contraseña",
+      "setPasswordTitle": "Establecer Contraseña del Usuario",
+      "setPasswordButton": "Guardar Contraseña",
+      "resendInvite": "Reenviar Invitación",
+      "inviteResent": "Invitación reenviada con éxito",
+      "enable": "Habilitar",
+      "disable": "Deshabilitar",
+      "revoke": "Revocar Acceso",
+      "searchPlaceholder": "Buscar usuarios...",
+      "noUsers": "No se encontraron usuarios de tienda",
+      "deleteConfirm": "¿Está seguro de que desea revocar el acceso de {{name}}?",
+      "createFailed": "Error al crear el usuario",
+      "updateFailed": "Error al actualizar el usuario",
+      "deleteFailed": "Error al revocar el acceso",
+      "statusFailed": "Error al cambiar el estado del usuario",
+      "resendFailed": "Error al reenviar la invitación",
+      "passwordFailed": "Error al establecer la contraseña",
+      "validation": {
+        "firstNameRequired": "El nombre es requerido",
+        "lastNameRequired": "El apellido es requerido",
+        "emailRequired": "El correo es requerido",
+        "emailInvalid": "Ingrese un correo válido",
+        "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+        "passwordMismatch": "Las contraseñas no coinciden"
+      }
+    }
+  },
+  "confirmModal": {
+    "defaultTitle": "Confirmar Acción",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar"
   },
   "language": {
     "en": "Inglés",

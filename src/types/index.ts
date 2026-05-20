@@ -11,6 +11,7 @@ export interface User {
   emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
+  modules?: string[];
 }
 
 export interface Company {
@@ -50,6 +51,7 @@ export interface AuthUser {
   role: 'member' | 'admin' | 'superAdmin';
   companyId?: string;
   companyName?: string;
+  modules?: string[];
 }
 
 export interface LoginResponse {
@@ -178,4 +180,66 @@ export interface CompanyModule {
   enabledAt: string | null;
   disabledAt: string | null;
   subscriptionStatus: SubscriptionStatus | null;
+}
+
+// --- Store feature entities ---
+
+export interface StoreBox {
+  id?: string;
+  uuid: string;
+  description: string;
+  unitsPerPackage: number;
+  unitsPerPallet: number;
+  isActive: boolean;
+  companyId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StoreRoll {
+  id?: string;
+  uuid: string;
+  description: string;
+  minQuantity: number;
+  isActive: boolean;
+  companyId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StoreUser {
+  id?: string;
+  uuid: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  isActive: boolean;
+  companyId?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// Store form payloads (used by modals)
+export interface StoreBoxForm {
+  description: string;
+  unitsPerPackage: number;
+  unitsPerPallet: number;
+  isActive: boolean;
+  companyId?: string;
+}
+
+export interface StoreRollForm {
+  description: string;
+  minQuantity: number;
+  isActive: boolean;
+  companyId?: string;
+}
+
+export interface StoreUserForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  isActive: boolean;
+  companyId?: string;
 }

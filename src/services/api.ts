@@ -16,6 +16,12 @@ import {
   InvitationStats,
   Module,
   CompanyModule,
+  StoreBox,
+  StoreRoll,
+  StoreUser,
+  StoreBoxForm,
+  StoreRollForm,
+  StoreUserForm,
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
@@ -229,6 +235,134 @@ export const invitationsApi = {
     const params = companyId ? { companyId } : {};
     const response: AxiosResponse<ApiResponse<InvitationStats>> = await api.get('/api/invitations/stats', { params });
     return response.data.data!;
+  },
+};
+
+// Maps the backend paginator shape to the app's PaginatedResponse (same unwrap as usersApi)
+const toPaginated = <T,>(backendData: any): PaginatedResponse<T> => ({
+  data: backendData.data,
+  total: backendData.totalCount,
+  page: backendData.page,
+  limit: backendData.limit,
+  totalPages: backendData.totalPages,
+});
+
+// Query params shared by the store list endpoints. companyId is only sent by
+// superAdmins; company admins omit it so the backend scopes via the JWT.
+interface StoreListParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  companyId?: string;
+}
+
+export const storeBoxesApi = {
+  getAll: async (params: StoreListParams = {}): Promise<PaginatedResponse<StoreBox>> => {
+    const response = await api.get('/api/store-boxes', { params });
+    return toPaginated<StoreBox>(response.data);
+  },
+
+  getByUuid: async (uuid: string, companyId?: string): Promise<StoreBox> => {
+    const response: AxiosResponse<ApiResponse<StoreBox>> =
+      await api.get(`/api/store-boxes/${uuid}`, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  create: async (data: StoreBoxForm): Promise<StoreBox> => {
+    // companyId travels in the body (getCompanyForCreate reads it there) AND as a
+    // query param (the requireModule gate reads query/body). The create DTO ignores
+    // companyId in the body.
+    const response: AxiosResponse<ApiResponse<StoreBox>> =
+      await api.post('/api/store-boxes', data, { params: data.companyId ? { companyId: data.companyId } : {} });
+    return response.data.data!;
+  },
+
+  update: async (uuid: string, data: Partial<StoreBoxForm>, companyId?: string): Promise<StoreBox> => {
+    const response: AxiosResponse<ApiResponse<StoreBox>> =
+      await api.put(`/api/store-boxes/${uuid}`, data, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  remove: async (uuid: string, companyId?: string): Promise<void> => {
+    await api.delete(`/api/store-boxes/${uuid}`, { params: companyId ? { companyId } : {} });
+  },
+};
+
+export const storeRollsApi = {
+  getAll: async (params: StoreListParams = {}): Promise<PaginatedResponse<StoreRoll>> => {
+    const response = await api.get('/api/store-rolls', { params });
+    return toPaginated<StoreRoll>(response.data);
+  },
+
+  getByUuid: async (uuid: string, companyId?: string): Promise<StoreRoll> => {
+    const response: AxiosResponse<ApiResponse<StoreRoll>> =
+      await api.get(`/api/store-rolls/${uuid}`, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  create: async (data: StoreRollForm): Promise<StoreRoll> => {
+    const response: AxiosResponse<ApiResponse<StoreRoll>> =
+      await api.post('/api/store-rolls', data, { params: data.companyId ? { companyId: data.companyId } : {} });
+    return response.data.data!;
+  },
+
+  update: async (uuid: string, data: Partial<StoreRollForm>, companyId?: string): Promise<StoreRoll> => {
+    const response: AxiosResponse<ApiResponse<StoreRoll>> =
+      await api.put(`/api/store-rolls/${uuid}`, data, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  remove: async (uuid: string, companyId?: string): Promise<void> => {
+    await api.delete(`/api/store-rolls/${uuid}`, { params: companyId ? { companyId } : {} });
+  },
+};
+
+export const storeUsersApi = {
+  getAll: async (params: StoreListParams = {}): Promise<PaginatedResponse<StoreUser>> => {
+    const response = await api.get('/api/store-users', { params });
+    return toPaginated<StoreUser>(response.data);
+  },
+
+  getByUuid: async (uuid: string, companyId?: string): Promise<StoreUser> => {
+    const response: AxiosResponse<ApiResponse<StoreUser>> =
+      await api.get(`/api/store-users/${uuid}`, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  create: async (data: StoreUserForm): Promise<StoreUser> => {
+    const response: AxiosResponse<ApiResponse<StoreUser>> =
+      await api.post('/api/store-users', data, { params: data.companyId ? { companyId: data.companyId } : {} });
+    return response.data.data!;
+  },
+
+  update: async (
+    uuid: string,
+    data: Partial<Omit<StoreUserForm, 'password'>>,
+    companyId?: string
+  ): Promise<StoreUser> => {
+    const response: AxiosResponse<ApiResponse<StoreUser>> =
+      await api.put(`/api/store-users/${uuid}`, data, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  remove: async (uuid: string, companyId?: string): Promise<void> => {
+    await api.delete(`/api/store-users/${uuid}`, { params: companyId ? { companyId } : {} });
+  },
+
+  updateStatus: async (uuid: string, isActive: boolean, companyId?: string): Promise<StoreUser> => {
+    const response: AxiosResponse<ApiResponse<StoreUser>> =
+      await api.put(`/api/store-users/${uuid}/status`, { isActive }, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  resendInvite: async (uuid: string, companyId?: string): Promise<void> => {
+    await api.post(`/api/store-users/${uuid}/resend-invite`, {}, { params: companyId ? { companyId } : {} });
+  },
+
+  setPassword: async (uuid: string, password: string, companyId?: string): Promise<void> => {
+    await api.put(`/api/store-users/${uuid}/password`, { password }, { params: companyId ? { companyId } : {} });
   },
 };
 

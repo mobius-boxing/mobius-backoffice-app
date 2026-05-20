@@ -12,6 +12,7 @@
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
+    "confirmDelete": "Confirm Delete",
     "optional": "Optional",
     "note": "Note",
     "close": "Close"
@@ -20,7 +21,17 @@
     "dashboard": "Dashboard",
     "userManagement": "User Management",
     "companyManagement": "Company Management",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "store": {
+      "title": "Store",
+      "boxes": "Boxes",
+      "rolls": "Rolls",
+      "users": "Store Users"
+    }
+  },
+  "companySelector": {
+    "label": "Company",
+    "placeholder": "Select a company"
   },
   "login": {
     "title": "Backoffice Portal",
@@ -156,6 +167,119 @@
       "fetchFailed": "Failed to load modules",
       "toggleFailed": "Failed to update module"
     }
+  },
+  "store": {
+    "selectCompany": {
+      "title": "Select a company",
+      "message": "Choose a company from the selector to manage its store."
+    },
+    "fields": {
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "boxes": {
+      "title": "Boxes",
+      "subtitle": "Manage the box catalog",
+      "description": "Description",
+      "descriptionPlaceholder": "e.g. 200 x 200 x 100",
+      "unitsPerPackage": "Units per package",
+      "unitsPerPallet": "Units per pallet",
+      "isActive": "Box is active",
+      "create": "Add Box",
+      "createTitle": "Add New Box",
+      "editTitle": "Edit Box",
+      "createButton": "Create Box",
+      "updateButton": "Update Box",
+      "searchPlaceholder": "Search boxes...",
+      "noBoxes": "No boxes found",
+      "deleteConfirm": "Are you sure you want to delete the box \"{{description}}\"?",
+      "createFailed": "Failed to create box",
+      "updateFailed": "Failed to update box",
+      "deleteFailed": "Failed to delete box",
+      "validation": {
+        "descriptionRequired": "Description is required",
+        "descriptionMaxLength": "Description must be less than 255 characters",
+        "unitsPerPackageMin": "Units per package must be at least 1",
+        "unitsPerPalletMin": "Units per pallet must be at least 1"
+      }
+    },
+    "rolls": {
+      "title": "Rolls",
+      "subtitle": "Manage the roll catalog",
+      "description": "Description",
+      "descriptionPlaceholder": "e.g. 1.20 m x 25 m",
+      "minQuantity": "Minimum quantity",
+      "isActive": "Roll is active",
+      "create": "Add Roll",
+      "createTitle": "Add New Roll",
+      "editTitle": "Edit Roll",
+      "createButton": "Create Roll",
+      "updateButton": "Update Roll",
+      "searchPlaceholder": "Search rolls...",
+      "noRolls": "No rolls found",
+      "deleteConfirm": "Are you sure you want to delete the roll \"{{description}}\"?",
+      "createFailed": "Failed to create roll",
+      "updateFailed": "Failed to update roll",
+      "deleteFailed": "Failed to delete roll",
+      "validation": {
+        "descriptionRequired": "Description is required",
+        "descriptionMaxLength": "Description must be less than 255 characters",
+        "minQuantityMin": "Minimum quantity must be at least 1"
+      }
+    },
+    "users": {
+      "title": "Store Users",
+      "subtitle": "Manage store access",
+      "name": "Name",
+      "email": "Email",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "firstNamePlaceholder": "Enter first name",
+      "lastNamePlaceholder": "Enter last name",
+      "emailPlaceholder": "Enter email address",
+      "createdAt": "Created",
+      "isActive": "User is active",
+      "create": "Add User",
+      "createTitle": "Add Store User",
+      "editTitle": "Edit Store User",
+      "createButton": "Create User",
+      "updateButton": "Update User",
+      "password": "Password",
+      "passwordOptionalHint": "Leave blank to send an invite instead of setting a password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "setPassword": "Set Password",
+      "setPasswordTitle": "Set User Password",
+      "setPasswordButton": "Save Password",
+      "resendInvite": "Resend Invite",
+      "inviteResent": "Invitation resent successfully",
+      "enable": "Enable",
+      "disable": "Disable",
+      "revoke": "Revoke Access",
+      "searchPlaceholder": "Search users...",
+      "noUsers": "No store users found",
+      "deleteConfirm": "Are you sure you want to revoke access for {{name}}?",
+      "createFailed": "Failed to create user",
+      "updateFailed": "Failed to update user",
+      "deleteFailed": "Failed to revoke access",
+      "statusFailed": "Failed to change user status",
+      "resendFailed": "Failed to resend invitation",
+      "passwordFailed": "Failed to set password",
+      "validation": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "passwordMinLength": "Password must be at least 8 characters",
+        "passwordMismatch": "Passwords do not match"
+      }
+    }
+  },
+  "confirmModal": {
+    "defaultTitle": "Confirm Action",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   },
   "language": {
     "en": "English",
