@@ -1,0 +1,163 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "actions": "Acciones",
+    "yes": "Sí",
+    "no": "No",
+    "confirm": "Confirmar",
+    "optional": "Opcional",
+    "note": "Nota",
+    "close": "Cerrar"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "userManagement": "Gestión de Usuarios",
+    "companyManagement": "Gestión de Empresas",
+    "signOut": "Cerrar Sesión"
+  },
+  "login": {
+    "title": "Portal de Administración",
+    "subtitle": "Inicie sesión para acceder al panel de administración",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "Ingrese su correo",
+    "emailRequired": "El correo es requerido",
+    "emailInvalid": "Ingrese un correo válido",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Ingrese su contraseña",
+    "passwordRequired": "La contraseña es requerida",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "signIn": "Iniciar Sesión",
+    "invalidCredentials": "Correo o contraseña inválidos"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "welcome": "¡Bienvenido, {{name}}!",
+    "totalUsers": "Total de Usuarios",
+    "activeUsers": "Usuarios Activos",
+    "inactiveUsers": "Usuarios Inactivos",
+    "totalCompanies": "Total de Empresas",
+    "quickActions": "Acciones Rápidas",
+    "quickActionsDesc": "Accesos directos a funciones frecuentes",
+    "manageUsers": "Gestionar Usuarios",
+    "manageUsersDesc": "Ver, invitar y gestionar cuentas de usuario",
+    "manageCompanies": "Gestionar Empresas",
+    "manageCompaniesDesc": "Crear y gestionar empresas",
+    "lastUpdated": "Actualizado",
+    "refresh": "Actualizar"
+  },
+  "users": {
+    "title": "Gestión de Usuarios",
+    "subtitle": "Gestionar cuentas de usuario y permisos",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "role": "Rol",
+    "company": "Empresa",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "firstNamePlaceholder": "Ingrese el nombre",
+    "lastNamePlaceholder": "Ingrese el apellido",
+    "emailPlaceholder": "Ingrese el correo electrónico",
+    "selectRole": "Seleccione un rol",
+    "selectCompany": "Seleccione una empresa",
+    "inviteUser": "Invitar Usuario",
+    "inviteTitle": "Invitar Nuevo Usuario",
+    "editTitle": "Editar Usuario",
+    "sendInvitation": "Enviar Invitación",
+    "updateButton": "Actualizar Usuario",
+    "inviteFailed": "Error al enviar la invitación",
+    "updateFailed": "Error al actualizar el usuario",
+    "deleteConfirm": "¿Está seguro de que desea eliminar a {{name}}?",
+    "noUsers": "No se encontraron usuarios",
+    "searchPlaceholder": "Buscar usuarios...",
+    "isActive": "Usuario activo",
+    "newPassword": "Nueva Contraseña",
+    "newPasswordPlaceholder": "Dejar en blanco para mantener la actual",
+    "passwordHint": "Dejar en blanco para mantener la contraseña actual",
+    "superAdminNote": "Los Super Administradores tienen acceso a todas las empresas y configuraciones del sistema.",
+    "roles": {
+      "member": "Miembro",
+      "admin": "Administrador",
+      "superAdmin": "Super Administrador"
+    },
+    "validation": {
+      "firstNameRequired": "El nombre es requerido",
+      "firstNameMinLength": "El nombre debe tener al menos 2 caracteres",
+      "lastNameRequired": "El apellido es requerido",
+      "lastNameMinLength": "El apellido debe tener al menos 2 caracteres",
+      "emailRequired": "El correo es requerido",
+      "emailInvalid": "Ingrese un correo válido",
+      "roleRequired": "El rol es requerido",
+      "companyRequired": "La empresa es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres"
+    }
+  },
+  "companies": {
+    "title": "Gestión de Empresas",
+    "subtitle": "Crear y gestionar empresas",
+    "name": "Nombre de la Empresa",
+    "namePlaceholder": "Ingrese el nombre de la empresa",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Ingrese la descripción de la empresa",
+    "status": "Estado",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "createdAt": "Creada",
+    "createCompany": "Crear Empresa",
+    "createTitle": "Crear Nueva Empresa",
+    "editTitle": "Editar Empresa",
+    "createButton": "Crear Empresa",
+    "updateButton": "Actualizar Empresa",
+    "createFailed": "Error al crear la empresa",
+    "updateFailed": "Error al actualizar la empresa",
+    "deleteConfirm": "¿Está seguro de que desea eliminar {{name}}?",
+    "noCompanies": "No se encontraron empresas",
+    "searchPlaceholder": "Buscar empresas...",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "validation": {
+      "nameRequired": "El nombre de la empresa es requerido",
+      "nameMinLength": "El nombre debe tener al menos 2 caracteres",
+      "nameMaxLength": "El nombre debe tener menos de 100 caracteres",
+      "descriptionMaxLength": "La descripción debe tener menos de 500 caracteres"
+    }
+  },
+  "auth": {
+    "accessDenied": "Acceso Denegado",
+    "accessDeniedMessage": "Este portal es solo para administradores. Contacte a su administrador del sistema si necesita acceso.",
+    "returnToLogin": "Volver al Inicio de Sesión"
+  },
+  "modules": {
+    "manageButton": "Gestionar Módulos",
+    "title": "Módulos de {{companyName}}",
+    "core": "Núcleo",
+    "enable": "Habilitar módulo",
+    "disable": "Deshabilitar módulo",
+    "cannotDisableCore": "No se puede deshabilitar el módulo núcleo",
+    "enabledAt": "Habilitado el {{date}}",
+    "subscription": {
+      "comp": "Cortesía",
+      "trial": "Prueba",
+      "active": "Activa",
+      "past_due": "Pago atrasado",
+      "canceled": "Cancelada"
+    },
+    "error": {
+      "fetchFailed": "Error al cargar los módulos",
+      "toggleFailed": "Error al actualizar el módulo"
+    }
+  },
+  "language": {
+    "en": "Inglés",
+    "es": "Español"
+  }
+}
