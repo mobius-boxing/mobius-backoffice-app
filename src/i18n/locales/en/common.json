@@ -26,7 +26,8 @@
       "title": "Store",
       "boxes": "Boxes",
       "rolls": "Rolls",
-      "users": "Store Users"
+      "users": "Store Users",
+      "orders": "Orders"
     }
   },
   "companySelector": {
@@ -274,6 +275,50 @@
         "passwordMinLength": "Password must be at least 8 characters",
         "passwordMismatch": "Passwords do not match"
       }
+    }
+  },
+  "storeOrders": {
+    "title": "Orders",
+    "subtitle": "Review store orders and advance them through fulfillment",
+    "view": "View",
+    "empty": "No orders found",
+    "searchPlaceholder": "Search by buyer email or reference...",
+    "columns": {
+      "ref": "Reference",
+      "buyer": "Buyer",
+      "date": "Date",
+      "items": "Items",
+      "status": "Status"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "in_production": "In production",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "itemTypes": {
+      "box": "Box",
+      "roll": "Roll"
+    },
+    "detail": {
+      "title": "Order {{ref}}",
+      "loadingTitle": "Order detail",
+      "buyer": "Buyer",
+      "date": "Date",
+      "status": "Status",
+      "progressLabel": "Order progress",
+      "advanceTo": "Advance to: {{status}}",
+      "advanceConfirm": "Advance this order to \"{{status}}\"?",
+      "completed": "Order completed",
+      "items": "Items",
+      "itemMeta": "{{type}} · Qty {{quantity}} · {{unitsPerPallet}}/pallet",
+      "notes": "Notes",
+      "noNotes": "No notes provided"
+    },
+    "errors": {
+      "loadFailed": "Failed to load order",
+      "statusFailed": "Failed to update order status"
     }
   },
   "confirmModal": {

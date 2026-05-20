@@ -243,3 +243,52 @@ export interface StoreUserForm {
   isActive: boolean;
   companyId?: string;
 }
+
+// --- Store orders ---
+
+export type StoreOrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'in_production'
+  | 'shipped'
+  | 'delivered';
+
+// Canonical forward progression. Drives the stepper + the "next status" control.
+// Single source of truth — the detail surface derives done/current/upcoming from this.
+export const STORE_ORDER_STATUS_FLOW: StoreOrderStatus[] = [
+  'pending',
+  'confirmed',
+  'in_production',
+  'shipped',
+  'delivered',
+];
+
+// Row shape from GET /api/store-orders (list).
+export interface StoreOrder {
+  uuid: string;
+  status: StoreOrderStatus;
+  createdAt: string;
+  itemCount: number;
+  storeUserEmail: string;
+  notes?: string;
+}
+
+// Line item nested under GET /api/store-orders/:uuid (detail).
+export interface StoreOrderItem {
+  uuid: string;
+  itemType: string; // e.g. 'box' | 'roll' — rendered via i18n with raw fallback
+  sourceUuid?: string;
+  description: string;
+  quantity: number;
+  unitsPerPallet: number;
+}
+
+// Full detail from GET /api/store-orders/:uuid.
+export interface StoreOrderDetail {
+  uuid: string;
+  status: StoreOrderStatus;
+  notes?: string;
+  createdAt: string;
+  storeUserEmail: string;
+  items: StoreOrderItem[];
+}

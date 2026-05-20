@@ -26,7 +26,8 @@
       "title": "Tienda",
       "boxes": "Cajas",
       "rolls": "Rollos",
-      "users": "Usuarios de Tienda"
+      "users": "Usuarios de Tienda",
+      "orders": "Pedidos"
     }
   },
   "companySelector": {
@@ -274,6 +275,50 @@
         "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
         "passwordMismatch": "Las contraseñas no coinciden"
       }
+    }
+  },
+  "storeOrders": {
+    "title": "Pedidos",
+    "subtitle": "Revise los pedidos de la tienda y avance su preparación",
+    "view": "Ver",
+    "empty": "No se encontraron pedidos",
+    "searchPlaceholder": "Buscar por correo del comprador o referencia...",
+    "columns": {
+      "ref": "Referencia",
+      "buyer": "Comprador",
+      "date": "Fecha",
+      "items": "Artículos",
+      "status": "Estado"
+    },
+    "statuses": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmado",
+      "in_production": "En producción",
+      "shipped": "Enviado",
+      "delivered": "Entregado"
+    },
+    "itemTypes": {
+      "box": "Caja",
+      "roll": "Rollo"
+    },
+    "detail": {
+      "title": "Pedido {{ref}}",
+      "loadingTitle": "Detalle del pedido",
+      "buyer": "Comprador",
+      "date": "Fecha",
+      "status": "Estado",
+      "progressLabel": "Progreso del pedido",
+      "advanceTo": "Avanzar a: {{status}}",
+      "advanceConfirm": "¿Avanzar este pedido a \"{{status}}\"?",
+      "completed": "Pedido completado",
+      "items": "Artículos",
+      "itemMeta": "{{type}} · Cant. {{quantity}} · {{unitsPerPallet}}/pallet",
+      "notes": "Notas",
+      "noNotes": "Sin notas"
+    },
+    "errors": {
+      "loadFailed": "Error al cargar el pedido",
+      "statusFailed": "Error al actualizar el estado del pedido"
     }
   },
   "confirmModal": {

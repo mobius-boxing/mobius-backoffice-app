@@ -11,6 +11,7 @@ import Companies from './pages/Companies';
 import StoreBoxes from './pages/StoreBoxes';
 import StoreRolls from './pages/StoreRolls';
 import StoreUsers from './pages/StoreUsers';
+import StoreOrders from './pages/StoreOrders';
 import './i18n/config';
 
 function App() {
@@ -83,6 +84,17 @@ function App() {
                 <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
                   <Layout>
                     <StoreUsers />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/store/orders"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
+                  <Layout>
+                    <StoreOrders />
                   </Layout>
                 </ProtectedRoute>
               }

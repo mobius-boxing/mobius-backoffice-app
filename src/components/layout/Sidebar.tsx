@@ -8,6 +8,7 @@ import {
   Store,
   Package,
   Scroll,
+  ClipboardList,
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
@@ -36,6 +37,7 @@ const Sidebar: React.FC = () => {
     { id: 'store-boxes', label: t('nav.store.boxes'), path: '/store/boxes', icon: 'Package', roles: ['admin', 'superAdmin'] },
     { id: 'store-rolls', label: t('nav.store.rolls'), path: '/store/rolls', icon: 'Scroll', roles: ['admin', 'superAdmin'] },
     { id: 'store-users', label: t('nav.store.users'), path: '/store/users', icon: 'Users', roles: ['admin', 'superAdmin'] },
+    { id: 'store-orders', label: t('nav.store.orders'), path: '/store/orders', icon: 'ClipboardList', roles: ['admin', 'superAdmin'] },
   ];
 
   const navigationItems: NavItem[] = [
@@ -70,6 +72,7 @@ const Sidebar: React.FC = () => {
       Store,
       Package,
       Scroll,
+      ClipboardList,
     };
     const IconComponent = icons[iconName];
     return IconComponent ? <IconComponent className={className} /> : null;

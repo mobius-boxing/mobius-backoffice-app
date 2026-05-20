@@ -22,6 +22,9 @@ import {
   StoreBoxForm,
   StoreRollForm,
   StoreUserForm,
+  StoreOrder,
+  StoreOrderDetail,
+  StoreOrderStatus,
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
@@ -363,6 +366,29 @@ export const storeUsersApi = {
 
   setPassword: async (uuid: string, password: string, companyId?: string): Promise<void> => {
     await api.put(`/api/store-users/${uuid}/password`, { password }, { params: companyId ? { companyId } : {} });
+  },
+};
+
+export const storeOrdersApi = {
+  getAll: async (params: StoreListParams = {}): Promise<PaginatedResponse<StoreOrder>> => {
+    const response = await api.get('/api/store-orders', { params });
+    return toPaginated<StoreOrder>(response.data);
+  },
+
+  getByUuid: async (uuid: string, companyId?: string): Promise<StoreOrderDetail> => {
+    const response: AxiosResponse<ApiResponse<StoreOrderDetail>> =
+      await api.get(`/api/store-orders/${uuid}`, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
+  },
+
+  updateStatus: async (
+    uuid: string,
+    status: StoreOrderStatus,
+    companyId?: string
+  ): Promise<StoreOrderDetail> => {
+    const response: AxiosResponse<ApiResponse<StoreOrderDetail>> =
+      await api.put(`/api/store-orders/${uuid}/status`, { status }, { params: companyId ? { companyId } : {} });
+    return response.data.data!;
   },
 };
 
