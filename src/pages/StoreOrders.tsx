@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Eye } from 'lucide-react';
-import { StoreOrder } from '../types';
+import { StoreOrder, STORE_ORDER_STATUS_FLOW, StoreOrderStatus } from '../types';
 import { storeOrdersApi } from '../services/api';
 import { useEntityList, FetchParams } from '../hooks/useEntityList';
 import { useEffectiveCompany } from '../hooks/useEffectiveCompany';
@@ -27,11 +27,25 @@ const StoreOrders: React.FC = () => {
     [effectiveCompanyId]
   );
 
-  const { filteredData, loading, search, setSearch, refresh } = useEntityList<StoreOrder>({
+  const {
+    filteredData,
+    loading,
+    search,
+    setSearch,
+    refresh,
+    filters,
+    setFilters,
+    pagination,
+    setPage,
+  } = useEntityList<StoreOrder>({
     fetchFn: fetchOrders,
     searchFields: ['storeUserEmail', 'uuid'],
     initialLimit: 100,
   });
+
+  // All selectable statuses for the filter dropdown (linear flow + cancelled).
+  const FILTER_STATUSES: StoreOrderStatus[] = [...STORE_ORDER_STATUS_FLOW, 'cancelled'];
+  const statusFilter = (filters.status as string) || '';
 
   // Refetch whenever the selected company changes (superAdmin company switch).
   useEffect(() => {
@@ -110,15 +124,32 @@ const StoreOrders: React.FC = () => {
       ) : (
         <div className="bg-white shadow-md rounded-xl border border-secondary-200 overflow-hidden">
           <div className="px-6 py-5 border-b border-secondary-200 bg-secondary-50/30">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-secondary-400" />
-              <input
-                type="text"
-                placeholder={t('storeOrders.searchPlaceholder')}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-secondary-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-secondary-400" />
+                <input
+                  type="text"
+                  placeholder={t('storeOrders.searchPlaceholder')}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-secondary-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <select
+                aria-label={t('storeOrders.filters.statusLabel')}
+                value={statusFilter}
+                onChange={(e) =>
+                  setFilters(e.target.value ? { status: e.target.value } : {})
+                }
+                className="w-full sm:w-auto px-4 py-2 border border-secondary-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">{t('storeOrders.filters.allStatuses')}</option>
+                {FILTER_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {t(`storeOrders.statuses.${s}`)}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -128,6 +159,33 @@ const StoreOrders: React.FC = () => {
             loading={loading}
             emptyMessage={t('storeOrders.empty')}
           />
+
+          {pagination.totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-secondary-200 flex items-center justify-between">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={pagination.page <= 1 || loading}
+                onClick={() => setPage(pagination.page - 1)}
+              >
+                {t('storeOrders.pager.prev')}
+              </Button>
+              <span className="text-sm text-secondary-500">
+                {t('storeOrders.pager.pageOf', {
+                  page: pagination.page,
+                  total: pagination.totalPages,
+                })}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={pagination.page >= pagination.totalPages || loading}
+                onClick={() => setPage(pagination.page + 1)}
+              >
+                {t('storeOrders.pager.next')}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

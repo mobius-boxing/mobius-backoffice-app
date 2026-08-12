@@ -65,7 +65,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
   // Company dropdown is populated asynchronously; sync the selected value once companies arrive
   useEffect(() => {
     if (isOpen && companies.length > 0 && user.companyId) {
-      const userCompany = companies.find(c => String(c.id) === String(user.companyId));
+      const userCompany = companies.find(c => c.uuid === user.companyId);
       if (userCompany) {
         setValue('companyId', userCompany.uuid);
       }

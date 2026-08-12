@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import { getToken, clearToken } from '../utils/session';
 import {
   ApiResponse,
   PaginatedResponse,
@@ -37,20 +38,31 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('backoffice_token');
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// 401 means the token is no longer valid — drop local session and force re-auth
+// A 401 from these endpoints is an expected response the calling component renders inline
+// (bad credentials, wrong current password, invalid/expired reset token), NOT a stale
+// session. Only a 401 from another (token-authenticated) request means the session expired,
+// which is what should clear local auth and bounce to the login page.
+const SELF_HANDLED_401_PATHS = [
+  '/api/auth/login',
+  '/api/auth/password',
+  '/api/auth/request-password-reset',
+  '/api/auth/reset-password',
+];
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('backoffice_token');
-      localStorage.removeItem('backoffice_user');
+    const url: string = error.config?.url || '';
+    const isSelfHandled = SELF_HANDLED_401_PATHS.some((path) => url.includes(path));
+    if (error.response?.status === 401 && !isSelfHandled) {
+      clearToken();
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -65,8 +77,7 @@ export const authApi = {
 
   logout: async (): Promise<void> => {
     await api.post('/api/auth/logout');
-    localStorage.removeItem('backoffice_token');
-    localStorage.removeItem('backoffice_user');
+    clearToken();
   },
 
   getCurrentUser: async (): Promise<User> => {
@@ -79,6 +90,14 @@ export const authApi = {
       currentPassword: data.currentPassword,
       newPassword: data.newPassword,
     });
+  },
+
+  requestPasswordReset: async (email: string): Promise<void> => {
+    await api.post('/api/auth/request-password-reset', { email });
+  },
+
+  resetPassword: async (token: string, newPassword: string): Promise<void> => {
+    await api.post('/api/auth/reset-password', { token, newPassword });
   },
 };
 

@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AuthUser, LoginCredentials, LoginResponse } from '../types';
 import { authApi } from '../services/api';
+import { getToken, setToken, clearToken } from '../utils/session';
+
+const isBackofficeRole = (role?: string): boolean =>
+  role === 'admin' || role === 'superAdmin';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -32,28 +36,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('backoffice_token');
-        const savedUser = localStorage.getItem('backoffice_user');
-
-        if (token && savedUser) {
-          const parsedUser = JSON.parse(savedUser);
-          // Backoffice is admin/superAdmin only — members must not reach this app
-          if (parsedUser.role === 'admin' || parsedUser.role === 'superAdmin') {
-            const currentUser = await authApi.getCurrentUser();
-            if (currentUser.role === 'admin' || currentUser.role === 'superAdmin') {
-              setUser(currentUser);
-            } else {
-              localStorage.removeItem('backoffice_token');
-              localStorage.removeItem('backoffice_user');
-            }
-          } else {
-            localStorage.removeItem('backoffice_token');
-            localStorage.removeItem('backoffice_user');
+        if (getToken()) {
+          const currentUser = await authApi.getCurrentUser();
+          // Grant access only to admins. A non-admin may hold a valid shared session from the
+          // main app — deny the backoffice UI, but do NOT clear the token or we'd log them out
+          // of the main app too.
+          if (isBackofficeRole(currentUser.role)) {
+            setUser(currentUser);
           }
         }
       } catch (error) {
-        localStorage.removeItem('backoffice_token');
-        localStorage.removeItem('backoffice_user');
+        clearToken();
       } finally {
         setIsLoading(false);
       }
@@ -62,22 +55,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (credentials: LoginCredentials): Promise<void> => {
-    try {
-      const response: LoginResponse = await authApi.login(credentials);
-
-      // Backoffice is admin/superAdmin only — members must not reach this app
-      if (response.user.role !== 'admin' && response.user.role !== 'superAdmin') {
-        throw new Error('This portal is for administrators only. Please use the main application.');
+  // The session lives in a cookie shared across subdomains, so login/logout can happen in
+  // another tab or app (e.g. the main app). Re-sync local React state when this tab regains
+  // focus: adopt a session started elsewhere (admins only), or drop ours if it ended elsewhere.
+  useEffect(() => {
+    const sync = () => {
+      const hasToken = !!getToken();
+      if (hasToken && !user) {
+        authApi
+          .getCurrentUser()
+          .then((u) => {
+            if (isBackofficeRole(u.role)) setUser(u);
+          })
+          .catch(() => {});
+      } else if (!hasToken && user) {
+        setUser(null);
       }
+    };
+    window.addEventListener('focus', sync);
+    document.addEventListener('visibilitychange', sync);
+    return () => {
+      window.removeEventListener('focus', sync);
+      document.removeEventListener('visibilitychange', sync);
+    };
+  }, [user]);
 
-      localStorage.setItem('backoffice_token', response.token);
-      localStorage.setItem('backoffice_user', JSON.stringify(response.user));
+  const login = async (credentials: LoginCredentials): Promise<void> => {
+    const response: LoginResponse = await authApi.login(credentials);
 
-      setUser(response.user);
-    } catch (error) {
-      throw error;
+    // Backoffice is admin/superAdmin only. Reject members without creating a shared session.
+    if (!isBackofficeRole(response.user.role)) {
+      throw new Error('This portal is for administrators only. Please use the main application.');
     }
+
+    setToken(response.token);
+    setUser(response.user);
   };
 
   const logout = async (): Promise<void> => {
@@ -87,15 +99,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Server-side logout may fail (network/expired token); local state must still be cleared
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('backoffice_token');
-      localStorage.removeItem('backoffice_user');
+      clearToken();
       setUser(null);
     }
   };
 
   const updateUser = (updatedUser: AuthUser): void => {
     setUser(updatedUser);
-    localStorage.setItem('backoffice_user', JSON.stringify(updatedUser));
   };
 
   const value: AuthContextType = {

@@ -11,6 +11,7 @@ const STATUS_STYLES: Record<StoreOrderStatus, string> = {
   in_production: 'bg-purple-100 text-purple-800', // purple — being made
   shipped: 'bg-orange-100 text-orange-800', // orange — in transit
   delivered: 'bg-green-100 text-green-800', // green  — done
+  cancelled: 'bg-rose-100 text-rose-800', // rose   — cancelled
 };
 
 interface OrderStatusBadgeProps {

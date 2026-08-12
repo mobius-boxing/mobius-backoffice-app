@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { clearToken } from '../utils/session';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -44,8 +45,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           </p>
           <button
             onClick={() => {
-              localStorage.removeItem('backoffice_token');
-              localStorage.removeItem('backoffice_user');
+              clearToken();
               window.location.href = '/login';
             }}
             className="text-primary-600 hover:text-primary-700 font-medium"

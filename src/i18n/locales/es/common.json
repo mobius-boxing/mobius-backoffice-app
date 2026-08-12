@@ -46,7 +46,47 @@
     "passwordRequired": "La contraseña es requerida",
     "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
     "signIn": "Iniciar Sesión",
-    "invalidCredentials": "Correo o contraseña inválidos"
+    "invalidCredentials": "Correo o contraseña inválidos",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
+  },
+  "forgotPassword": {
+    "title": "Olvidé mi Contraseña",
+    "subtitle": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "Ingresa tu correo electrónico",
+    "submitButton": "Enviar Enlace de Restablecimiento",
+    "backToLogin": "Volver al Inicio de Sesión",
+    "successTitle": "Revisa tu Correo",
+    "successMessage": "Si existe una cuenta con este correo, recibirás un enlace para restablecer tu contraseña en breve.",
+    "requestFailed": "Error al enviar el enlace de restablecimiento. Por favor intenta de nuevo.",
+    "validation": {
+      "emailRequired": "El correo electrónico es requerido",
+      "emailInvalid": "Por favor ingresa un correo electrónico válido"
+    }
+  },
+  "resetPassword": {
+    "title": "Restablecer Contraseña",
+    "subtitle": "Ingresa tu nueva contraseña a continuación",
+    "newPasswordLabel": "Nueva Contraseña",
+    "newPasswordPlaceholder": "Ingresa tu nueva contraseña",
+    "confirmPasswordLabel": "Confirmar Contraseña",
+    "confirmPasswordPlaceholder": "Confirma tu nueva contraseña",
+    "submitButton": "Restablecer Contraseña",
+    "successTitle": "Contraseña Restablecida Exitosamente",
+    "successMessage": "Redirigiendo al inicio de sesión...",
+    "resetFailed": "Error al restablecer la contraseña. El enlace puede haber expirado.",
+    "invalidToken": "Token de restablecimiento inválido o faltante",
+    "passwordRequirements": "La contraseña debe contener:",
+    "requirement1": "Al menos 8 caracteres",
+    "requirement2": "Una letra mayúscula",
+    "requirement3": "Un número",
+    "validation": {
+      "passwordRequired": "La contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordPattern": "La contraseña debe contener al menos una letra mayúscula y un número",
+      "confirmPasswordRequired": "Por favor confirma tu contraseña",
+      "passwordsMismatch": "Las contraseñas no coinciden"
+    }
   },
   "dashboard": {
     "title": "Panel",
@@ -295,7 +335,17 @@
       "confirmed": "Confirmado",
       "in_production": "En producción",
       "shipped": "Enviado",
-      "delivered": "Entregado"
+      "delivered": "Entregado",
+      "cancelled": "Cancelado"
+    },
+    "filters": {
+      "statusLabel": "Filtrar por estado",
+      "allStatuses": "Todos los estados"
+    },
+    "pager": {
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "pageOf": "Página {{page}} de {{total}}"
     },
     "itemTypes": {
       "box": "Caja",
@@ -310,6 +360,10 @@
       "progressLabel": "Progreso del pedido",
       "advanceTo": "Avanzar a: {{status}}",
       "advanceConfirm": "¿Avanzar este pedido a \"{{status}}\"?",
+      "cancel": "Cancelar pedido",
+      "cancelConfirm": "¿Cancelar este pedido? Esta acción no se puede deshacer.",
+      "cancelledTitle": "Pedido cancelado",
+      "cancelledNotice": "Este pedido ha sido cancelado y ya no puede avanzar.",
       "completed": "Pedido completado",
       "items": "Artículos",
       "itemMeta": "{{type}} · Cant. {{quantity}} · {{unitsPerPallet}}/pallet",
@@ -318,7 +372,8 @@
     },
     "errors": {
       "loadFailed": "Error al cargar el pedido",
-      "statusFailed": "Error al actualizar el estado del pedido"
+      "statusFailed": "Error al actualizar el estado del pedido",
+      "cancelFailed": "Error al cancelar el pedido"
     }
   },
   "confirmModal": {

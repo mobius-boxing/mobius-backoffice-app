@@ -251,7 +251,8 @@ export type StoreOrderStatus =
   | 'confirmed'
   | 'in_production'
   | 'shipped'
-  | 'delivered';
+  | 'delivered'
+  | 'cancelled';
 
 // Canonical forward progression. Drives the stepper + the "next status" control.
 // Single source of truth — the detail surface derives done/current/upcoming from this.

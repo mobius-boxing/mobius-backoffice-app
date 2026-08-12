@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, CheckCircle2 } from 'lucide-react';
+import { Check, CheckCircle2, XCircle } from 'lucide-react';
 import { StoreOrderDetail, STORE_ORDER_STATUS_FLOW } from '../../types';
 import { storeOrdersApi } from '../../services/api';
 import Modal from '../ui/Modal';
@@ -28,6 +28,7 @@ const StoreOrderDetailModal: React.FC<StoreOrderDetailModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [advancing, setAdvancing] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   // Fetch on open (and clear on close), mirroring ManageCompanyModulesModal.
   useEffect(() => {
@@ -45,12 +46,20 @@ const StoreOrderDetailModal: React.FC<StoreOrderDetailModalProps> = ({
       setOrder(null);
       setError(null);
       setAdvancing(false);
+      setCancelling(false);
     }
   }, [isOpen, orderUuid, effectiveCompanyId, t]);
 
+  const isCancelled = order?.status === 'cancelled';
   const currentIndex = order ? STORE_ORDER_STATUS_FLOW.indexOf(order.status) : -1;
   const nextStatus = STORE_ORDER_STATUS_FLOW[currentIndex + 1]; // undefined when delivered
   const isFinal = !nextStatus;
+  // Admin may cancel only from these states (shipped/delivered/cancelled cannot).
+  const canCancel =
+    order != null &&
+    (order.status === 'pending' ||
+      order.status === 'confirmed' ||
+      order.status === 'in_production');
 
   const advance = async () => {
     if (!order || !nextStatus) return;
@@ -68,6 +77,27 @@ const StoreOrderDetailModal: React.FC<StoreOrderDetailModalProps> = ({
       setError(e?.response?.data?.message || t('storeOrders.errors.statusFailed'));
     } finally {
       setAdvancing(false);
+    }
+  };
+
+  const cancelOrder = async () => {
+    if (!order) return;
+    // eslint-disable-next-line no-alert
+    if (!window.confirm(t('storeOrders.detail.cancelConfirm'))) return;
+    setCancelling(true);
+    setError(null);
+    try {
+      const updated = await storeOrdersApi.updateStatus(
+        order.uuid,
+        'cancelled',
+        effectiveCompanyId
+      );
+      setOrder(updated); // re-render with the cancelled notice
+      onStatusAdvanced(); // page refetches the list cell
+    } catch (e: any) {
+      setError(e?.response?.data?.message || t('storeOrders.errors.cancelFailed'));
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -136,7 +166,20 @@ const StoreOrderDetailModal: React.FC<StoreOrderDetailModalProps> = ({
             </div>
           </dl>
 
-          {/* Status stepper */}
+          {/* Status stepper — replaced by a cancelled notice when the order is cancelled */}
+          {isCancelled ? (
+            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 flex items-start gap-3">
+              <XCircle className="h-5 w-5 text-rose-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-rose-800">
+                  {t('storeOrders.detail.cancelledTitle')}
+                </p>
+                <p className="mt-0.5 text-sm text-rose-700">
+                  {t('storeOrders.detail.cancelledNotice')}
+                </p>
+              </div>
+            </div>
+          ) : (
           <div>
             <ol
               className="flex items-center gap-2 overflow-x-auto"
@@ -185,10 +228,10 @@ const StoreOrderDetailModal: React.FC<StoreOrderDetailModalProps> = ({
               })}
             </ol>
 
-            {/* Advance action */}
-            <div className="mt-4">
+            {/* Advance / cancel actions */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
               {!isFinal ? (
-                <Button onClick={advance} loading={advancing} disabled={advancing}>
+                <Button onClick={advance} loading={advancing} disabled={advancing || cancelling}>
                   {t('storeOrders.detail.advanceTo', {
                     status: t(`storeOrders.statuses.${nextStatus}`),
                   })}
@@ -199,8 +242,21 @@ const StoreOrderDetailModal: React.FC<StoreOrderDetailModalProps> = ({
                   {t('storeOrders.detail.completed')}
                 </span>
               )}
+              {canCancel && (
+                <Button
+                  variant="outline"
+                  onClick={cancelOrder}
+                  loading={cancelling}
+                  disabled={advancing || cancelling}
+                  className="border-rose-300 text-rose-700 hover:bg-rose-50 active:bg-rose-100 focus:ring-rose-400"
+                >
+                  <XCircle className="h-4 w-4 mr-2" />
+                  {t('storeOrders.detail.cancel')}
+                </Button>
+              )}
             </div>
           </div>
+          )}
 
           {/* Items */}
           <div>

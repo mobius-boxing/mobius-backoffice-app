@@ -46,7 +46,47 @@
     "passwordRequired": "Password is required",
     "passwordMinLength": "Password must be at least 6 characters",
     "signIn": "Sign In",
-    "invalidCredentials": "Invalid email or password"
+    "invalidCredentials": "Invalid email or password",
+    "forgotPassword": "Forgot password?"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email address and we'll send you a link to reset your password",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "submitButton": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "successTitle": "Check Your Email",
+    "successMessage": "If an account exists with this email, you will receive a password reset link shortly.",
+    "requestFailed": "Failed to send reset link. Please try again.",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address"
+    }
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your new password below",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your new password",
+    "submitButton": "Reset Password",
+    "successTitle": "Password Reset Successful",
+    "successMessage": "Redirecting to login...",
+    "resetFailed": "Failed to reset password. The link may have expired.",
+    "invalidToken": "Invalid or missing reset token",
+    "passwordRequirements": "Password must contain:",
+    "requirement1": "At least 8 characters",
+    "requirement2": "One uppercase letter",
+    "requirement3": "One number",
+    "validation": {
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordPattern": "Password must contain at least one uppercase letter and one number",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -295,7 +335,17 @@
       "confirmed": "Confirmed",
       "in_production": "In production",
       "shipped": "Shipped",
-      "delivered": "Delivered"
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "statusLabel": "Filter by status",
+      "allStatuses": "All statuses"
+    },
+    "pager": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageOf": "Page {{page}} of {{total}}"
     },
     "itemTypes": {
       "box": "Box",
@@ -310,6 +360,10 @@
       "progressLabel": "Order progress",
       "advanceTo": "Advance to: {{status}}",
       "advanceConfirm": "Advance this order to \"{{status}}\"?",
+      "cancel": "Cancel order",
+      "cancelConfirm": "Cancel this order? This cannot be undone.",
+      "cancelledTitle": "Order cancelled",
+      "cancelledNotice": "This order has been cancelled and can no longer be advanced.",
       "completed": "Order completed",
       "items": "Items",
       "itemMeta": "{{type}} · Qty {{quantity}} · {{unitsPerPallet}}/pallet",
@@ -318,7 +372,8 @@
     },
     "errors": {
       "loadFailed": "Failed to load order",
-      "statusFailed": "Failed to update order status"
+      "statusFailed": "Failed to update order status",
+      "cancelFailed": "Failed to cancel order"
     }
   },
   "confirmModal": {

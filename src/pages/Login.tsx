@@ -34,7 +34,9 @@ const Login: React.FC = () => {
       navigate('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err);
-      setError(err.message || t('login.invalidCredentials'));
+      // Prefer the API's message (e.g. "Invalid credentials", "Account is inactive"), then a
+      // thrown client-side message (e.g. the admin-only guard), then a generic fallback.
+      setError(err.response?.data?.message || err.message || t('login.invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -92,6 +94,16 @@ const Login: React.FC = () => {
               error={errors.password?.message as string}
               autoComplete="current-password"
             />
+
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              >
+                {t('login.forgotPassword')}
+              </button>
+            </div>
 
             <Button type="submit" className="w-full" loading={loading}>
               {t('login.signIn')}
