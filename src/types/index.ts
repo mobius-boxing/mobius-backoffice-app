@@ -14,14 +14,40 @@ export interface User {
   modules?: string[];
 }
 
+// A company's whitelabel identity, shared by every module it has. Written by
+// PUT /api/companies/:uuid/branding — always all five keys, replaced wholesale.
+export interface CompanyBranding {
+  displayName: string | null;
+  brandColor: string | null;
+  // Second tenant colour. null means "same as brandColor": the modules fall
+  // back to it, so it is never pre-filled with a copy of the brand value.
+  accentColor: string | null;
+  logoFileUuid: string | null;
+  loginMessage: string | null;
+}
+
 export interface Company {
   id: string;
   uuid: string;
   name: string;
+  // DNS label of this client — the `{client}` in the public module URL.
+  // Read-only here (D-3): changing it moves a live customer URL.
+  slug: string;
   description?: string;
   isActive: boolean;
+  // `{}` for a company that never set any branding, hence Partial.
+  branding?: Partial<CompanyBranding>;
   createdAt: string;
   updatedAt: string;
+}
+
+// Metadata of an uploaded file (POST /api/files). No numeric ids: the API is
+// uuid-only.
+export interface FileRecord {
+  uuid: string;
+  originalName: string;
+  sizeBytes?: number;
+  contentType?: string;
 }
 
 export interface Invitation {
@@ -158,6 +184,10 @@ export interface ModuleInfo {
   name: string;
   description?: string | null;
   isCore: boolean;
+  // Hostname label of the module's customer-facing app — NOT the slug
+  // (`countdown` is served from `vencimientos`). null for modules with no
+  // public app, which show no URL at all.
+  publicDomainLabel?: string | null;
 }
 
 export interface Module {
@@ -167,6 +197,7 @@ export interface Module {
   name: string;
   description?: string | null;
   isCore: boolean;
+  publicDomainLabel?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

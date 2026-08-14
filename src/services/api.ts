@@ -7,6 +7,8 @@ import {
   LoginResponse,
   User,
   Company,
+  CompanyBranding,
+  FileRecord,
   Invitation,
   CreateCompanyForm,
   InviteUserRequest,
@@ -199,6 +201,21 @@ export const companiesApi = {
 
   getCompanyStats: async (): Promise<CompanyStats> => {
     const response: AxiosResponse<ApiResponse<CompanyStats>> = await api.get('/api/companies/stats');
+    return response.data.data!;
+  },
+
+  // Whitelabel identity of the company. Sent WHOLESALE: the API replaces all
+  // five fields, so an omitted key clears the stored value — the form always
+  // submits the complete set.
+  updateBranding: async (uuid: string, branding: CompanyBranding): Promise<Company> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.put(`/api/companies/${uuid}/branding`, {
+        displayName: branding.displayName,
+        brandColor: branding.brandColor,
+        accentColor: branding.accentColor,
+        logoFileUuid: branding.logoFileUuid,
+        loginMessage: branding.loginMessage,
+      });
     return response.data.data!;
   },
 
@@ -408,6 +425,43 @@ export const storeOrdersApi = {
     const response: AxiosResponse<ApiResponse<StoreOrderDetail>> =
       await api.put(`/api/store-orders/${uuid}/status`, { status }, { params: companyId ? { companyId } : {} });
     return response.data.data!;
+  },
+};
+
+// Defensive cap mirrored from the API (MAX_FILE_SIZE_BYTES in file.controller.ts)
+// so a too-big file fails here instead of after a 25 MB upload.
+const MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024;
+
+export const filesApi = {
+  // companyUuid travels in the multipart BODY: the API honours it only for
+  // superAdmins (who have no company of their own) and ignores it for everyone
+  // else, who always get their JWT company.
+  uploadFile: async (file: File, companyUuid: string): Promise<FileRecord> => {
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      throw new Error('FILE_TOO_LARGE');
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('companyId', companyUuid);
+
+    const response: AxiosResponse<ApiResponse<FileRecord>> = await api.post(
+      '/api/files',
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+    return response.data.data!;
+  },
+
+  // Used to show the name of an already-referenced logo. Returns null rather
+  // than throwing: a missing or unreadable file must not break the form.
+  getFile: async (uuid: string): Promise<FileRecord | null> => {
+    try {
+      const response: AxiosResponse<ApiResponse<FileRecord>> =
+        await api.get(`/api/files/${uuid}`);
+      return response.data.data ?? null;
+    } catch {
+      return null;
+    }
   },
 };
 

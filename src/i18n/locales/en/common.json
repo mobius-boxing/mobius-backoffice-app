@@ -207,6 +207,49 @@
     "error": {
       "fetchFailed": "Failed to load modules",
       "toggleFailed": "Failed to update module"
+    },
+    "url": {
+      "label": "Public URL",
+      "copy": "Copy URL",
+      "copied": "Copied!",
+      "copyFailed": "Could not copy the URL",
+      "open": "Open in a new tab",
+      "disabled": "Enable the module to publish its URL.",
+      "noSlug": "This company has no slug, so the URL cannot be composed."
+    }
+  },
+  "branding": {
+    "title": "Brand identity",
+    "description": "Applies to every module of this company.",
+    "displayName": "Display name",
+    "displayNamePlaceholder": "Name the client is known by",
+    "brandColor": "Brand color",
+    "brandColorPlaceholder": "#018445",
+    "accentColor": "Accent color",
+    "accentColorPlaceholder": "#2563eb",
+    "accentColorHint": "If left empty, the brand color is used.",
+    "accentColorPreview": "Accent color preview",
+    "loginMessage": "Login message",
+    "loginMessagePlaceholder": "A one-line welcome for the login screen",
+    "logo": "Logo",
+    "logoChoose": "Choose file",
+    "logoUploading": "Uploading...",
+    "logoRemove": "Remove logo",
+    "logoNone": "No logo",
+    "logoUnnamed": "Uploaded logo",
+    "colorPreview": "Color preview",
+    "save": "Save identity",
+    "cancel": "Discard changes",
+    "validation": {
+      "displayNameMaxLength": "The display name cannot exceed 80 characters",
+      "loginMessageMaxLength": "The login message cannot exceed 160 characters",
+      "brandColorInvalid": "The brand color must be a hex value in #rrggbb format",
+      "accentColorInvalid": "The accent color must be a hex value in #rrggbb format"
+    },
+    "error": {
+      "saveFailed": "Failed to save the brand identity",
+      "uploadFailed": "Failed to upload the logo",
+      "tooLarge": "The file exceeds the 25 MB maximum"
     }
   },
   "store": {

@@ -207,6 +207,49 @@
     "error": {
       "fetchFailed": "Error al cargar los módulos",
       "toggleFailed": "Error al actualizar el módulo"
+    },
+    "url": {
+      "label": "URL pública",
+      "copy": "Copiar URL",
+      "copied": "¡Copiado!",
+      "copyFailed": "No se pudo copiar la URL",
+      "open": "Abrir en una pestaña nueva",
+      "disabled": "Habilite el módulo para publicar su URL.",
+      "noSlug": "La empresa no tiene identificador (slug); no se puede armar la URL."
+    }
+  },
+  "branding": {
+    "title": "Identidad de marca",
+    "description": "Se aplica a todos los módulos de esta empresa.",
+    "displayName": "Nombre a mostrar",
+    "displayNamePlaceholder": "Nombre con el que se identifica al cliente",
+    "brandColor": "Color de marca",
+    "brandColorPlaceholder": "#018445",
+    "accentColor": "Color de acento",
+    "accentColorPlaceholder": "#2563eb",
+    "accentColorHint": "Si se deja vacío, se usa el color de marca.",
+    "accentColorPreview": "Vista del color de acento",
+    "loginMessage": "Mensaje de inicio de sesión",
+    "loginMessagePlaceholder": "Una línea de bienvenida para la pantalla de login",
+    "logo": "Logo",
+    "logoChoose": "Elegir archivo",
+    "logoUploading": "Subiendo...",
+    "logoRemove": "Quitar logo",
+    "logoNone": "Sin logo",
+    "logoUnnamed": "Logo cargado",
+    "colorPreview": "Vista del color",
+    "save": "Guardar identidad",
+    "cancel": "Descartar cambios",
+    "validation": {
+      "displayNameMaxLength": "El nombre a mostrar no puede tener más de 80 caracteres",
+      "loginMessageMaxLength": "El mensaje de login no puede tener más de 160 caracteres",
+      "brandColorInvalid": "El color de marca debe ser un hexadecimal con el formato #rrggbb",
+      "accentColorInvalid": "El color de acento debe ser un hexadecimal con el formato #rrggbb"
+    },
+    "error": {
+      "saveFailed": "Error al guardar la identidad de marca",
+      "uploadFailed": "Error al subir el logo",
+      "tooLarge": "El archivo supera el máximo de 25 MB"
     }
   },
   "store": {
