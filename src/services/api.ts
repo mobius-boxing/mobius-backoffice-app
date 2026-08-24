@@ -195,15 +195,17 @@ export const companiesApi = {
     return response.data.data!;
   },
 
-  // Whitelabel identity of the company. Sent WHOLESALE: the API replaces all
-  // five fields, so an omitted key clears the stored value — the form always
-  // submits the complete set.
+  // Whitelabel identity of the company. Sent WHOLESALE: the API replaces every
+  // field, so an omitted key clears the stored value — the form always submits
+  // the complete set.
   updateBranding: async (uuid: string, branding: CompanyBranding): Promise<Company> => {
     const response: AxiosResponse<ApiResponse<Company>> =
       await api.put(`/api/companies/${uuid}/branding`, {
         displayName: branding.displayName,
         brandColor: branding.brandColor,
         accentColor: branding.accentColor,
+        shellColor: branding.shellColor,
+        canvasColor: branding.canvasColor,
         logoFileUuid: branding.logoFileUuid,
         loginMessage: branding.loginMessage,
       });

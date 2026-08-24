@@ -237,13 +237,23 @@
       "displayNameMaxLength": "The display name cannot exceed 80 characters",
       "loginMessageMaxLength": "The login message cannot exceed 160 characters",
       "brandColorInvalid": "The brand color must be a hex value in #rrggbb format",
-      "accentColorInvalid": "The accent color must be a hex value in #rrggbb format"
+      "accentColorInvalid": "The accent color must be a hex value in #rrggbb format",
+      "shellColorInvalid": "The bar color must use the #rrggbb format",
+      "canvasColorInvalid": "The background color must use the #rrggbb format"
     },
     "error": {
       "saveFailed": "Failed to save the brand identity",
       "uploadFailed": "Failed to upload the logo",
       "tooLarge": "The file exceeds the 25 MB maximum"
-    }
+    },
+    "shellColor": "Bar color",
+    "shellColorPlaceholder": "#191713",
+    "shellColorPreview": "Bar color preview",
+    "shellColorHint": "The module top bar. Leave empty to use the default.",
+    "canvasColor": "Background color",
+    "canvasColorPlaceholder": "#f9f7f4",
+    "canvasColorPreview": "Background color preview",
+    "canvasColorHint": "The page background. Leave empty to use the default."
   },
   "confirmModal": {
     "defaultTitle": "Confirm Action",

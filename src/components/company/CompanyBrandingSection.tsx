@@ -9,6 +9,15 @@ import Input from '../ui/Input';
 
 /** Mobius green — what a tenant gets until somebody picks a colour. */
 const DEFAULT_BRAND_COLOR = '#018445';
+/**
+ * Preview-only mirrors of the API's defaults
+ * (mobius-api src/utils/whitelabel-defaults.ts). They drive the swatch for an
+ * unset field so the admin sees what the module will actually paint. They are
+ * never submitted — an unset field is saved as null, so the API stays the one
+ * place the real default lives.
+ */
+const DEFAULT_SHELL_COLOR = '#191713';
+const DEFAULT_CANVAS_COLOR = '#f9f7f4';
 const HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 const MAX_DISPLAY_NAME_LENGTH = 80;
 const MAX_LOGIN_MESSAGE_LENGTH = 160;
@@ -25,6 +34,9 @@ interface BrandingFormValues {
   brandColor: string;
   /** '' means "same as the brand colour"; it is never pre-filled with a copy. */
   accentColor: string;
+  /** '' means "use the stylesheet default"; the module resolves it. */
+  shellColor: string;
+  canvasColor: string;
   loginMessage: string;
 }
 
@@ -80,6 +92,8 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
       displayName: '',
       brandColor: '',
       accentColor: '',
+      shellColor: '',
+      canvasColor: '',
       loginMessage: '',
     },
     formOptions: { mode: 'onSubmit' },
@@ -99,6 +113,10 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
         // Never `?? stored.brandColor`: pre-filling would persist a copy of the
         // brand colour on the next save and destroy the fallback for good.
         accentColor: stored.accentColor ?? '',
+        // Same rule as the accent: never pre-fill with the default, or the next
+        // save would freeze today's default into the tenant's record.
+        shellColor: stored.shellColor ?? '',
+        canvasColor: stored.canvasColor ?? '',
         loginMessage: stored.loginMessage ?? '',
       });
       setLogoFileUuid(stored.logoFileUuid ?? null);
@@ -186,6 +204,8 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
       displayName: orNull(data.displayName),
       brandColor: orNull(data.brandColor)?.toLowerCase() ?? null,
       accentColor: orNull(data.accentColor)?.toLowerCase() ?? null,
+      shellColor: orNull(data.shellColor)?.toLowerCase() ?? null,
+      canvasColor: orNull(data.canvasColor)?.toLowerCase() ?? null,
       logoFileUuid,
       loginMessage: orNull(data.loginMessage),
     };
@@ -221,6 +241,18 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
     ? accentValue
     : swatchColor;
   const accentIsUnset = (accentValue || '').trim().length === 0;
+
+  // Chrome and background. Unlike the accent, these do not fall back to the
+  // brand colour — an unset field previews the stylesheet default, which is
+  // what the module will actually paint.
+  const shellValue = watch('shellColor');
+  const shellSwatchColor = HEX_COLOR_PATTERN.test(shellValue || '')
+    ? shellValue
+    : DEFAULT_SHELL_COLOR;
+  const canvasValue = watch('canvasColor');
+  const canvasSwatchColor = HEX_COLOR_PATTERN.test(canvasValue || '')
+    ? canvasValue
+    : DEFAULT_CANVAS_COLOR;
 
   return (
     <section className="pt-4 mt-4 border-t border-secondary-200">
@@ -352,6 +384,102 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
               {t('branding.accentColorHint')}
             </p>
           )}
+        </div>
+
+        <div>
+          <label className="gd-label">
+            {t('branding.shellColor')}
+          </label>
+          <div className="flex items-center gap-3">
+            <span
+              className="h-9 w-9 rounded-md border border-secondary-300 shrink-0"
+              style={{ backgroundColor: shellSwatchColor }}
+              title={t('branding.shellColorPreview')}
+              data-testid="branding-shell-color-swatch"
+            />
+            {/* One-way, like the pickers above: <input type="color"> cannot hold
+                "empty", so it only ever WRITES the form field. `shouldDirty` for
+                the same reason — without it the refetch effect discards the pick. */}
+            <input
+              type="color"
+              name="shellColorPicker"
+              value={shellSwatchColor}
+              onChange={(event) =>
+                setValue('shellColor', event.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
+              }
+              className="h-9 w-12 rounded-md border border-secondary-300 bg-white p-1 shrink-0"
+              aria-label={t('branding.shellColor')}
+              data-testid="branding-shell-color-picker"
+            />
+            <div className="flex-1">
+              <Input
+                {...register('shellColor', {
+                  pattern: {
+                    value: HEX_COLOR_PATTERN,
+                    message: t('branding.validation.shellColorInvalid'),
+                  },
+                })}
+                type="text"
+                placeholder={t('branding.shellColorPlaceholder')}
+                error={errors.shellColor?.message}
+                data-testid="branding-shell-color"
+              />
+            </div>
+          </div>
+          <p className="mt-1.5 text-xs text-secondary-500">
+            {t('branding.shellColorHint')}
+          </p>
+        </div>
+
+        <div>
+          <label className="gd-label">
+            {t('branding.canvasColor')}
+          </label>
+          <div className="flex items-center gap-3">
+            <span
+              className="h-9 w-9 rounded-md border border-secondary-300 shrink-0"
+              style={{ backgroundColor: canvasSwatchColor }}
+              title={t('branding.canvasColorPreview')}
+              data-testid="branding-canvas-color-swatch"
+            />
+            {/* One-way, like the pickers above: <input type="color"> cannot hold
+                "empty", so it only ever WRITES the form field. `shouldDirty` for
+                the same reason — without it the refetch effect discards the pick. */}
+            <input
+              type="color"
+              name="canvasColorPicker"
+              value={canvasSwatchColor}
+              onChange={(event) =>
+                setValue('canvasColor', event.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
+              }
+              className="h-9 w-12 rounded-md border border-secondary-300 bg-white p-1 shrink-0"
+              aria-label={t('branding.canvasColor')}
+              data-testid="branding-canvas-color-picker"
+            />
+            <div className="flex-1">
+              <Input
+                {...register('canvasColor', {
+                  pattern: {
+                    value: HEX_COLOR_PATTERN,
+                    message: t('branding.validation.canvasColorInvalid'),
+                  },
+                })}
+                type="text"
+                placeholder={t('branding.canvasColorPlaceholder')}
+                error={errors.canvasColor?.message}
+                data-testid="branding-canvas-color"
+              />
+            </div>
+          </div>
+          <p className="mt-1.5 text-xs text-secondary-500">
+            {t('branding.canvasColorHint')}
+          </p>
         </div>
 
         <Input
