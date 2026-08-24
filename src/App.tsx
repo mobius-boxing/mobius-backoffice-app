@@ -10,10 +10,6 @@ import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Companies from './pages/Companies';
-import StoreBoxes from './pages/StoreBoxes';
-import StoreRolls from './pages/StoreRolls';
-import StoreUsers from './pages/StoreUsers';
-import StoreOrders from './pages/StoreOrders';
 import './i18n/config';
 
 function App() {
@@ -55,50 +51,6 @@ function App() {
                 <ProtectedRoute requiredRoles={['superAdmin']}>
                   <Layout>
                     <Companies />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/store/boxes"
-              element={
-                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
-                  <Layout>
-                    <StoreBoxes />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/store/rolls"
-              element={
-                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
-                  <Layout>
-                    <StoreRolls />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/store/users"
-              element={
-                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
-                  <Layout>
-                    <StoreUsers />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/store/orders"
-              element={
-                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
-                  <Layout>
-                    <StoreOrders />
                   </Layout>
                 </ProtectedRoute>
               }

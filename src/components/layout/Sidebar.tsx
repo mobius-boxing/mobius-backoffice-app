@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
   Building,
   LogOut,
-  Store,
-  Package,
-  Scroll,
-  ClipboardList,
-  ChevronDown,
-  ChevronRight,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,23 +16,6 @@ const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const { t } = useTranslation();
-
-  // Store group: superAdmins always; company admins only with the 'store' module.
-  // SuperAdmin user.modules is [] by design, so the role check carries them.
-  const canSeeStore =
-    user?.role === 'superAdmin' || (user?.modules?.includes('store') ?? false);
-
-  // Auto-expand the Store group when on a /store/* route.
-  const [storeOpen, setStoreOpen] = useState(
-    location.pathname.startsWith('/store')
-  );
-
-  const storeChildren: NavItem[] = [
-    { id: 'store-boxes', label: t('nav.store.boxes'), path: '/store/boxes', icon: 'Package', roles: ['admin', 'superAdmin'] },
-    { id: 'store-rolls', label: t('nav.store.rolls'), path: '/store/rolls', icon: 'Scroll', roles: ['admin', 'superAdmin'] },
-    { id: 'store-users', label: t('nav.store.users'), path: '/store/users', icon: 'Users', roles: ['admin', 'superAdmin'] },
-    { id: 'store-orders', label: t('nav.store.orders'), path: '/store/orders', icon: 'ClipboardList', roles: ['admin', 'superAdmin'] },
-  ];
 
   const navigationItems: NavItem[] = [
     {
@@ -69,10 +46,6 @@ const Sidebar: React.FC = () => {
       LayoutDashboard,
       Users,
       Building,
-      Store,
-      Package,
-      Scroll,
-      ClipboardList,
     };
     const IconComponent = icons[iconName];
     return IconComponent ? <IconComponent className={className} /> : null;
@@ -137,53 +110,6 @@ const Sidebar: React.FC = () => {
             </NavLink>
           );
         })}
-
-        {canSeeStore && (
-          <div className="pt-1">
-            <button
-              type="button"
-              onClick={() => setStoreOpen((o) => !o)}
-              aria-expanded={storeOpen}
-              aria-controls="store-subnav"
-              className={`sidebar-item w-full text-left ${
-                location.pathname.startsWith('/store')
-                  ? 'sidebar-item-active'
-                  : 'sidebar-item-inactive'
-              }`}
-            >
-              <Store className="h-5 w-5" />
-              <span className="ml-3 flex-1">{t('nav.store.title')}</span>
-              {storeOpen ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </button>
-
-            {storeOpen && (
-              <div
-                id="store-subnav"
-                className="mt-1 ml-4 space-y-1 border-l border-secondary-200 pl-3"
-              >
-                {storeChildren.map((child) => {
-                  const isActive = child.path === location.pathname;
-                  return (
-                    <NavLink
-                      key={child.id}
-                      to={child.path!}
-                      className={`sidebar-item ${
-                        isActive ? 'sidebar-item-active' : 'sidebar-item-inactive'
-                      }`}
-                    >
-                      {getIcon(child.icon, 'h-4 w-4')}
-                      <span className="ml-3">{child.label}</span>
-                    </NavLink>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
       </nav>
 
       {user?.role === 'superAdmin' && (

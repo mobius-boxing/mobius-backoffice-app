@@ -43,7 +43,7 @@ const SubscriptionBadge: React.FC<{ status: SubscriptionStatus }> = ({ status })
  *    openable;
  *  - a labelled module that is disabled, or a company with no slug ⇒ a muted
  *    one-line reason;
- *  - a module with no public app (`core`, `store`) ⇒ nothing at all.
+ *  - a module with no public app (e.g. `core`) ⇒ nothing at all.
  */
 const ModuleUrlRow: React.FC<{
   companySlug: string | null;
