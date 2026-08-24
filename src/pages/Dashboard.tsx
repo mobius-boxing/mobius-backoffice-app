@@ -70,40 +70,50 @@ const Dashboard: React.FC = () => {
       title: t('dashboard.totalUsers'),
       value: stats.totalUsers,
       icon: Users,
-      lightBg: 'bg-blue-50',
-      iconColor: 'text-blue-600',
+      tone: 'gd-tone-brand',
       show: true,
     },
     {
       title: t('dashboard.activeUsers'),
       value: stats.activeUsers,
       icon: UserCheck,
-      lightBg: 'bg-green-50',
-      iconColor: 'text-green-600',
+      tone: 'gd-tone-positive',
       show: true,
     },
     {
       title: t('dashboard.inactiveUsers'),
       value: stats.inactiveUsers,
       icon: UserX,
-      lightBg: 'bg-red-50',
-      iconColor: 'text-red-600',
+      tone: 'gd-tone-negative',
       show: true,
     },
     {
       title: t('dashboard.totalCompanies'),
       value: stats.totalCompanies,
       icon: Building,
-      lightBg: 'bg-purple-50',
-      iconColor: 'text-purple-600',
+      tone: 'gd-tone-neutral',
       show: user?.role === 'superAdmin',
     },
   ];
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div className="gd max-w-7xl mx-auto" aria-busy="true">
+        <div className="gd-head">
+          <div>
+            <div className="gd-skel" style={{ width: '9rem', height: '0.75rem' }} />
+            <div className="gd-skel" style={{ width: '22rem', maxWidth: '80vw', height: '2.75rem', marginTop: '1.25rem' }} />
+          </div>
+          <div className="gd-skel" style={{ width: '9rem', height: '2.75rem', borderRadius: '9999px' }} />
+        </div>
+        <div className="gd-kpis">
+          {statCards
+            .filter((card) => card.show)
+            .map((card) => (
+              <div key={card.title} className="gd-skel gd-skel--card" />
+            ))}
+        </div>
+        <div className="gd-skel" style={{ height: '9rem', borderRadius: '1.125rem' }} />
       </div>
     );
   }
@@ -113,108 +123,108 @@ const Dashboard: React.FC = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const activeShare = stats.totalUsers > 0 ? (stats.activeUsers / stats.totalUsers) * 100 : 0;
+  const inactiveShare = stats.totalUsers > 0 ? (stats.inactiveUsers / stats.totalUsers) * 100 : 0;
+
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="gd max-w-7xl mx-auto">
+      <header className="gd-head enter-up" style={{ '--stagger': '0ms' } as React.CSSProperties}>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-secondary-900">
-            {t('dashboard.title')}
-          </h1>
-          <p className="mt-1 text-sm text-secondary-500">
+          <span className="gd-eyebrow gd-head__eyebrow">{t('dashboard.title')}</span>
+          <h1 className="gd-title">
             {t('dashboard.welcome', { name: user?.firstName })}
-          </p>
+          </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="gd-head__aside">
           {stats.lastUpdated && (
-            <span className="text-sm text-secondary-500">
-              {t('dashboard.lastUpdated')}: {formatLastUpdated(stats.lastUpdated)}
+            <span className="gd-stamp">
+              <span className="gd-stamp__label">{t('dashboard.lastUpdated')}</span>
+              <span className="gd-stamp__value">{formatLastUpdated(stats.lastUpdated)}</span>
             </span>
           )}
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="inline-flex items-center gap-2 bg-white border border-secondary-300 text-secondary-700 hover:bg-secondary-50 px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-150 disabled:opacity-50"
+            className="gd-btn"
           >
             <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
             <span>{t('dashboard.refresh')}</span>
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="gd-kpis enter-up" style={{ '--stagger': '90ms' } as React.CSSProperties}>
         {statCards
           .filter((card) => card.show)
           .map((card) => (
             <div
               key={card.title}
-              className="bg-white rounded-xl border border-secondary-200 shadow-sm p-5"
+              className={`gd-kpi ${card.tone}`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-secondary-500">
-                  {card.title}
-                </p>
-                <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${card.lightBg}`}>
-                  <card.icon className={`h-5 w-5 ${card.iconColor}`} />
-                </div>
-              </div>
-              <p className="mt-3 text-3xl font-bold tracking-tight text-secondary-900 tabular-nums">
-                {card.value}
-              </p>
+              <p className="gd-kpi__label">{card.title}</p>
+              <p className="gd-kpi__value">{card.value}</p>
+              <card.icon className="gd-kpi__icon" aria-hidden="true" />
             </div>
           ))}
       </div>
 
-      <div className="bg-white shadow-sm rounded-xl border border-secondary-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-secondary-200 bg-secondary-50/60">
-          <h2 className="text-base font-semibold tracking-tight text-secondary-900">
-            {t('dashboard.quickActions')}
-          </h2>
-          <p className="mt-1 text-sm text-secondary-500">
-            {t('dashboard.quickActionsDesc')}
-          </p>
-        </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <a
-              href="/users"
-              className="group flex items-center gap-4 rounded-xl border border-secondary-200 bg-white p-5 hover:border-primary-300 hover:bg-primary-50/40 transition-colors duration-150"
-            >
-              <div className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
-                <Users className="h-6 w-6 text-primary-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold text-secondary-900 group-hover:text-primary-700 transition-colors">
-                  {t('dashboard.manageUsers')}
-                </h3>
-                <p className="mt-0.5 text-sm text-secondary-500">
-                  {t('dashboard.manageUsersDesc')}
-                </p>
-              </div>
-              <ChevronRight className="h-5 w-5 flex-shrink-0 text-secondary-400 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all duration-150" />
-            </a>
-
-            {user?.role === 'superAdmin' && (
-              <a
-                href="/companies"
-                className="group flex items-center gap-4 rounded-xl border border-secondary-200 bg-white p-5 hover:border-primary-300 hover:bg-primary-50/40 transition-colors duration-150"
-              >
-                <div className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
-                  <Building className="h-6 w-6 text-primary-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-secondary-900 group-hover:text-primary-700 transition-colors">
-                    {t('dashboard.manageCompanies')}
-                  </h3>
-                  <p className="mt-0.5 text-sm text-secondary-500">
-                    {t('dashboard.manageCompaniesDesc')}
-                  </p>
-                </div>
-                <ChevronRight className="h-5 w-5 flex-shrink-0 text-secondary-400 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all duration-150" />
-              </a>
-            )}
+      {stats.totalUsers > 0 && (
+        <section
+          className="gd-split enter-up"
+          style={{ '--stagger': '170ms' } as React.CSSProperties}
+        >
+          <div className="gd-split__bar">
+            <span className="gd-split__seg is-positive" style={{ width: `${activeShare}%` }} />
+            <span className="gd-split__seg is-negative" style={{ width: `${inactiveShare}%` }} />
           </div>
+          <div className="gd-split__legend">
+            <span className="gd-legend">
+              <span className="gd-legend__dot is-positive" aria-hidden="true" />
+              <span className="gd-legend__label">{t('dashboard.activeUsers')}</span>
+              <span className="gd-legend__pct">{Math.round(activeShare)}%</span>
+            </span>
+            <span className="gd-legend">
+              <span className="gd-legend__dot is-negative" aria-hidden="true" />
+              <span className="gd-legend__label">{t('dashboard.inactiveUsers')}</span>
+              <span className="gd-legend__pct">{Math.round(inactiveShare)}%</span>
+            </span>
+          </div>
+        </section>
+      )}
+
+      <section className="enter-up" style={{ '--stagger': '250ms' } as React.CSSProperties}>
+        <div className="gd-panel__head">
+          <h2 className="gd-panel__title">{t('dashboard.quickActions')}</h2>
+          <p className="gd-panel__desc">{t('dashboard.quickActionsDesc')}</p>
         </div>
-      </div>
+        <div className="gd-actions">
+          <a href="/users" className="gd-action">
+            <span className="gd-action__index">01</span>
+            <span className="gd-action__icon">
+              <Users className="h-5 w-5" />
+            </span>
+            <div className="gd-action__body">
+              <h3 className="gd-action__title">{t('dashboard.manageUsers')}</h3>
+              <p className="gd-action__desc">{t('dashboard.manageUsersDesc')}</p>
+            </div>
+            <ChevronRight className="h-5 w-5 gd-action__chevron" />
+          </a>
+
+          {user?.role === 'superAdmin' && (
+            <a href="/companies" className="gd-action">
+              <span className="gd-action__index">02</span>
+              <span className="gd-action__icon">
+                <Building className="h-5 w-5" />
+              </span>
+              <div className="gd-action__body">
+                <h3 className="gd-action__title">{t('dashboard.manageCompanies')}</h3>
+                <p className="gd-action__desc">{t('dashboard.manageCompaniesDesc')}</p>
+              </div>
+              <ChevronRight className="h-5 w-5 gd-action__chevron" />
+            </a>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

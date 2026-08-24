@@ -43,25 +43,18 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-canvas py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        <div className="flex flex-col items-center text-center mb-8">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-sm">
-            <span className="text-xl font-bold text-white">M</span>
-          </div>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight text-secondary-900">
-            {t('login.title')}
-          </h2>
-          <p className="mt-1.5 text-sm text-secondary-500">
-            {t('login.subtitle')}
-          </p>
-        </div>
+    <div className="gd-auth">
+      <div className="gd-auth__inner enter-up">
+        <div className="gd-auth__mark">M</div>
+        <span className="gd-auth__eyebrow">Mobius Backoffice</span>
+        <h1 className="gd-auth__title">{t('login.title')}</h1>
+        <p className="gd-auth__sub">{t('login.subtitle')}</p>
 
-        <div className="bg-white py-8 px-6 shadow-lg rounded-2xl border border-secondary-200 sm:px-8">
+        <div className="gd-auth__card">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="gd-alert gd-alert-danger">
+                <p>{error}</p>
               </div>
             )}
 
@@ -99,20 +92,20 @@ const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/forgot-password')}
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                className="gd-link"
               >
                 {t('login.forgotPassword')}
               </button>
             </div>
 
-            <Button type="submit" className="w-full" loading={loading}>
+            <Button type="submit" size="lg" className="w-full" loading={loading}>
               {t('login.signIn')}
             </Button>
           </form>
+        </div>
 
-          <div className="mt-6 flex justify-center">
-            <LanguageSwitcher />
-          </div>
+        <div className="gd-auth__foot">
+          <LanguageSwitcher />
         </div>
       </div>
     </div>

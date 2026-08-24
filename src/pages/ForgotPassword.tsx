@@ -41,22 +41,22 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-canvas py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+    <div className="gd-auth">
+      <div className="gd-auth__inner enter-up">
         <div className="flex flex-col items-center text-center mb-8">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100">
             <Mail className="h-6 w-6 text-primary-600" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight text-secondary-900">
+          <h1 className="gd-auth__title">
             {t('forgotPassword.title')}
-          </h2>
-          <p className="mt-1.5 text-sm text-secondary-500">
+          </h1>
+          <p className="gd-auth__sub">
             {t('forgotPassword.subtitle')}
           </p>
         </div>
 
         {success ? (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+          <div className="gd-alert gd-alert-success">
             <div className="text-center">
               <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-green-100 mb-4">
                 <Mail className="h-6 w-6 text-green-600" />
@@ -79,7 +79,7 @@ const ForgotPassword: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+              <div className="gd-alert gd-alert-danger">
                 <p className="text-sm text-red-800">{error}</p>
               </div>
             )}

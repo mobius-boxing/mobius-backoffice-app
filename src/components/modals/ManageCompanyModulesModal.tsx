@@ -21,11 +21,11 @@ interface ManageCompanyModulesModalProps {
 const SubscriptionBadge: React.FC<{ status: SubscriptionStatus }> = ({ status }) => {
   const { t } = useTranslation();
   const styles: Record<SubscriptionStatus, string> = {
-    comp: 'bg-blue-100 text-blue-800',
-    trial: 'bg-yellow-100 text-yellow-800',
-    active: 'bg-green-100 text-green-800',
+    comp: 'gd-badge gd-badge-info',
+    trial: 'gd-badge gd-badge-warning',
+    active: 'gd-badge gd-badge-positive',
     past_due: 'bg-orange-100 text-orange-800',
-    canceled: 'bg-red-100 text-red-800',
+    canceled: 'gd-badge gd-badge-negative',
   };
   return (
     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${styles[status]}`}>
@@ -215,7 +215,7 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
     >
       {error && (
         <div
-          className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4"
+          className="gd-alert gd-alert-danger mb-4"
           data-testid="modules-error"
         >
           <p className="text-sm text-red-800">{error}</p>

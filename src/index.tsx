@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles/gold.css';
 import App from './App';
 import './i18n/config';
 

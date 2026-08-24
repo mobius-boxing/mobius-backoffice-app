@@ -52,7 +52,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
     <Modal isOpen={isOpen} onClose={handleClose} title={t('companies.editTitle')}>
       <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="gd-alert gd-alert-danger">
             <p className="text-sm text-red-800">{error}</p>
           </div>
         )}
@@ -75,7 +75,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
         />
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-1">
+          <label className="gd-label">
             {t('companies.description')} ({t('common.optional')})
           </label>
           <textarea

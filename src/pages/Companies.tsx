@@ -107,10 +107,10 @@ const Companies: React.FC = () => {
       header: t('companies.status'),
       accessor: (company: Company) => (
         <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          className={`gd-badge ${
             company.isActive
-              ? 'bg-green-100 text-green-800'
-              : 'bg-red-100 text-red-800'
+              ? 'gd-badge-positive'
+              : 'gd-badge-negative'
           }`}
         >
           {company.isActive ? t('companies.active') : t('companies.inactive')}
@@ -173,10 +173,10 @@ const Companies: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="gd-page-head">
         <div>
-          <h1 className="text-2xl font-bold text-secondary-900">{t('companies.title')}</h1>
-          <p className="mt-1 text-sm text-secondary-500">{t('companies.subtitle')}</p>
+          <h1 className="gd-page-title">{t('companies.title')}</h1>
+          <p className="gd-page-sub">{t('companies.subtitle')}</p>
         </div>
         <Button onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -185,13 +185,13 @@ const Companies: React.FC = () => {
       </div>
 
       {actionError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="gd-alert gd-alert-danger">
           <p className="text-sm text-red-800">{actionError}</p>
         </div>
       )}
 
-      <div className="bg-white shadow-md rounded-xl border border-secondary-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-secondary-200 bg-secondary-50/30">
+      <div className="gd-surface overflow-hidden">
+        <div className="gd-surface-head">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-secondary-400" />
             <input

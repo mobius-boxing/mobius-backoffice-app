@@ -112,12 +112,12 @@ const Users: React.FC = () => {
       header: t('users.role'),
       accessor: (user: User) => (
         <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          className={`gd-badge ${
             user.role === 'superAdmin'
-              ? 'bg-purple-100 text-purple-800'
+              ? 'gd-badge-brand'
               : user.role === 'admin'
-              ? 'bg-blue-100 text-blue-800'
-              : 'bg-secondary-100 text-secondary-800'
+              ? 'gd-badge-info'
+              : 'gd-badge-neutral'
           }`}
         >
           {t(`users.roles.${user.role}`)}
@@ -140,10 +140,8 @@ const Users: React.FC = () => {
       header: t('users.status'),
       accessor: (user: User) => (
         <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            user.isActive
-              ? 'bg-green-100 text-green-800'
-              : 'bg-red-100 text-red-800'
+          className={`gd-badge ${
+            user.isActive ? 'gd-badge-positive' : 'gd-badge-negative'
           }`}
         >
           {user.isActive ? t('users.active') : t('users.inactive')}
@@ -180,10 +178,10 @@ const Users: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="gd-page-head">
         <div>
-          <h1 className="text-2xl font-bold text-secondary-900">{t('users.title')}</h1>
-          <p className="mt-1 text-sm text-secondary-500">{t('users.subtitle')}</p>
+          <h1 className="gd-page-title">{t('users.title')}</h1>
+          <p className="gd-page-sub">{t('users.subtitle')}</p>
         </div>
         <Button onClick={() => setIsInviteModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -192,21 +190,21 @@ const Users: React.FC = () => {
       </div>
 
       {actionError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="gd-alert gd-alert-danger">
           <p className="text-sm text-red-800">{actionError}</p>
         </div>
       )}
 
-      <div className="bg-white shadow-md rounded-xl border border-secondary-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-secondary-200 bg-secondary-50/30">
-          <div className="relative">
+      <div className="gd-surface overflow-hidden">
+        <div className="gd-surface-head">
+          <div className="gd-search relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-secondary-400" />
             <input
               type="text"
               placeholder={t('users.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-secondary-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="input-field"
             />
           </div>
         </div>

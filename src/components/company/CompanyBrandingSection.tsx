@@ -234,7 +234,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
       <form onSubmit={onSubmit} className="mt-4 space-y-4">
         {error && (
           <div
-            className="bg-red-50 border border-red-200 rounded-lg p-4"
+            className="gd-alert gd-alert-danger"
             data-testid="branding-error"
           >
             <p className="text-sm text-red-800">{error}</p>
@@ -256,7 +256,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
         />
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+          <label className="gd-label">
             {t('branding.brandColor')}
           </label>
           <div className="flex items-center gap-3">
@@ -302,7 +302,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+          <label className="gd-label">
             {t('branding.accentColor')}
           </label>
           <div className="flex items-center gap-3">
@@ -369,7 +369,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
         />
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+          <label className="gd-label">
             {t('branding.logo')}
           </label>
           <input

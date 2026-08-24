@@ -64,71 +64,67 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-64 bg-white border-r border-secondary-200 h-full">
-      <div className="flex items-center gap-2.5 h-16 px-4 border-b border-secondary-200">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white text-sm font-bold shadow-sm">
-          M
-        </div>
-        <div className="leading-tight">
-          <span className="block text-sm font-bold tracking-tight text-secondary-900">Mobius</span>
-          <span className="block text-xs font-medium text-secondary-500">Backoffice</span>
+    <div className="gd-sidebar flex flex-col h-full">
+      <div className="gd-sb-brand">
+        <div className="gd-sb-mark">M</div>
+        <div className="gd-sb-collapse">
+          <span className="gd-sb-wordmark">Mobius</span>
+          <span className="gd-sb-sub">Backoffice</span>
         </div>
       </div>
 
-      <div className="p-4 border-b border-secondary-200 bg-secondary-50">
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-semibold text-primary-700">
-              {user?.firstName?.[0]}{user?.lastName?.[0]}
-            </span>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-secondary-900">
-              {user?.firstName} {user?.lastName}
-            </p>
-            <p className="text-xs text-secondary-500 capitalize">
-              {user?.role === 'superAdmin' ? 'Super Admin' : 'Admin'}
-              {user?.companyName && ` - ${user.companyName}`}
-            </p>
-          </div>
+      <div className="gd-sb-user gd-sb-block">
+        <div className="gd-sb-avatar">
+          {user?.firstName?.[0]}{user?.lastName?.[0]}
+        </div>
+        <div className="gd-sb-collapse min-w-0">
+          <p className="gd-sb-name truncate">
+            {user?.firstName} {user?.lastName}
+          </p>
+          <p className="gd-sb-role truncate">
+            {user?.role === 'superAdmin' ? 'Super Admin' : 'Admin'}
+            {user?.companyName && ` · ${user.companyName}`}
+          </p>
         </div>
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <nav className="gd-sb-nav">
         {filteredNavigation.map((item) => {
           const isActive = item.path === location.pathname;
           return (
             <NavLink
               key={item.id}
               to={item.path!}
+              title={item.label}
               className={`sidebar-item ${
                 isActive ? 'sidebar-item-active' : 'sidebar-item-inactive'
               }`}
             >
               {getIcon(item.icon)}
-              <span className="ml-3">{item.label}</span>
+              <span className="gd-sb-collapse">{item.label}</span>
             </NavLink>
           );
         })}
       </nav>
 
       {user?.role === 'superAdmin' && (
-        <div className="px-4 py-4 border-t border-secondary-200">
+        <div className="gd-sb-foot gd-sb-switchwrap">
           <CompanySwitcher />
         </div>
       )}
 
-      <div className="px-4 py-4 border-t border-secondary-200">
+      <div className="gd-sb-foot gd-sb-switchwrap">
         <LanguageSwitcher />
       </div>
 
-      <div className="p-4 border-t border-secondary-200">
+      <div className="gd-sb-foot">
         <button
           onClick={handleLogout}
-          className="sidebar-item sidebar-item-inactive w-full text-left"
+          title={t('nav.signOut')}
+          className="sidebar-item sidebar-item-inactive gd-sb-signout w-full text-left"
         >
           <LogOut className="h-5 w-5" />
-          <span className="ml-3">{t('nav.signOut')}</span>
+          <span className="gd-sb-collapse">{t('nav.signOut')}</span>
         </button>
       </div>
     </div>
