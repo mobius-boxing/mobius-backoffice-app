@@ -15,7 +15,8 @@
     "confirmDelete": "Confirm Delete",
     "optional": "Optional",
     "note": "Note",
-    "close": "Close"
+    "close": "Close",
+    "noData": "No data available"
   },
   "nav": {
     "dashboard": "Dashboard",

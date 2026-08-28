@@ -15,7 +15,8 @@
     "confirmDelete": "Confirmar Eliminación",
     "optional": "Opcional",
     "note": "Nota",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "noData": "No hay datos disponibles"
   },
   "nav": {
     "dashboard": "Panel",

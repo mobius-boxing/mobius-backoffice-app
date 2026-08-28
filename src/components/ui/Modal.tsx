@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Button from './Button';
 
 interface ModalProps {
@@ -19,6 +20,7 @@ const Modal: React.FC<ModalProps> = ({
   size = 'md',
   showCloseButton = true,
 }) => {
+  const { t } = useTranslation();
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -72,7 +74,7 @@ const Modal: React.FC<ModalProps> = ({
                   size="sm"
                   onClick={onClose}
                   className="-mr-2 -mt-1 ml-auto p-2"
-                  aria-label="Close"
+                  aria-label={t('common.close')}
                 >
                   <X className="w-4 h-4" />
                 </Button>
