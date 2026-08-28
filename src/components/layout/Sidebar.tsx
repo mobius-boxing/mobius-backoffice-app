@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -12,9 +12,27 @@ import { NavItem } from '../../types';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 import CompanySwitcher from '../ui/CompanySwitcher';
 
+/**
+ * Surviving remounts: every page renders its own <Layout>, and the routes are
+ * flat rather than nested under a layout route, so navigating unmounts this
+ * Sidebar and mounts a fresh one. The new <nav> is a new DOM node, so its
+ * scrollTop starts at 0 and the rail jumps back to the top on every click.
+ * Module scope (not state) deliberately: the value has to outlive the
+ * component instance, and writing it must not trigger a re-render on scroll.
+ */
+let navScrollTop = 0;
+
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navRef = useRef<HTMLElement | null>(null);
+
+  // Restore before paint so the rail never flashes at the top.
+  useLayoutEffect(() => {
+    const el = navRef.current;
+    if (el) el.scrollTop = navScrollTop;
+  }, []);
+
   const { t } = useTranslation();
 
   const navigationItems: NavItem[] = [
@@ -88,7 +106,13 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      <nav className="gd-sb-nav">
+      <nav
+        ref={navRef}
+        onScroll={(e) => {
+          navScrollTop = e.currentTarget.scrollTop;
+        }}
+        className="gd-sb-nav"
+      >
         {filteredNavigation.map((item) => {
           const isActive = item.path === location.pathname;
           return (
