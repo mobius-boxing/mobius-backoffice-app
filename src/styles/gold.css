@@ -5,30 +5,32 @@
    removable unit: delete the `import './styles/gold.css'` line and every
    visual change in this pass reverts. No existing CSS was deleted.
 
-   It builds on the existing "Warm Industrial" OKLCH tokens (--p-*, --n-*,
+   It builds on the existing "Geist Blue" OKLCH tokens (--p-*, --n-*,
    --canvas) rather than introducing a parallel palette. The brand accent
-   stays ochre; what changes is how decisively it is used.
+   is the supplied blue; what changes is how decisively it is used.
 
    Scope discipline:
-     - GLOBAL (deliberate, conservative): display font on headings, warm
+     - GLOBAL (deliberate, conservative): display font on headings, ambient
        atmosphere + grain, easing/elevation tokens, reduced-motion.
      - SCOPED to `.gd` (the dashboard root): typographic scale, KPI cards,
        composition bar, quick actions, skeletons, entry motion.
    ============================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Geist + Geist Mono are imported once, from index.css. */
 
 /* ── Layer 1: Tokens ─────────────────────────────────────────────────────── */
 :root {
   /* Typefaces.
-     WHY: Inter was doing display AND body duty — the single loudest
-     "nobody chose this" signal in the audit. Space Grotesk carries the
-     industrial half of "Warm Industrial" at large sizes; Inter keeps the
-     body text boring on purpose; JetBrains Mono gives labels and numerals
-     a machine-room voice that a backoffice earns. */
-  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+     WHY: the previous pass ran three unrelated families (Space Grotesk,
+     Inter, JetBrains Mono) that never agreed on a skeleton. The app now
+     runs on one. Geist is a variable face (100–900) with a matching mono,
+     so the three voices come from weight, tracking and case rather than
+     from three typefaces fighting each other: 600–700 with negative
+     tracking for display, 400–500 for body, Geist Mono for labels and
+     numerals. Two files, one type system. */
+  --font-display: 'Geist', system-ui, sans-serif;
+  --font-body: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Easing.
      WHY: `transition-colors duration-150` (the only motion the dashboard
@@ -38,7 +40,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-snap: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Hairlines + elevation, warm rather than cool grey.
+  /* Hairlines + elevation, navy-tinted rather than neutral grey.
      WHY: every surface in the audit was `border-secondary-200 shadow-sm` —
      one undifferentiated depth for KPIs, panels and shortcuts alike. */
   --gd-hairline: oklch(var(--n-950) / 0.07);
@@ -64,10 +66,10 @@ h1, h2, h3, h4 {
 }
 
 /* ── Layer 6: Atmosphere (global) ────────────────────────────────────────── */
-/* WHY: `bg-canvas` was a flat fill. A near-invisible warm bloom off the
+/* WHY: `bg-canvas` was a flat fill. A near-invisible blue bloom off the
    top-left plus a grain overlay give the canvas a floor to sit on. Both are
    felt, not seen — the gradient tops out at 0.35 alpha of an already pale
-   ochre, the grain at 2%. */
+   brand tint, the grain at 2%. */
 /* The atmosphere is painted on the shell elements rather than on <body> so it
    is scoped to the app's own surfaces; `body` keeps the flat canvas colour as
    a backstop for anything rendered outside a shell. */
@@ -150,7 +152,7 @@ body::after {
   gap: 0.625rem;
 }
 
-/* Short accent rule before the eyebrow — the one place the ochre gets to
+/* Short accent rule before the eyebrow — the one place the brand blue gets to
    act like a brand mark rather than a button colour. */
 .gd-head__eyebrow::before {
   content: '';
@@ -331,7 +333,7 @@ body::after {
 
 /* Ghosted watermark icon.
    WHY: replaces the bg-blue-50 / bg-green-50 / bg-red-50 / bg-purple-50
-   pastel chip row — four unrelated hues fighting an ochre brand, and the
+   pastel chip row — four unrelated hues fighting a blue brand, and the
    single clearest "generic admin template" tell in the audit. */
 .gd-kpi__icon {
   position: absolute;
@@ -352,7 +354,7 @@ body::after {
 }
 
 /* Tone assignments — semantic only. Ochre is reserved for the headline
-   metric; green/red carry actual meaning; companies stays neutral graphite
+   metric; green/red carry actual meaning; companies stays neutral slate
    instead of borrowing a purple it has no claim to. */
 .gd-tone-brand    { --gd-tone: oklch(var(--p-500)); }
 .gd-tone-positive { --gd-tone: oklch(var(--green-600)); }
@@ -631,18 +633,18 @@ body::after {
   --gd-rail: 16.5rem;
 }
 
-/* ── Sidebar: graphite rail ──────────────────────────────────────────────── */
-/* WHY: the sidebar was white-on-warm-white against a white content area —
-   two surfaces with no separation doing equal visual work, and the active
-   item was a solid bg-primary-100 slab that shouted louder than the page
-   heading. Graphite gives the shell an anchor, drops the nav out of the
-   content's reading order, and lets the ochre act as a pointer instead of
-   a highlighter. */
+/* ── Sidebar: deep navy rail ─────────────────────────────────────────────── */
+/* WHY: the sidebar was white-on-white against a white content area — two
+   surfaces with no separation doing equal visual work, and the active item
+   was a solid bg-primary-100 slab that shouted louder than the page heading.
+   The rail is now p-950 (#081c38, the darkest supplied colour), which anchors
+   the shell, drops the nav out of the content's reading order, and puts the
+   brand's own ink where the app's structure lives rather than on a badge. */
 .gd-sidebar {
   width: var(--gd-rail);
   flex: none;
-  background: oklch(var(--n-950));
-  border-right: 1px solid oklch(var(--n-950));
+  background: oklch(var(--p-950));
+  border-right: 1px solid oklch(var(--p-900));
   color: oklch(var(--n-300));
   color-scheme: dark;
   transition: width 0.35s var(--ease-snap);
