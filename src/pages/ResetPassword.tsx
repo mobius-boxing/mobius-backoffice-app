@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { resetPasswordSchema } from '../validation/schemas/auth';
 import { useTranslation } from 'react-i18next';
 import { Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { authApi } from '../services/api';
@@ -28,7 +30,10 @@ const ResetPassword: React.FC = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<ResetPasswordForm>();
+  } = useForm<ResetPasswordForm>({
+    resolver: zodResolver(resetPasswordSchema(t)) as never,
+    mode: 'onBlur',
+  });
 
   const newPassword = watch('newPassword');
 
@@ -105,17 +110,7 @@ const ResetPassword: React.FC = () => {
             <div className="space-y-4">
               <div className="relative">
                 <Input
-                  {...register('newPassword', {
-                    required: t('resetPassword.validation.passwordRequired'),
-                    minLength: {
-                      value: 8,
-                      message: t('resetPassword.validation.passwordMinLength'),
-                    },
-                    pattern: {
-                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                      message: t('resetPassword.validation.passwordPattern'),
-                    },
-                  })}
+                  {...register('newPassword')}
                   type={showPassword ? 'text' : 'password'}
                   label={t('resetPassword.newPasswordLabel')}
                   placeholder={t('resetPassword.newPasswordPlaceholder')}
@@ -134,11 +129,7 @@ const ResetPassword: React.FC = () => {
 
               <div className="relative">
                 <Input
-                  {...register('confirmPassword', {
-                    required: t('resetPassword.validation.confirmPasswordRequired'),
-                    validate: (value) =>
-                      value === newPassword || t('resetPassword.validation.passwordsMismatch'),
-                  })}
+                  {...register('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   label={t('resetPassword.confirmPasswordLabel')}
                   placeholder={t('resetPassword.confirmPasswordPlaceholder')}

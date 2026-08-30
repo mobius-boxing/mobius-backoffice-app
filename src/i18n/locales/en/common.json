@@ -254,5 +254,20 @@
   "language": {
     "en": "English",
     "es": "Spanish"
+  },
+  "validation": {
+    "required": "{{field}} is required",
+    "maxLength": "{{field}} must be at most {{max}} characters",
+    "mustBeNumber": "{{field}} must be a number",
+    "min": "{{field}} cannot be less than {{min}}",
+    "max": "{{field}} cannot be greater than {{max}}",
+    "decimals": "{{field}} allows at most {{decimals}} decimals",
+    "integer": "{{field}} must be a whole number",
+    "invalidFormat": "{{field}} has an invalid format",
+    "invalidDate": "{{field}} is not a valid date",
+    "selectRequired": "Please select {{field}}",
+    "fields": {
+      "code": "Code"
+    }
   }
 }

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema } from '../validation/schemas/auth';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/ui/Button';
@@ -59,13 +61,7 @@ const Login: React.FC = () => {
             )}
 
             <Input
-              {...register('email', {
-                required: t('login.emailRequired'),
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: t('login.emailInvalid'),
-                },
-              })}
+              {...register('email')}
               type="email"
               label={t('login.email')}
               placeholder={t('login.emailPlaceholder')}
@@ -74,13 +70,7 @@ const Login: React.FC = () => {
             />
 
             <Input
-              {...register('password', {
-                required: t('login.passwordRequired'),
-                minLength: {
-                  value: 6,
-                  message: t('login.passwordMinLength'),
-                },
-              })}
+              {...register('password')}
               type="password"
               label={t('login.password')}
               placeholder={t('login.passwordPlaceholder')}

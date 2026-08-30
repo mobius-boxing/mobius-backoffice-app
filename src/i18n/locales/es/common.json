@@ -254,5 +254,20 @@
   "language": {
     "en": "Inglés",
     "es": "Español"
+  },
+  "validation": {
+    "required": "{{field}} es obligatorio",
+    "maxLength": "{{field}} no puede superar los {{max}} caracteres",
+    "mustBeNumber": "{{field}} debe ser un número",
+    "min": "{{field}} no puede ser menor que {{min}}",
+    "max": "{{field}} no puede ser mayor que {{max}}",
+    "decimals": "{{field}} admite como máximo {{decimals}} decimales",
+    "integer": "{{field}} debe ser un número entero",
+    "invalidFormat": "{{field}} tiene un formato inválido",
+    "invalidDate": "{{field}} no es una fecha válida",
+    "selectRequired": "Seleccione {{field}}",
+    "fields": {
+      "code": "Código"
+    }
   }
 }

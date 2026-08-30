@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { User, Company, UpdateUserRequest } from '../../types';
 import { usersApi, companiesApi } from '../../services/api';
 import { useModalForm } from '../../hooks/useModalForm';
+import { editUserSchema } from '../../validation/schemas/user';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -39,7 +40,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
     error,
     handleSubmit,
     handleClose,
-  } = useModalForm<UpdateUserRequest>({ onClose });
+  } = useModalForm<UpdateUserRequest>({ onClose, schema: editUserSchema(t) });
 
   const selectedRole = watch('role');
 
@@ -113,26 +114,14 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            {...register('firstName', {
-              required: t('users.validation.firstNameRequired'),
-              minLength: {
-                value: 2,
-                message: t('users.validation.firstNameMinLength'),
-              },
-            })}
+            {...register('firstName')}
             label={t('users.firstName')}
             placeholder={t('users.firstNamePlaceholder')}
             error={errors.firstName?.message as string}
           />
 
           <Input
-            {...register('lastName', {
-              required: t('users.validation.lastNameRequired'),
-              minLength: {
-                value: 2,
-                message: t('users.validation.lastNameMinLength'),
-              },
-            })}
+            {...register('lastName')}
             label={t('users.lastName')}
             placeholder={t('users.lastNamePlaceholder')}
             error={errors.lastName?.message as string}
@@ -140,13 +129,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
         </div>
 
         <Input
-          {...register('email', {
-            required: t('users.validation.emailRequired'),
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: t('users.validation.emailInvalid'),
-            },
-          })}
+          {...register('email')}
           type="email"
           label={t('users.email')}
           placeholder={t('users.emailPlaceholder')}
@@ -159,7 +142,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
               {t('users.role')}
             </label>
             <select
-              {...register('role', { required: t('users.validation.roleRequired') })}
+              {...register('role')}
               className="w-full border border-secondary-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="member">{t('users.roles.member')}</option>
@@ -180,7 +163,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
               {t('users.company')}
             </label>
             <select
-              {...register('companyId', { required: t('users.validation.companyRequired') })}
+              {...register('companyId')}
               className="w-full border border-secondary-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="">{t('users.selectCompany')}</option>
@@ -221,12 +204,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
         {currentUser?.role === 'superAdmin' && (
           <div>
             <Input
-              {...register('password', {
-                minLength: {
-                  value: 8,
-                  message: t('users.validation.passwordMinLength'),
-                },
-              })}
+              {...register('password')}
               type="password"
               label={t('users.newPassword')}
               placeholder={t('users.newPasswordPlaceholder')}

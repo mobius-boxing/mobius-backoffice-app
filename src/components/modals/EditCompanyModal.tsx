@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Company, CreateCompanyForm } from '../../types';
 import { companiesApi } from '../../services/api';
 import { useModalForm } from '../../hooks/useModalForm';
+import { editCompanySchema } from '../../validation/schemas/company';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -33,7 +34,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
     error,
     handleSubmit,
     handleClose,
-  } = useModalForm<CreateCompanyForm>({ onSuccess, onClose });
+  } = useModalForm<CreateCompanyForm>({ onSuccess, onClose, schema: editCompanySchema(t) });
 
   useEffect(() => {
     if (isOpen && company) {
@@ -58,17 +59,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
         )}
 
         <Input
-          {...register('name', {
-            required: t('companies.validation.nameRequired'),
-            minLength: {
-              value: 2,
-              message: t('companies.validation.nameMinLength'),
-            },
-            maxLength: {
-              value: 100,
-              message: t('companies.validation.nameMaxLength'),
-            },
-          })}
+          {...register('name')}
           label={t('companies.name')}
           placeholder={t('companies.namePlaceholder')}
           error={errors.name?.message as string}
@@ -79,12 +70,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
             {t('companies.description')} ({t('common.optional')})
           </label>
           <textarea
-            {...register('description', {
-              maxLength: {
-                value: 500,
-                message: t('companies.validation.descriptionMaxLength'),
-              },
-            })}
+            {...register('description')}
             rows={3}
             placeholder={t('companies.descriptionPlaceholder')}
             className="w-full border border-secondary-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
