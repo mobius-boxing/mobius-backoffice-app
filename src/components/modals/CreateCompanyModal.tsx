@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { CreateCompanyForm } from '../../types';
 import { companiesApi } from '../../services/api';
 import { useModalForm } from '../../hooks/useModalForm';
+import { createCompanySchema } from '../../validation/schemas/company';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -30,7 +31,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
     error,
     handleSubmit,
     handleClose,
-  } = useModalForm<CreateCompanyForm>({ onSuccess, onClose });
+  } = useModalForm<CreateCompanyForm>({ onSuccess, onClose, schema: createCompanySchema(t) });
 
   const onSubmit = handleSubmit((data) => companiesApi.createCompany(data));
 
@@ -44,17 +45,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
         )}
 
         <Input
-          {...register('name', {
-            required: t('companies.validation.nameRequired'),
-            minLength: {
-              value: 2,
-              message: t('companies.validation.nameMinLength'),
-            },
-            maxLength: {
-              value: 100,
-              message: t('companies.validation.nameMaxLength'),
-            },
-          })}
+          {...register('name')}
           label={t('companies.name')}
           placeholder={t('companies.namePlaceholder')}
           error={errors.name?.message as string}
@@ -65,12 +56,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
             {t('companies.description')} ({t('common.optional')})
           </label>
           <textarea
-            {...register('description', {
-              maxLength: {
-                value: 500,
-                message: t('companies.validation.descriptionMaxLength'),
-              },
-            })}
+            {...register('description')}
             rows={3}
             placeholder={t('companies.descriptionPlaceholder')}
             className="w-full border border-secondary-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"

@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 
 interface Column<T = any> {
@@ -19,9 +20,10 @@ function Table<T = any>({
   data,
   columns,
   loading = false,
-  emptyMessage = 'No data available',
+  emptyMessage,
   className,
 }: TableProps<T>) {
+  const { t } = useTranslation();
   if (loading) {
     return (
       <div className={cn('card', className)}>
@@ -60,7 +62,7 @@ function Table<T = any>({
                 colSpan={columns.length}
                 className="gd-table-empty"
               >
-                {emptyMessage}
+                {emptyMessage ?? t('common.noData')}
               </td>
             </tr>
           ) : (

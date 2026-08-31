@@ -9,6 +9,8 @@ const ramp = (key, shades) =>
 
 const NEUTRAL = ramp('n', [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]);
 const SEM = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+// The brand ramp carries an extra 950 (#081c38) for deep navy surfaces.
+const BRAND = [...SEM, 950];
 
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -19,10 +21,10 @@ module.exports = {
         black: t('--black'),
         canvas: t('--canvas'),
 
-        // Brand accent (ochre)
-        primary: ramp('p', SEM),
+        // Brand accent — blue; 600 (#216fdb) is the default action colour
+        primary: ramp('p', BRAND),
 
-        // Warm graphite neutral — drives both `secondary` and default `gray`
+        // Navy-tinted slate — drives both `secondary` and default `gray`
         secondary: NEUTRAL,
         gray: NEUTRAL,
         neutral: NEUTRAL,
@@ -45,12 +47,19 @@ module.exports = {
       },
       fontFamily: {
         sans: [
-          'Inter',
+          'Geist',
           '-apple-system',
           'BlinkMacSystemFont',
           'Segoe UI',
           'system-ui',
           'sans-serif',
+        ],
+        mono: [
+          'Geist Mono',
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'monospace',
         ],
       },
       borderRadius: {

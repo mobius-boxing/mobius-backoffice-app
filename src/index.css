@@ -1,42 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================================
-   MOBIUS BACKOFFICE DESIGN TOKENS — "Warm Industrial"
+   MOBIUS BACKOFFICE DESIGN TOKENS — "Geist Blue"
    Shares the exact token set as the web app. Tokens are space-separated OKLCH
    components (L C H) wrapped by Tailwind as `oklch(var(--token) / <alpha-value>)`.
    ============================================================================ */
 @layer base {
   :root {
-    --white: 0.994 0.002 80;
-    --black: 0.178 0.006 58;
-    --canvas: 0.965 0.005 75;
+    /* Surfaces — cool paper, never pure #fff / #000 */
+    --white:    0.995 0.002 258;     /* #fdfdff */
+    --black:    0.182 0.009 258;     /* #101216 */
+    --canvas:   0.971 0.005 258;     /* #f3f6f9 */
 
-    --p-50:  0.972 0.020 82;
-    --p-100: 0.940 0.044 80;
-    --p-200: 0.885 0.072 75;
-    --p-300: 0.815 0.098 70;
-    --p-400: 0.715 0.116 64;
-    --p-500: 0.620 0.124 61;
-    --p-600: 0.510 0.118 58;
-    --p-700: 0.435 0.098 56;
-    --p-800: 0.370 0.080 54;
-    --p-900: 0.315 0.064 52;
+    /* Primary — the brand blue. 600–950 are the five supplied hex values,
+       verbatim; 50–500 extrapolate the same hue (258) into the tints. */
+    --p-50:     0.972 0.013 258;     /* #f0f6ff */
+    --p-100:    0.938 0.029 258;     /* #dfecfe */
+    --p-200:    0.888 0.055 258;     /* #c4dcff */
+    --p-300:    0.818 0.091 258;     /* #9fc6ff */
+    --p-400:    0.702 0.146 258;     /* #639ff8 */
+    --p-500:    0.622 0.176 258;     /* #3a84ee */
+    --p-600:    0.5571 0.1814 258.1; /* #216fdb — supplied */
+    --p-700:    0.4722 0.1509 258.0; /* #1a58ae — supplied */
+    --p-800:    0.4004 0.1260 258.3; /* #15458a — supplied */
+    --p-900:    0.3184 0.0938 257.9; /* #0f3161 — supplied */
+    --p-950:    0.2280 0.0603 257.3; /* #081c38 — supplied */
 
-    --n-50:  0.976 0.004 75;
-    --n-100: 0.957 0.005 74;
-    --n-200: 0.918 0.006 73;
-    --n-300: 0.862 0.007 72;
-    --n-400: 0.708 0.009 70;
-    --n-500: 0.572 0.009 70;
-    --n-600: 0.468 0.009 68;
-    --n-700: 0.392 0.008 66;
-    --n-800: 0.302 0.008 64;
-    --n-900: 0.242 0.007 62;
-    --n-950: 0.178 0.006 58;
+    /* Neutral — navy-tinted slate (used for `secondary` and `gray`). Chroma
+       stays under 0.013 so dense tables read as grey over a long shift, but
+       never as a dead neutral. n-400 and n-500 are pinned to the lightest L
+       that still clears contrast on --white (placeholder 3:1, muted text
+       4.5:1); the old warm ramp missed both, at 2.55 and 4.38. */
+    --n-50:     0.977 0.004 258;     /* #f6f7fa */
+    --n-100:    0.958 0.005 258;     /* #eff1f4 */
+    --n-200:    0.920 0.007 258;     /* #e2e5e9 */
+    --n-300:    0.864 0.009 258;     /* #cfd3d8 */
+    --n-400:    0.660 0.012 258;     /* #8e939a */
+    --n-500:    0.558 0.013 258;     /* #6f747c */
+    --n-600:    0.472 0.013 258;     /* #575c63 */
+    --n-700:    0.396 0.012 258;     /* #43474d */
+    --n-800:    0.306 0.011 258;     /* #2c3035 */
+    --n-900:    0.246 0.010 258;     /* #1e2126 */
+    --n-950:    0.182 0.009 258;     /* #101216 */
 
+    /* Danger — true red, pushed clear of the brand blue */
     --red-50:  0.962 0.016 25;
     --red-100: 0.928 0.040 26;
     --red-200: 0.882 0.072 27;
@@ -48,6 +58,7 @@
     --red-800: 0.412 0.146 27;
     --red-900: 0.360 0.118 27;
 
+    /* Success — green */
     --green-50:  0.962 0.020 152;
     --green-100: 0.928 0.048 152;
     --green-200: 0.878 0.078 152;
@@ -59,6 +70,7 @@
     --green-800: 0.405 0.084 150;
     --green-900: 0.352 0.068 150;
 
+    /* Warning — amber */
     --amber-50:  0.972 0.030 88;
     --amber-100: 0.940 0.060 86;
     --amber-200: 0.898 0.098 83;
@@ -70,17 +82,20 @@
     --amber-800: 0.468 0.088 71;
     --amber-900: 0.402 0.072 68;
 
-    --blue-50:  0.962 0.018 236;
-    --blue-100: 0.928 0.042 237;
-    --blue-200: 0.878 0.066 238;
-    --blue-300: 0.800 0.094 240;
-    --blue-400: 0.680 0.120 244;
-    --blue-500: 0.600 0.130 246;
-    --blue-600: 0.530 0.130 248;
-    --blue-700: 0.468 0.116 250;
-    --blue-800: 0.410 0.096 252;
-    --blue-900: 0.360 0.078 254;
+    /* Info — hue 225. The old ramp sat at 236–254, close enough to the new
+       brand blue that an info badge read as a primary one. */
+    --blue-50:  0.962 0.018 225;     /* #e6f5fc */
+    --blue-100: 0.928 0.042 225;     /* #caeefd */
+    --blue-200: 0.878 0.066 225;     /* #a8e1f8 */
+    --blue-300: 0.800 0.094 225;     /* #76cbeb */
+    --blue-400: 0.680 0.120 225;     /* #26a7d0 */
+    --blue-500: 0.600 0.126 225;     /* #008eb8 */
+    --blue-600: 0.530 0.118 225;     /* #00789f */
+    --blue-700: 0.468 0.102 225;     /* #006585 */
+    --blue-800: 0.410 0.086 225;     /* #00536d */
+    --blue-900: 0.360 0.070 225;     /* #004459 */
 
+    /* Orange — coral red-orange, kept distinct from red and amber */
     --orange-50:  0.968 0.024 48;
     --orange-100: 0.936 0.052 46;
     --orange-200: 0.886 0.090 44;
@@ -92,6 +107,7 @@
     --orange-800: 0.432 0.124 36;
     --orange-900: 0.378 0.100 35;
 
+    /* Violet — categorical only (role badges, warehouse legends) */
     --purple-50:  0.962 0.020 312;
     --purple-100: 0.928 0.044 311;
     --purple-200: 0.880 0.072 310;
@@ -109,14 +125,15 @@
   }
 
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Geist', system-ui, sans-serif;
+    font-optical-sizing: auto;
     -webkit-text-size-adjust: 100%;
   }
 
   body {
     margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
-      'Roboto', 'Helvetica Neue', sans-serif;
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+      'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: oklch(var(--n-900));
