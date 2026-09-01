@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { CompanyProvider } from './contexts/CompanyContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import Login from './pages/Login';
@@ -15,8 +14,7 @@ import './i18n/config';
 function App() {
   return (
     <AuthProvider>
-      <CompanyProvider>
-        <Router>
+      <Router>
         <div className="App">
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -61,8 +59,7 @@ function App() {
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>
-        </Router>
-      </CompanyProvider>
+      </Router>
     </AuthProvider>
   );
 }

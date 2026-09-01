@@ -24,10 +24,6 @@
     "companyManagement": "Gestión de Empresas",
     "signOut": "Cerrar Sesión"
   },
-  "companySelector": {
-    "label": "Empresa",
-    "placeholder": "Seleccione una empresa"
-  },
   "login": {
     "title": "Portal de Administración",
     "subtitle": "Inicie sesión para acceder al panel de administración",

@@ -24,10 +24,6 @@
     "companyManagement": "Company Management",
     "signOut": "Sign Out"
   },
-  "companySelector": {
-    "label": "Company",
-    "placeholder": "Select a company"
-  },
   "login": {
     "title": "Backoffice Portal",
     "subtitle": "Sign in to access the administration panel",

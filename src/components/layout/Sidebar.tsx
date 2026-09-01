@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { NavItem } from '../../types';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
-import CompanySwitcher from '../ui/CompanySwitcher';
 
 /**
  * Surviving remounts: every page renders its own <Layout>, and the routes are
@@ -130,12 +129,6 @@ const Sidebar: React.FC = () => {
           );
         })}
       </nav>
-
-      {user?.role === 'superAdmin' && (
-        <div className="gd-sb-foot gd-sb-switchwrap">
-          <CompanySwitcher />
-        </div>
-      )}
 
       <div className="gd-sb-foot gd-sb-switchwrap">
         <LanguageSwitcher />
