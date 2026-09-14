@@ -382,20 +382,25 @@ export const filesApi = {
     formData.append('file', file);
     formData.append('companyId', companyUuid);
 
+    // The API resolves the company before it reads the multipart body, so a
+    // superAdmin's target company must travel in the query string.
     const response: AxiosResponse<ApiResponse<FileRecord>> = await api.post(
       '/api/files',
       formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        params: { companyId: companyUuid },
+      }
     );
     return response.data.data!;
   },
 
   // Used to show the name of an already-referenced logo. Returns null rather
   // than throwing: a missing or unreadable file must not break the form.
-  getFile: async (uuid: string): Promise<FileRecord | null> => {
+  getFile: async (uuid: string, companyUuid: string): Promise<FileRecord | null> => {
     try {
       const response: AxiosResponse<ApiResponse<FileRecord>> =
-        await api.get(`/api/files/${uuid}`);
+        await api.get(`/api/files/${uuid}`, { params: { companyId: companyUuid } });
       return response.data.data ?? null;
     } catch {
       return null;

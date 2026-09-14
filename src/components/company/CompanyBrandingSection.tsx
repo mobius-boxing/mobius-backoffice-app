@@ -130,13 +130,13 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
       setLogoFile(null);
       return;
     }
-    filesApi.getFile(logoFileUuid).then((file) => {
+    filesApi.getFile(logoFileUuid, company.uuid).then((file) => {
       if (!cancelled) setLogoFile(file);
     });
     return () => {
       cancelled = true;
     };
-  }, [logoFileUuid]);
+  }, [logoFileUuid, company.uuid]);
 
   const handlePickLogo = () => {
     setError('');
