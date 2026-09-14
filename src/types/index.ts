@@ -26,6 +26,19 @@ export interface CompanyBranding {
   loginMessage: string | null;
 }
 
+// db-per-company (T10, model): `db_servers.kind` / `.status`, `tenant_databases.status`.
+export type DbServerKind = 'shared_container' | 'rds' | 'external';
+export type DbServerSslMode = 'disable' | 'require' | 'verify-full';
+export type DbServerStatus = 'active' | 'draining' | 'retired';
+export type TenantDatabaseStatus =
+  | 'provisioning'
+  | 'failed'
+  | 'active'
+  | 'suspended'
+  | 'decommissioning'
+  | 'retired';
+export type TenantMigrationState = 'unknown' | 'current' | 'behind' | 'running' | 'failed';
+
 export interface Company {
   id: string;
   uuid: string;
@@ -37,6 +50,50 @@ export interface Company {
   isActive: boolean;
   // `{}` for a company that never set any branding, hence Partial.
   branding?: Partial<CompanyBranding>;
+  // `null` = not registered (T10, model): `GET/POST /api/companies` left-joins
+  // the live `tenant_databases` row. `undefined` on responses that never
+  // populate it (there are none today, but the field stays optional so a
+  // future endpoint that omits it does not need a type change).
+  tenantDatabase?: { status: TenantDatabaseStatus; placement: DbServerKind } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// `GET/POST/PATCH /api/db-servers` response shape (T10, model). Never carries
+// `adminUser`/`adminCredentialRef` — those never leave the API (model I-6).
+export interface DbServer {
+  uuid: string;
+  name: string;
+  kind: DbServerKind;
+  host: string | null;
+  port: number | null;
+  sslMode: DbServerSslMode;
+  status: DbServerStatus;
+  isDefaultPlacement: boolean;
+  connectionBudget: number;
+  provisionable: boolean;
+  tenantCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// `GET/POST .../tenant-database[/provision|/suspend|/resume]` response shape
+// (T10, model). Never carries `dbUser`/`credentialRef`/`credentialCiphertext`
+// or a tenant `host` (model I-6).
+export interface TenantDatabase {
+  uuid: string;
+  status: TenantDatabaseStatus;
+  placement: DbServerKind;
+  server: { uuid: string; name: string };
+  databaseName: string;
+  schemaVersion: string | null;
+  migrationState: TenantMigrationState;
+  lastMigrationAt: string | null;
+  lastMigrationError: string | null;
+  pool: { open: boolean; used: number; free: number; max: number };
+  provisionedAt: string | null;
+  suspendedAt: string | null;
+  suspendReason: string | null;
   createdAt: string;
   updatedAt: string;
 }

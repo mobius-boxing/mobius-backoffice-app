@@ -19,6 +19,10 @@ import {
   InvitationStats,
   Module,
   CompanyModule,
+  TenantDatabase,
+  DbServer,
+  DbServerKind,
+  DbServerStatus,
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
@@ -225,6 +229,91 @@ export const companiesApi = {
       limit: backendData.limit,
       totalPages: backendData.totalPages,
     };
+  },
+};
+
+// db-per-company (T10, model D-24/D-46/D-47): status/provision/suspend/resume
+// only — no move, no migrate (CLI-only). SuperAdmin-only on the API side;
+// this client adds no screen, no nav entry (D-47's "types and API client
+// only" — a future feature wires these into the UI).
+export const tenantDatabaseApi = {
+  getTenantDatabase: async (companyUuid: string): Promise<TenantDatabase> => {
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> =
+      await api.get(`/api/companies/${companyUuid}/tenant-database`);
+    return response.data.data!;
+  },
+
+  provisionTenantDatabase: async (
+    companyUuid: string,
+    serverUuid?: string
+  ): Promise<TenantDatabase> => {
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await api.post(
+      `/api/companies/${companyUuid}/tenant-database/provision`,
+      serverUuid ? { serverUuid } : {}
+    );
+    return response.data.data!;
+  },
+
+  suspendTenantDatabase: async (
+    companyUuid: string,
+    reason: string
+  ): Promise<TenantDatabase> => {
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await api.post(
+      `/api/companies/${companyUuid}/tenant-database/suspend`,
+      { reason }
+    );
+    return response.data.data!;
+  },
+
+  resumeTenantDatabase: async (companyUuid: string): Promise<TenantDatabase> => {
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await api.post(
+      `/api/companies/${companyUuid}/tenant-database/resume`
+    );
+    return response.data.data!;
+  },
+};
+
+export const dbServersApi = {
+  getDbServers: async (params: {
+    page?: number;
+    limit?: number;
+    kind?: DbServerKind;
+    status?: DbServerStatus;
+  } = {}): Promise<PaginatedResponse<DbServer>> => {
+    const response = await api.get('/api/db-servers', { params });
+    const backendData = response.data;
+    return {
+      data: backendData.data,
+      total: backendData.totalCount,
+      page: backendData.page,
+      limit: backendData.limit,
+      totalPages: backendData.totalPages,
+    };
+  },
+
+  createDbServer: async (data: {
+    name: string;
+    kind: DbServerKind;
+    host?: string;
+    port?: number;
+    sslMode?: string;
+    adminUser?: string;
+    adminCredentialRef?: string;
+    connectionBudget: number;
+    isDefaultPlacement?: boolean;
+  }): Promise<DbServer> => {
+    const response: AxiosResponse<ApiResponse<DbServer>> = await api.post('/api/db-servers', data);
+    return response.data.data!;
+  },
+
+  // The only status this feature writes through the API (model, T10/D-50):
+  // draining marks a server as accepting no new placements.
+  setDbServerDraining: async (uuid: string): Promise<DbServer> => {
+    const response: AxiosResponse<ApiResponse<DbServer>> = await api.patch(
+      `/api/db-servers/${uuid}`,
+      { status: 'draining' }
+    );
+    return response.data.data!;
   },
 };
 
