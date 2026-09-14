@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { getToken, clearToken } from '../utils/session';
+import { getDeviceToken, getToken, clearToken } from '../utils/session';
 import {
   ApiResponse,
   PaginatedResponse,
@@ -38,6 +38,10 @@ api.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  const deviceToken = getDeviceToken();
+  if (deviceToken) {
+    config.headers['X-Device-Token'] = deviceToken;
   }
   return config;
 });

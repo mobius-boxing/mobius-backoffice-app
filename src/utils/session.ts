@@ -33,3 +33,24 @@ export const setToken = (token: string): void => {
 export const clearToken = (): void => {
   document.cookie = buildCookie(`${COOKIE_NAME}=`, 0);
 };
+
+// The device-approval secret: a member's browser must be approved by an admin
+// before the API answers anything else, and it presents this value as
+// X-Device-Token. Same cookie scope as the session above, so one browser is one
+// device across every Mobius origin. Deliberately NOT cleared on logout —
+// signing out does not make this a different browser, and dropping it would
+// send the member back through an approval on the next login.
+const DEVICE_COOKIE_NAME = 'mobius_device';
+const DEVICE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+
+export const getDeviceToken = (): string | null => {
+  const match = document.cookie.match(new RegExp('(?:^|; )' + DEVICE_COOKIE_NAME + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+export const setDeviceToken = (token: string): void => {
+  document.cookie = buildCookie(
+    `${DEVICE_COOKIE_NAME}=${encodeURIComponent(token)}`,
+    DEVICE_MAX_AGE_SECONDS
+  );
+};
