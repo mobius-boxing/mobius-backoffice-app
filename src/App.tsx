@@ -9,6 +9,7 @@ import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Companies from './pages/Companies';
+import Devices from './pages/Devices';
 import './i18n/config';
 
 function App() {
@@ -38,6 +39,17 @@ function App() {
                 <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
                   <Layout>
                     <Users />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/devices"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
+                  <Layout>
+                    <Devices />
                   </Layout>
                 </ProtectedRoute>
               }

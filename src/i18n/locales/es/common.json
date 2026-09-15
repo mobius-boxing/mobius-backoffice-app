@@ -22,6 +22,7 @@
     "dashboard": "Panel",
     "userManagement": "Gestión de Usuarios",
     "companyManagement": "Gestión de Empresas",
+    "devices": "Dispositivos",
     "signOut": "Cerrar Sesión"
   },
   "login": {
@@ -172,6 +173,50 @@
       "nameMinLength": "El nombre debe tener al menos 2 caracteres",
       "nameMaxLength": "El nombre debe tener menos de 100 caracteres",
       "descriptionMaxLength": "La descripción debe tener menos de 500 caracteres"
+    }
+  },
+  "devices": {
+    "title": "Dispositivos",
+    "subtitle": "Aprobá los navegadores desde los que tu equipo entra a Mobius.",
+    "searchPlaceholder": "Buscar por nombre o correo...",
+    "loading": "Cargando dispositivos...",
+    "empty": "No hay dispositivos para estos filtros.",
+    "loadError": "No se pudieron cargar los dispositivos.",
+    "unknownUserAgent": "Navegador desconocido",
+    "selectCompany": "Seleccioná una empresa",
+    "filters": {
+      "statusAll": "Todos",
+      "statusPending": "Pendientes",
+      "statusApproved": "Aprobados",
+      "statusRevoked": "Revocados"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "revoked": "Revocado"
+    },
+    "columns": {
+      "user": "Usuario",
+      "device": "Navegador",
+      "ip": "IP",
+      "requestedAt": "Solicitado",
+      "status": "Estado"
+    },
+    "approve": {
+      "action": "Aprobar dispositivo",
+      "confirmTitle": "Aprobar dispositivo",
+      "confirmMessage": "{{email}} podrá usar Mobius desde {{device}} (solicitado {{requestedAt}}). Confirmá solo si reconocés el equipo y la solicitud.",
+      "submit": "Aprobar",
+      "error": "No se pudo aprobar el dispositivo.",
+      "alreadyApproved": "Este dispositivo ya estaba aprobado. Se actualizó la lista."
+    },
+    "revoke": {
+      "action": "Revocar dispositivo",
+      "confirmTitle": "Revocar dispositivo",
+      "confirmMessage": "{{email}} no podrá usar Mobius desde {{device}} (solicitado {{requestedAt}}) hasta que lo solicite otra vez y lo apruebes.",
+      "submit": "Revocar",
+      "error": "No se pudo revocar el dispositivo.",
+      "alreadyRevoked": "Este dispositivo ya estaba revocado. Se actualizó la lista."
     }
   },
   "auth": {

@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Users,
   Building,
+  Smartphone,
   LogOut,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +51,13 @@ const Sidebar: React.FC = () => {
       roles: ['admin', 'superAdmin'],
     },
     {
+      id: 'devices',
+      label: t('nav.devices'),
+      path: '/devices',
+      icon: 'Smartphone',
+      roles: ['admin', 'superAdmin'],
+    },
+    {
       id: 'companies',
       label: t('nav.companyManagement'),
       path: '/companies',
@@ -63,6 +71,7 @@ const Sidebar: React.FC = () => {
       LayoutDashboard,
       Users,
       Building,
+      Smartphone,
     };
     const IconComponent = icons[iconName];
     return IconComponent ? <IconComponent className={className} /> : null;
