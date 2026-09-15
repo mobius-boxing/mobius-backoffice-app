@@ -5,11 +5,14 @@ import {
   Users,
   Building,
   Smartphone,
+  ShieldCheck,
   LogOut,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import { NavItem } from '../../types';
+import { COMPANY_PERMISSION_NAV, COMPANY_PERMISSION_NAV_ORDER } from '../../config/companyPermissionNav';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 
 /**
@@ -24,6 +27,7 @@ let navScrollTop = 0;
 
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
+  const { has } = usePermissions();
   const location = useLocation();
   const navRef = useRef<HTMLElement | null>(null);
 
@@ -35,34 +39,41 @@ const Sidebar: React.FC = () => {
 
   const { t } = useTranslation();
 
+  const isLegacyAdmin = user?.role === 'admin' || user?.role === 'superAdmin';
+
+  const permissionNavItems: NavItem[] = COMPANY_PERMISSION_NAV_ORDER.map((id) => {
+    const entry = COMPANY_PERMISSION_NAV[id];
+    return {
+      id,
+      label: t(entry.labelKey),
+      path: entry.path,
+      icon: entry.icon,
+      visible: has(entry.code, { allowReadOnly: entry.allowReadOnly }),
+    };
+  });
+
   const navigationItems: NavItem[] = [
     {
       id: 'dashboard',
       label: t('nav.dashboard'),
       path: '/dashboard',
       icon: 'LayoutDashboard',
-      roles: ['admin', 'superAdmin'],
+      visible: isLegacyAdmin,
     },
-    {
-      id: 'users',
-      label: t('nav.userManagement'),
-      path: '/users',
-      icon: 'Users',
-      roles: ['admin', 'superAdmin'],
-    },
+    ...permissionNavItems,
     {
       id: 'devices',
       label: t('nav.devices'),
       path: '/devices',
       icon: 'Smartphone',
-      roles: ['admin', 'superAdmin'],
+      visible: isLegacyAdmin,
     },
     {
       id: 'companies',
       label: t('nav.companyManagement'),
       path: '/companies',
       icon: 'Building',
-      roles: ['superAdmin'],
+      visible: user?.role === 'superAdmin',
     },
   ];
 
@@ -70,6 +81,7 @@ const Sidebar: React.FC = () => {
     const icons: { [key: string]: React.FC<{ className?: string }> } = {
       LayoutDashboard,
       Users,
+      ShieldCheck,
       Building,
       Smartphone,
     };
@@ -77,9 +89,7 @@ const Sidebar: React.FC = () => {
     return IconComponent ? <IconComponent className={className} /> : null;
   };
 
-  const filteredNavigation = navigationItems.filter((item) =>
-    user ? item.roles.includes(user.role) : false
-  );
+  const filteredNavigation = navigationItems.filter((item) => item.visible);
 
   const handleLogout = async () => {
     try {
@@ -108,7 +118,7 @@ const Sidebar: React.FC = () => {
             {user?.firstName} {user?.lastName}
           </p>
           <p className="gd-sb-role truncate">
-            {user?.role === 'superAdmin' ? 'Super Admin' : 'Admin'}
+            {user?.role === 'superAdmin' ? 'Super Admin' : user?.roleName || 'Admin'}
             {user?.companyName && ` · ${user.companyName}`}
           </p>
         </div>

@@ -1,18 +1,28 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { usePermissions, HasPermissionOptions } from '../hooks/usePermissions';
 import { clearToken } from '../utils/session';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  /** Role-based gate — for pages restricted by the legacy `role` string. */
   requiredRoles?: string[];
+  /**
+   * Permission-code gate, checked with `allowReadOnly` so a `.readonly`
+   * holder can view — write actions inside the page gate themselves on the
+   * full code.
+   */
+  requiredPermission?: string;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requiredRoles,
+  requiredPermission,
 }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const { has } = usePermissions();
   const location = useLocation();
 
   if (isLoading) {
@@ -27,8 +37,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Backoffice is admin/superAdmin only — members are blocked at the router level
-  if (user && user.role === 'member') {
+  const readOnlyOpts: HasPermissionOptions = { allowReadOnly: true };
+  const roleAllows = !requiredRoles || (!!user && requiredRoles.includes(user.role));
+  const permissionAllows = !requiredPermission || has(requiredPermission, readOnlyOpts);
+
+  // Both gates are AND'd: a route with only `requiredRoles` behaves exactly as
+  // before, a route with only `requiredPermission` is permission-driven, and a
+  // route with both (none today) would need both to pass.
+  if (!roleAllows || !permissionAllows) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-secondary-50">
         <div className="text-center max-w-md mx-auto p-6">
@@ -41,7 +57,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             Access Denied
           </h1>
           <p className="text-secondary-600 mb-4">
-            This portal is for administrators only. Please use the main application.
+            You don't have permission to access this page.
           </p>
           <button
             onClick={() => {
@@ -55,24 +71,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         </div>
       </div>
     );
-  }
-
-  if (requiredRoles && user) {
-    const hasRequiredRole = requiredRoles.includes(user.role);
-    if (!hasRequiredRole) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-secondary-900 mb-2">
-              Access Denied
-            </h1>
-            <p className="text-secondary-600">
-              You don't have permission to access this page.
-            </p>
-          </div>
-        </div>
-      );
-    }
   }
 
   return <>{children}</>;

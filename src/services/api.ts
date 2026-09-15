@@ -13,6 +13,7 @@ import {
   Invitation,
   CreateCompanyForm,
   InviteUserRequest,
+  InviteCompanyUserRequest,
   UpdateUserRequest,
   ChangePasswordForm,
   UserStats,
@@ -24,6 +25,9 @@ import {
   DbServer,
   DbServerKind,
   DbServerStatus,
+  Role,
+  CreateRoleForm,
+  Permission,
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
@@ -110,6 +114,7 @@ export const usersApi = {
     role?: string;
     isActive?: boolean;
     companyId?: string;
+    roleUuid?: string;
   } = {}): Promise<PaginatedResponse<User>> => {
     const response = await api.get('/api/users', { params });
     const backendData = response.data;
@@ -142,8 +147,10 @@ export const usersApi = {
     return response.data.data!;
   },
 
+  // Sends isActive only — the API ignores `role`/`roleId` in this body;
+  // assignment is the separate `/roles/assign` call below.
   updateUserStatus: async (id: string, isActive: boolean): Promise<User> => {
-    const response: AxiosResponse<ApiResponse<User>> = await api.put(`/api/users/${id}/status`, { isActive });
+    const response: AxiosResponse<ApiResponse<User>> = await api.put(`/api/users/${id}`, { isActive });
     return response.data.data!;
   },
 
@@ -378,6 +385,14 @@ export const invitationsApi = {
     return response.data.data!;
   },
 
+  // A company actor invites with roleUuid, gated `users.edit`. Separate from
+  // `createInvitation` above, which stays on the legacy superAdmin path
+  // (`/api/users/invite`, role enum incl. superAdmin).
+  createRoleInvitation: async (data: InviteCompanyUserRequest): Promise<Invitation> => {
+    const response: AxiosResponse<ApiResponse<Invitation>> = await api.post('/api/invitations', data);
+    return response.data.data!;
+  },
+
   resendInvitation: async (id: string): Promise<any> => {
     const response: AxiosResponse<ApiResponse> = await api.post(`/api/invitations/${id}/resend`);
     return response.data.data;
@@ -467,6 +482,83 @@ export const modulesApi = {
     const response: AxiosResponse<ApiResponse<CompanyModule>> =
       await api.delete(`/api/companies/${companyUuid}/modules/${slug}`);
     return response.data.data!;
+  },
+};
+
+// ── Role management ───────────────────────────────────────────────────────
+
+export const rolesApi = {
+  getRoles: async (params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    // superAdmin has no company of their own — the Roles page scopes with
+    // this the same way companiesApi.getCompanyUsers already does.
+    companyId?: string;
+    // Server-side subset rule: only roles the caller may assign.
+    assignable?: boolean;
+  } = {}): Promise<PaginatedResponse<Role>> => {
+    const response = await api.get('/api/roles', { params });
+    const backendData = response.data;
+    return {
+      data: backendData.data,
+      total: backendData.totalCount,
+      page: backendData.page,
+      limit: backendData.limit,
+      totalPages: backendData.totalPages,
+    };
+  },
+
+  getRole: async (uuid: string): Promise<Role> => {
+    const response: AxiosResponse<ApiResponse<Role>> = await api.get(`/api/roles/${uuid}`);
+    return response.data.data!;
+  },
+
+  createRole: async (data: CreateRoleForm & { companyId?: string }): Promise<Role> => {
+    const response: AxiosResponse<ApiResponse<Role>> = await api.post('/api/roles', data);
+    return response.data.data!;
+  },
+
+  // 409 SYSTEM_ROLE when the role has a systemKey — caller disables the field instead of relying on this alone.
+  renameRole: async (uuid: string, name: string): Promise<Role> => {
+    const response: AxiosResponse<ApiResponse<Role>> = await api.put(`/api/roles/${uuid}`, { name });
+    return response.data.data!;
+  },
+
+  // 409 SYSTEM_ROLE (systemKey set) or ROLE_IN_USE (users/pending invitations reference it).
+  deleteRole: async (uuid: string): Promise<void> => {
+    await api.delete(`/api/roles/${uuid}`);
+  },
+
+  // 400 UNKNOWN_PERMISSION, 403 GRANT_CEILING/OWN_ROLE.
+  setRolePermissions: async (uuid: string, codes: string[]): Promise<string[]> => {
+    const response: AxiosResponse<ApiResponse<{ codes: string[] }>> = await api.put(
+      `/api/roles/${uuid}/permissions`,
+      { codes }
+    );
+    return response.data.data!.codes;
+  },
+
+  // roleUuid is required (null is a 400). 403 GRANT_CEILING/OWN_ROLE, 409 LAST_ADMIN.
+  assignRole: async (userUuid: string, roleUuid: string): Promise<void> => {
+    await api.put('/api/roles/assign', { userUuid, roleUuid });
+  },
+};
+
+export const permissionsApi = {
+  // The catalogue can exceed the API's page cap — page through until
+  // totalPages so the permissions grid always gets the full set (same
+  // approach as mobius-web-app's permissionsApi.getPermissions).
+  getPermissions: async (params: { companyId?: string } = {}): Promise<Permission[]> => {
+    const pageSize = 100;
+    const first = await api.get('/api/permissions', { params: { ...params, limit: pageSize, page: 1 } });
+    const all: Permission[] = [...first.data.data];
+    const totalPages: number = first.data.totalPages ?? 1;
+    for (let page = 2; page <= totalPages; page++) {
+      const next = await api.get('/api/permissions', { params: { ...params, limit: pageSize, page } });
+      all.push(...next.data.data);
+    }
+    return all;
   },
 };
 

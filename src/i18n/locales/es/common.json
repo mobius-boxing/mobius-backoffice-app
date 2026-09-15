@@ -21,6 +21,7 @@
   "nav": {
     "dashboard": "Panel",
     "userManagement": "Gestión de Usuarios",
+    "roleManagement": "Roles",
     "companyManagement": "Gestión de Empresas",
     "devices": "Dispositivos",
     "signOut": "Cerrar Sesión"
@@ -127,6 +128,11 @@
     "newPasswordPlaceholder": "Dejar en blanco para mantener la actual",
     "passwordHint": "Dejar en blanco para mantener la contraseña actual",
     "superAdminNote": "Los Super Administradores tienen acceso a todas las empresas y configuraciones del sistema.",
+    "filterByRole": "Todos los roles",
+    "assignRoleFailed": "Error al asignar el rol",
+    "statusFailed": "Error al cambiar el estado del usuario",
+    "deactivate": "Desactivar",
+    "reactivate": "Reactivar",
     "roles": {
       "member": "Miembro",
       "admin": "Administrador",
@@ -217,6 +223,50 @@
       "submit": "Revocar",
       "error": "No se pudo revocar el dispositivo.",
       "alreadyRevoked": "Este dispositivo ya estaba revocado. Se actualizó la lista."
+    }
+  },
+  "roles": {
+    "title": "Gestión de Roles",
+    "subtitle": "Gestionar roles y sus permisos",
+    "name": "Nombre del Rol",
+    "namePlaceholder": "Ingrese el nombre del rol",
+    "addRole": "Agregar Rol",
+    "createTitle": "Crear Rol",
+    "editTitle": "Renombrar Rol",
+    "createButton": "Crear Rol",
+    "updateButton": "Guardar",
+    "editRole": "Renombrar rol",
+    "deleteRole": "Eliminar rol",
+    "editPermissions": "Editar permisos",
+    "searchPlaceholder": "Buscar roles...",
+    "noRoles": "No se encontraron roles",
+    "deleteConfirm": "¿Está seguro de que desea eliminar {{name}}?",
+    "deleteFailed": "Error al eliminar el rol",
+    "systemRoleLocked": "Los roles del sistema no se pueden renombrar.",
+    "selectCompanyPrompt": "Seleccione una empresa para ver sus roles.",
+    "columns": {
+      "name": "Nombre",
+      "userCount": "Usuarios"
+    },
+    "systemKeys": {
+      "admin": "Administrador",
+      "member": "Miembro"
+    },
+    "states": {
+      "none": "Ninguno",
+      "readOnly": "Lectura",
+      "full": "Completo"
+    },
+    "areas": {
+      "masters": "Maestros",
+      "actions": "Acciones"
+    },
+    "permissionsModal": {
+      "title": "Permisos — {{name}}",
+      "loadFailed": "Error al cargar los permisos",
+      "saveFailed": "Error al guardar los permisos",
+      "protectedNote": "Los permisos del rol Administrador no se pueden editar.",
+      "save": "Guardar permisos"
     }
   },
   "auth": {

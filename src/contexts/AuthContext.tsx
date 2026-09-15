@@ -2,9 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { AuthUser, LoginCredentials, LoginResponse } from '../types';
 import { authApi } from '../services/api';
 import { getToken, setToken, clearToken } from '../utils/session';
-
-const isBackofficeRole = (role?: string): boolean =>
-  role === 'admin' || role === 'superAdmin';
+import { canAccessBackoffice } from '../utils/rbac';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -38,10 +36,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         if (getToken()) {
           const currentUser = await authApi.getCurrentUser();
-          // Grant access only to admins. A non-admin may hold a valid shared session from the
-          // main app — deny the backoffice UI, but do NOT clear the token or we'd log them out
-          // of the main app too.
-          if (isBackofficeRole(currentUser.role)) {
+          // Grant access only to superAdmin or a code-holder (see utils/rbac). A user without
+          // backoffice access may hold a valid shared session from the main app — deny the
+          // backoffice UI, but do NOT clear the token or we'd log them out of the main app too.
+          if (canAccessBackoffice(currentUser)) {
             setUser(currentUser);
           }
         }
@@ -57,7 +55,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // The session lives in a cookie shared across subdomains, so login/logout can happen in
   // another tab or app (e.g. the main app). Re-sync local React state when this tab regains
-  // focus: adopt a session started elsewhere (admins only), or drop ours if it ended elsewhere.
+  // focus: adopt a session started elsewhere (backoffice-eligible only), or drop ours if it ended
+  // elsewhere.
   useEffect(() => {
     const sync = () => {
       const hasToken = !!getToken();
@@ -65,7 +64,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         authApi
           .getCurrentUser()
           .then((u) => {
-            if (isBackofficeRole(u.role)) setUser(u);
+            if (canAccessBackoffice(u)) setUser(u);
           })
           .catch(() => {});
       } else if (!hasToken && user) {
@@ -83,8 +82,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (credentials: LoginCredentials): Promise<void> => {
     const response: LoginResponse = await authApi.login(credentials);
 
-    // Backoffice is admin/superAdmin only. Reject members without creating a shared session.
-    if (!isBackofficeRole(response.user.role)) {
+    // Backoffice is superAdmin/permission-code only. Reject everyone else without creating a
+    // shared session.
+    if (!canAccessBackoffice(response.user)) {
       throw new Error('This portal is for administrators only. Please use the main application.');
     }
 

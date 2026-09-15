@@ -5,6 +5,9 @@ export interface User {
   firstName?: string;
   lastName?: string;
   role: 'member' | 'admin' | 'superAdmin';
+  // null for superAdmin or a company user with no role assigned yet.
+  roleUuid?: string | null;
+  roleName?: string | null;
   companyId?: string;
   companyName?: string;
   isActive: boolean;
@@ -12,6 +15,8 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   modules?: string[];
+  // Granted permission codes from `/auth/me`. See utils/rbac.ts.
+  permissions?: string[];
 }
 
 // A company's whitelabel identity, shared by every module it has. Written by
@@ -111,6 +116,8 @@ export interface Invitation {
   id: string;
   email: string;
   role: 'member' | 'admin';
+  roleUuid?: string | null;
+  roleName?: string | null;
   companyId: string;
   companyName?: string;
   inviterName?: string;
@@ -156,9 +163,12 @@ export interface AuthUser {
   firstName?: string;
   lastName?: string;
   role: 'member' | 'admin' | 'superAdmin';
+  roleUuid?: string | null;
+  roleName?: string | null;
   companyId?: string;
   companyName?: string;
   modules?: string[];
+  permissions?: string[];
 }
 
 export interface LoginResponse {
@@ -206,6 +216,15 @@ export interface InviteUserRequest {
   companyId?: string;
 }
 
+// A company actor invites with a role rather than the legacy `role` enum —
+// the API maps roleUuid to a company's Admin/Member/custom role directly.
+export interface InviteCompanyUserRequest {
+  email: string;
+  firstName: string;
+  lastName: string;
+  roleUuid: string;
+}
+
 export interface UpdateUserRequest {
   firstName: string;
   lastName: string;
@@ -227,8 +246,41 @@ export interface NavItem {
   label: string;
   path?: string;
   icon: string;
-  roles: string[];
+  // Whether the current session should see this item — computed by the
+  // caller (role and/or permission code), not a static list.
+  visible: boolean;
   children?: NavItem[];
+}
+
+// ── Role management ───────────────────────────────────────────────────────
+
+export interface Role {
+  uuid: string;
+  name: string;
+  // 'admin' | 'member' for the two system roles, null for a custom role.
+  systemKey: 'admin' | 'member' | null;
+  // Admin's grants are locked (no rename, no grant edits, no delete).
+  isProtected: boolean;
+  // Computed by the API: users with this roleId.
+  userCount: number;
+  // Populated by GET /api/roles/:uuid only.
+  permissionCodes?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateRoleForm {
+  name: string;
+}
+
+export interface Permission {
+  uuid: string;
+  code: string;
+  name: string;
+  description?: string;
+  readOnly: boolean;
+  area?: string;
+  deprecated?: boolean;
 }
 
 export interface UserStats {

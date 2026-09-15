@@ -21,6 +21,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "userManagement": "User Management",
+    "roleManagement": "Roles",
     "companyManagement": "Company Management",
     "devices": "Devices",
     "signOut": "Sign Out"
@@ -127,6 +128,11 @@
     "newPasswordPlaceholder": "Leave blank to keep current password",
     "passwordHint": "Leave blank to keep current password",
     "superAdminNote": "Super Admins have access to all companies and system settings.",
+    "filterByRole": "All roles",
+    "assignRoleFailed": "Failed to assign role",
+    "statusFailed": "Failed to change user status",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
     "roles": {
       "member": "Member",
       "admin": "Admin",
@@ -217,6 +223,50 @@
       "submit": "Revoke",
       "error": "The device could not be revoked.",
       "alreadyRevoked": "This device was already revoked. The list has been refreshed."
+    }
+  },
+  "roles": {
+    "title": "Role Management",
+    "subtitle": "Manage roles and their permissions",
+    "name": "Role Name",
+    "namePlaceholder": "Enter a role name",
+    "addRole": "Add Role",
+    "createTitle": "Create Role",
+    "editTitle": "Rename Role",
+    "createButton": "Create Role",
+    "updateButton": "Save",
+    "editRole": "Rename role",
+    "deleteRole": "Delete role",
+    "editPermissions": "Edit permissions",
+    "searchPlaceholder": "Search roles...",
+    "noRoles": "No roles found",
+    "deleteConfirm": "Are you sure you want to delete {{name}}?",
+    "deleteFailed": "Failed to delete role",
+    "systemRoleLocked": "System roles cannot be renamed.",
+    "selectCompanyPrompt": "Select a company to see its roles.",
+    "columns": {
+      "name": "Name",
+      "userCount": "Users"
+    },
+    "systemKeys": {
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "states": {
+      "none": "None",
+      "readOnly": "Read",
+      "full": "Full"
+    },
+    "areas": {
+      "masters": "Masters",
+      "actions": "Actions"
+    },
+    "permissionsModal": {
+      "title": "Permissions — {{name}}",
+      "loadFailed": "Failed to load permissions",
+      "saveFailed": "Failed to save permissions",
+      "protectedNote": "The Admin role's permissions cannot be edited.",
+      "save": "Save permissions"
     }
   },
   "auth": {

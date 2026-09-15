@@ -1,26 +1,41 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 import { User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { usersApi } from '../services/api';
 import { useEntityList } from '../hooks/useEntityList';
 import { useConfirmModal } from '../hooks/useConfirmModal';
+import { usePermissions } from '../hooks/usePermissions';
+import { useAssignableRoles } from '../hooks/useAssignableRoles';
 import Button from '../components/ui/Button';
 import Table from '../components/ui/Table';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import InviteUserModal from '../components/modals/InviteUserModal';
+import InviteCompanyUserModal from '../components/modals/InviteCompanyUserModal';
 import EditUserModal from '../components/modals/EditUserModal';
+import UserRolePicker from '../components/users/UserRolePicker';
 
 const Users: React.FC = () => {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
+  const { has } = usePermissions();
+  const isSuperAdmin = currentUser?.role === 'superAdmin';
+  const canWriteUsers = has('users.edit');
+
+  // superAdmin's Users list mixes every company (see the `companyName` column
+  // below), so a single role-filter dropdown has no one company to scope
+  // against and is omitted for them. A company actor's filter list is their
+  // own company (no companyId param, JWT-inferred).
+  const { roles: filterRoles } = useAssignableRoles(isSuperAdmin ? undefined : currentUser?.companyId);
+  const [roleFilter, setRoleFilter] = useState('');
 
   const {
     filteredData: filteredUsers,
     loading,
     search: searchTerm,
     setSearch: setSearchTerm,
+    setFilters,
     refresh: refetch,
   } = useEntityList<User>({
     fetchFn: (params) => usersApi.getUsers(params as any),
@@ -28,12 +43,18 @@ const Users: React.FC = () => {
     initialLimit: 100,
   });
 
+  const handleRoleFilterChange = (value: string) => {
+    setRoleFilter(value);
+    setFilters(value ? { roleUuid: value } : {});
+  };
+
   const confirm = useConfirmModal();
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [statusLoading, setStatusLoading] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
   const handleEditUser = (user: User) => {
@@ -63,6 +84,19 @@ const Users: React.FC = () => {
     });
   };
 
+  const handleToggleActive = async (user: User) => {
+    setStatusLoading(user.uuid);
+    setActionError(null);
+    try {
+      await usersApi.updateUserStatus(user.uuid, !user.isActive);
+      await refetch();
+    } catch (err: any) {
+      setActionError(err.response?.data?.message || t('users.statusFailed'));
+    } finally {
+      setStatusLoading(null);
+    }
+  };
+
   const handleInviteSuccess = () => {
     setIsInviteModalOpen(false);
     refetch();
@@ -80,12 +114,19 @@ const Users: React.FC = () => {
     return false;
   };
 
+  // Company actors never delete users — user lifecycle for them is invite/deactivate only.
   const canDeleteUser = (user: User) => {
     if (user.uuid === currentUser?.uuid) return false;
-    if (currentUser?.role === 'superAdmin') return true;
-    if (currentUser?.role === 'admin' && user.role !== 'superAdmin' && user.role !== 'admin') return true;
-    return false;
+    return currentUser?.role === 'superAdmin';
   };
+
+  const canToggleActive = (user: User) => {
+    if (user.uuid === currentUser?.uuid) return false;
+    if (isSuperAdmin) return true;
+    return canWriteUsers;
+  };
+
+  const canAssignRole = (user: User) => canWriteUsers && user.uuid !== currentUser?.uuid;
 
   const columns = [
     {
@@ -110,19 +151,17 @@ const Users: React.FC = () => {
     },
     {
       header: t('users.role'),
-      accessor: (user: User) => (
-        <span
-          className={`gd-badge ${
-            user.role === 'superAdmin'
-              ? 'gd-badge-brand'
-              : user.role === 'admin'
-              ? 'gd-badge-info'
-              : 'gd-badge-neutral'
-          }`}
-        >
-          {t(`users.roles.${user.role}`)}
-        </span>
-      ),
+      accessor: (user: User) =>
+        user.role === 'superAdmin' ? (
+          <span className="gd-badge gd-badge-brand">{t('users.roles.superAdmin')}</span>
+        ) : (
+          <UserRolePicker
+            user={user}
+            disabled={!canAssignRole(user)}
+            onAssigned={refetch}
+            onError={setActionError}
+          />
+        ),
     },
     ...(currentUser?.role === 'superAdmin'
       ? [
@@ -161,6 +200,20 @@ const Users: React.FC = () => {
               <Edit className="h-4 w-4" />
             </button>
           )}
+          {canToggleActive(user) && (
+            <button
+              onClick={() => handleToggleActive(user)}
+              disabled={statusLoading === user.uuid}
+              className="text-secondary-400 hover:text-primary-600 transition-colors disabled:opacity-50"
+              title={user.isActive ? t('users.deactivate') : t('users.reactivate')}
+            >
+              {user.isActive ? (
+                <ToggleRight className="h-5 w-5 text-green-600" />
+              ) : (
+                <ToggleLeft className="h-5 w-5" />
+              )}
+            </button>
+          )}
           {canDeleteUser(user) && (
             <button
               onClick={() => handleDeleteUser(user)}
@@ -183,10 +236,12 @@ const Users: React.FC = () => {
           <h1 className="gd-page-title">{t('users.title')}</h1>
           <p className="gd-page-sub">{t('users.subtitle')}</p>
         </div>
-        <Button onClick={() => setIsInviteModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          {t('users.inviteUser')}
-        </Button>
+        {canWriteUsers && (
+          <Button onClick={() => setIsInviteModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t('users.inviteUser')}
+          </Button>
+        )}
       </div>
 
       {actionError && (
@@ -196,7 +251,7 @@ const Users: React.FC = () => {
       )}
 
       <div className="gd-surface overflow-hidden">
-        <div className="gd-surface-head">
+        <div className="gd-surface-head flex flex-wrap items-center gap-3">
           <div className="gd-search relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-secondary-400" />
             <input
@@ -207,6 +262,20 @@ const Users: React.FC = () => {
               className="input-field"
             />
           </div>
+          {!isSuperAdmin && filterRoles.length > 0 && (
+            <select
+              value={roleFilter}
+              onChange={(e) => handleRoleFilterChange(e.target.value)}
+              className="border border-secondary-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="">{t('users.filterByRole')}</option>
+              {filterRoles.map((role) => (
+                <option key={role.uuid} value={role.uuid}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <Table
@@ -217,11 +286,19 @@ const Users: React.FC = () => {
         />
       </div>
 
-      <InviteUserModal
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-        onSuccess={handleInviteSuccess}
-      />
+      {isSuperAdmin ? (
+        <InviteUserModal
+          isOpen={isInviteModalOpen}
+          onClose={() => setIsInviteModalOpen(false)}
+          onSuccess={handleInviteSuccess}
+        />
+      ) : (
+        <InviteCompanyUserModal
+          isOpen={isInviteModalOpen}
+          onClose={() => setIsInviteModalOpen(false)}
+          onSuccess={handleInviteSuccess}
+        />
+      )}
 
       {selectedUser && (
         <EditUserModal
