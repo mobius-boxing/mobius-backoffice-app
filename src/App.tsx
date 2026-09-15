@@ -23,12 +23,14 @@ import './i18n/config';
  */
 const DefaultRedirect: React.FC = () => {
   const { user, isLoading } = useAuth();
-  const { has } = usePermissions();
+  const { has, isSuperAdmin } = usePermissions();
 
   if (isLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
 
-  if (user.role === 'admin' || user.role === 'superAdmin') {
+  // superAdmin has its own dashboard (system-wide stats); everyone else lands
+  // on the first permission-gated page they can reach.
+  if (isSuperAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
   for (const id of COMPANY_PERMISSION_NAV_ORDER) {

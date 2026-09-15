@@ -39,7 +39,12 @@ const Sidebar: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const isLegacyAdmin = user?.role === 'admin' || user?.role === 'superAdmin';
+  const isSuperAdmin = user?.role === 'superAdmin';
+  // Dashboard shows company-wide user stats — visible to superAdmin and to
+  // whoever holds full `users.edit` (the Admin role, or the pre-roleId
+  // legacy-admin fallback in utils/rbac.ts), same reach as before this was a
+  // permission code check rather than a `role` string comparison.
+  const canSeeDashboard = isSuperAdmin || has('users.edit');
 
   const permissionNavItems: NavItem[] = COMPANY_PERMISSION_NAV_ORDER.map((id) => {
     const entry = COMPANY_PERMISSION_NAV[id];
@@ -58,7 +63,7 @@ const Sidebar: React.FC = () => {
       label: t('nav.dashboard'),
       path: '/dashboard',
       icon: 'LayoutDashboard',
-      visible: isLegacyAdmin,
+      visible: canSeeDashboard,
     },
     ...permissionNavItems,
     {
@@ -66,7 +71,7 @@ const Sidebar: React.FC = () => {
       label: t('nav.companyManagement'),
       path: '/companies',
       icon: 'Building',
-      visible: user?.role === 'superAdmin',
+      visible: isSuperAdmin,
     },
   ];
 

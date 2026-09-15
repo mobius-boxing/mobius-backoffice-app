@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import { User, Company, UpdateUserRequest } from '../../types';
 import { usersApi, companiesApi } from '../../services/api';
 import { useModalForm } from '../../hooks/useModalForm';
@@ -24,6 +25,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
+  const { has } = usePermissions();
   const [companies, setCompanies] = useState<Company[]>([]);
 
   // useModalForm's onSuccess takes no args, but the parent's onSuccess needs the updated user.
@@ -92,14 +94,14 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 
   const canEditRole = () => {
     if (currentUser?.role === 'superAdmin') return true;
-    if (currentUser?.role === 'admin' && user.role !== 'superAdmin') return true;
+    if (has('users.edit') && user.role !== 'superAdmin') return true;
     return false;
   };
 
   const canEditStatus = () => {
     if (currentUser?.uuid === user.uuid) return false; // Can't deactivate self
     if (currentUser?.role === 'superAdmin') return true;
-    if (currentUser?.role === 'admin' && user.role !== 'superAdmin') return true;
+    if (has('users.edit') && user.role !== 'superAdmin') return true;
     return false;
   };
 

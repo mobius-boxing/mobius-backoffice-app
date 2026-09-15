@@ -110,7 +110,7 @@ const Users: React.FC = () => {
 
   const canEditUser = (user: User) => {
     if (currentUser?.role === 'superAdmin') return true;
-    if (currentUser?.role === 'admin' && user.role !== 'superAdmin') return true;
+    if (has('users.edit') && user.role !== 'superAdmin') return true;
     return false;
   };
 
