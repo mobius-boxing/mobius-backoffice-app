@@ -20,13 +20,18 @@ export interface User {
 }
 
 // A company's whitelabel identity, shared by every module it has. Written by
-// PUT /api/companies/:uuid/branding — always all five keys, replaced wholesale.
+// PUT /api/companies/:uuid/branding — always every key, replaced wholesale.
 export interface CompanyBranding {
   displayName: string | null;
   brandColor: string | null;
   // Second tenant colour. null means "same as brandColor": the modules fall
   // back to it, so it is never pre-filled with a copy of the brand value.
   accentColor: string | null;
+  // App chrome (the module top bar) and page background. null means "use the
+  // stylesheet default", which the public branding endpoint resolves for the
+  // module — the backoffice never needs to know what the default is.
+  shellColor: string | null;
+  canvasColor: string | null;
   logoFileUuid: string | null;
   loginMessage: string | null;
 }

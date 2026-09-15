@@ -329,13 +329,23 @@
       "displayNameMaxLength": "El nombre a mostrar no puede tener más de 80 caracteres",
       "loginMessageMaxLength": "El mensaje de login no puede tener más de 160 caracteres",
       "brandColorInvalid": "El color de marca debe ser un hexadecimal con el formato #rrggbb",
-      "accentColorInvalid": "El color de acento debe ser un hexadecimal con el formato #rrggbb"
+      "accentColorInvalid": "El color de acento debe ser un hexadecimal con el formato #rrggbb",
+      "shellColorInvalid": "El color de la barra debe tener el formato #rrggbb",
+      "canvasColorInvalid": "El color de fondo debe tener el formato #rrggbb"
     },
     "error": {
       "saveFailed": "Error al guardar la identidad de marca",
       "uploadFailed": "Error al subir el logo",
       "tooLarge": "El archivo supera el máximo de 25 MB"
-    }
+    },
+    "shellColor": "Color de la barra",
+    "shellColorPlaceholder": "#191713",
+    "shellColorPreview": "Vista previa del color de la barra",
+    "shellColorHint": "Barra superior del módulo. Vacío usa el color por defecto.",
+    "canvasColor": "Color de fondo",
+    "canvasColorPlaceholder": "#f9f7f4",
+    "canvasColorPreview": "Vista previa del color de fondo",
+    "canvasColorHint": "Fondo de la página. Vacío usa el color por defecto."
   },
   "confirmModal": {
     "defaultTitle": "Confirmar Acción",
