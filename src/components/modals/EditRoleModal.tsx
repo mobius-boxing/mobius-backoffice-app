@@ -13,6 +13,8 @@ interface EditRoleModalProps {
   onClose: () => void;
   onSuccess: () => void;
   role: Role | null;
+  /** superAdmin only — the company the role belongs to. */
+  companyId?: string;
 }
 
 /**
@@ -26,6 +28,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
   onClose,
   onSuccess,
   role,
+  companyId,
 }) => {
   const { t } = useTranslation();
   const locked = !!role?.systemKey;
@@ -56,7 +59,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 
   const onSubmit = handleSubmit((data) => {
     if (!role) return Promise.reject(new Error('No role selected'));
-    return rolesApi.renameRole(role.uuid, data.name);
+    return rolesApi.renameRole(role.uuid, data.name, companyId);
   });
 
   return (

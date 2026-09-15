@@ -509,8 +509,12 @@ export const rolesApi = {
     };
   },
 
-  getRole: async (uuid: string): Promise<Role> => {
-    const response: AxiosResponse<ApiResponse<Role>> = await api.get(`/api/roles/${uuid}`);
+  // Roles live in each company's tenant database, so every call below needs
+  // companyId from a superAdmin (400 COMPANY_REQUIRED otherwise); the API
+  // ignores it for everyone else.
+  getRole: async (uuid: string, companyId?: string): Promise<Role> => {
+    const params = companyId ? { companyId } : {};
+    const response: AxiosResponse<ApiResponse<Role>> = await api.get(`/api/roles/${uuid}`, { params });
     return response.data.data!;
   },
 
@@ -520,28 +524,33 @@ export const rolesApi = {
   },
 
   // 409 SYSTEM_ROLE when the role has a systemKey — caller disables the field instead of relying on this alone.
-  renameRole: async (uuid: string, name: string): Promise<Role> => {
-    const response: AxiosResponse<ApiResponse<Role>> = await api.put(`/api/roles/${uuid}`, { name });
+  renameRole: async (uuid: string, name: string, companyId?: string): Promise<Role> => {
+    const params = companyId ? { companyId } : {};
+    const response: AxiosResponse<ApiResponse<Role>> = await api.put(`/api/roles/${uuid}`, { name }, { params });
     return response.data.data!;
   },
 
   // 409 SYSTEM_ROLE (systemKey set) or ROLE_IN_USE (users/pending invitations reference it).
-  deleteRole: async (uuid: string): Promise<void> => {
-    await api.delete(`/api/roles/${uuid}`);
+  deleteRole: async (uuid: string, companyId?: string): Promise<void> => {
+    const params = companyId ? { companyId } : {};
+    await api.delete(`/api/roles/${uuid}`, { params });
   },
 
   // 400 UNKNOWN_PERMISSION, 403 GRANT_CEILING/OWN_ROLE.
-  setRolePermissions: async (uuid: string, codes: string[]): Promise<string[]> => {
+  setRolePermissions: async (uuid: string, codes: string[], companyId?: string): Promise<string[]> => {
+    const params = companyId ? { companyId } : {};
     const response: AxiosResponse<ApiResponse<{ codes: string[] }>> = await api.put(
       `/api/roles/${uuid}/permissions`,
-      { codes }
+      { codes },
+      { params }
     );
     return response.data.data!.codes;
   },
 
   // roleUuid is required (null is a 400). 403 GRANT_CEILING/OWN_ROLE, 409 LAST_ADMIN.
-  assignRole: async (userUuid: string, roleUuid: string): Promise<void> => {
-    await api.put('/api/roles/assign', { userUuid, roleUuid });
+  assignRole: async (userUuid: string, roleUuid: string, companyId?: string): Promise<void> => {
+    const params = companyId ? { companyId } : {};
+    await api.put('/api/roles/assign', { userUuid, roleUuid }, { params });
   },
 };
 

@@ -90,7 +90,7 @@ const Roles: React.FC = () => {
         setActionLoading(role.uuid);
         setActionError(null);
         try {
-          await rolesApi.deleteRole(role.uuid);
+          await rolesApi.deleteRole(role.uuid, isSuperAdmin ? companyId : undefined);
           await refetch();
         } catch (err: any) {
           setActionError(err.response?.data?.message || t('roles.deleteFailed'));
@@ -237,6 +237,7 @@ const Roles: React.FC = () => {
           refetch();
         }}
         role={selectedRole}
+        companyId={isSuperAdmin ? companyId : undefined}
       />
 
       <RolePermissionsModal

@@ -35,7 +35,7 @@ const UserRolePicker: React.FC<UserRolePickerProps> = ({ user, disabled, onAssig
     if (!roleUuid || roleUuid === user.roleUuid) return;
     setSaving(true);
     try {
-      await rolesApi.assignRole(user.uuid, roleUuid);
+      await rolesApi.assignRole(user.uuid, roleUuid, user.companyId);
       onAssigned();
     } catch (err: any) {
       onError(err.response?.data?.message || t('users.assignRoleFailed'));

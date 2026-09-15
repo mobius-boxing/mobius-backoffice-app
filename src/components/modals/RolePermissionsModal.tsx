@@ -52,7 +52,7 @@ const RolePermissionsModal: React.FC<RolePermissionsModalProps> = ({
       try {
         const [permissions, fullRole] = await Promise.all([
           permissionsApi.getPermissions(companyId ? { companyId } : {}),
-          rolesApi.getRole(role.uuid),
+          rolesApi.getRole(role.uuid, companyId),
         ]);
         if (cancelled) return;
         setCatalogue(permissions);
@@ -126,7 +126,7 @@ const RolePermissionsModal: React.FC<RolePermissionsModalProps> = ({
         if (state === 'full') codes.push(code);
         if (state === 'readonly') codes.push(`${code}.readonly`);
       });
-      await rolesApi.setRolePermissions(role.uuid, codes);
+      await rolesApi.setRolePermissions(role.uuid, codes, companyId);
       onSuccess();
     } catch (err: any) {
       setError(err?.response?.data?.message || t('roles.permissionsModal.saveFailed'));
