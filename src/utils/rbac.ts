@@ -4,10 +4,6 @@
  * and `usePermissions` (per-page/action checks). Mirrors the API's
  * `RbacService.isAllowed`: superAdmin always passes; otherwise the code, or
  * its `.readonly` sibling when the caller allows it, must be present.
- *
- * A user with no permission codes and the legacy `role === 'admin'` mirror
- * also passes — a temporary fallback for accounts not yet migrated to a
- * roleId, removed once every user carries one.
  */
 
 export interface PermissionSubject {
@@ -38,7 +34,6 @@ export function hasPermissionCode(
   if (subject.role === 'superAdmin') return true;
 
   const permissions = subject.permissions ?? [];
-  if (permissions.length === 0 && subject.role === 'admin') return true;
   if (permissions.includes(code)) return true;
   if (opts?.allowReadOnly && permissions.includes(`${code}.readonly`)) return true;
   return false;
@@ -46,8 +41,7 @@ export function hasPermissionCode(
 
 /**
  * Session-level gate: superAdmin, or any entry code (checked as an exact
- * code so a `.readonly` grant is enough on its own without `allowReadOnly`),
- * or the legacy fallback.
+ * code so a `.readonly` grant is enough on its own without `allowReadOnly`).
  */
 export function canAccessBackoffice(subject: PermissionSubject | null | undefined): boolean {
   if (!subject) return false;

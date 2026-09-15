@@ -32,16 +32,17 @@ describe('hasPermissionCode', () => {
     ).toBe(true);
   });
 
-  it('applies the legacy fallback for a codeless admin', () => {
-    expect(hasPermissionCode({ role: 'admin', permissions: [] }, 'anything.at.all')).toBe(true);
-    expect(hasPermissionCode({ role: 'admin' }, 'anything.at.all')).toBe(true);
+  it('denies a codeless admin: the legacy role string grants nothing', () => {
+    expect(hasPermissionCode({ role: 'admin', permissions: [] }, 'anything.at.all')).toBe(false);
+    expect(hasPermissionCode({ role: 'admin' }, 'anything.at.all')).toBe(false);
   });
 
-  it('does NOT apply the legacy fallback once the admin carries real codes', () => {
+  it('judges an admin by its codes like anyone else', () => {
     expect(hasPermissionCode({ role: 'admin', permissions: ['users.edit'] }, 'roles.edit')).toBe(false);
+    expect(hasPermissionCode({ role: 'admin', permissions: ['roles.edit'] }, 'roles.edit')).toBe(true);
   });
 
-  it('does not apply the legacy fallback to a plain member', () => {
+  it('denies a codeless plain member', () => {
     expect(hasPermissionCode({ role: 'member', permissions: [] }, 'users.edit')).toBe(false);
   });
 });
@@ -70,8 +71,8 @@ describe('canAccessBackoffice', () => {
     expect(canAccessBackoffice({ role: 'member', permissions: ['customers.edit'] })).toBe(false);
   });
 
-  it('applies the legacy fallback for a codeless admin', () => {
-    expect(canAccessBackoffice({ role: 'admin', permissions: [] })).toBe(true);
+  it('denies a codeless admin', () => {
+    expect(canAccessBackoffice({ role: 'admin', permissions: [] })).toBe(false);
   });
 
   it('denies a codeless plain member', () => {
