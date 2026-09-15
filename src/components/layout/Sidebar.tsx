@@ -62,13 +62,6 @@ const Sidebar: React.FC = () => {
     },
     ...permissionNavItems,
     {
-      id: 'devices',
-      label: t('nav.devices'),
-      path: '/devices',
-      icon: 'Smartphone',
-      visible: isLegacyAdmin,
-    },
-    {
       id: 'companies',
       label: t('nav.companyManagement'),
       path: '/companies',

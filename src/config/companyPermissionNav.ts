@@ -28,6 +28,13 @@ export const COMPANY_PERMISSION_NAV: Record<string, CompanyPermissionNavEntry> =
     labelKey: 'nav.roleManagement',
     icon: 'ShieldCheck',
   },
+  devices: {
+    path: '/devices',
+    code: 'devices.approve',
+    allowReadOnly: false,
+    labelKey: 'nav.devices',
+    icon: 'Smartphone',
+  },
 };
 
-export const COMPANY_PERMISSION_NAV_ORDER = ['users', 'roles'] as const;
+export const COMPANY_PERMISSION_NAV_ORDER = ['users', 'roles', 'devices'] as const;

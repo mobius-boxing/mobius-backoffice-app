@@ -84,9 +84,9 @@ function App() {
             />
 
             <Route
-              path="/devices"
+              path={COMPANY_PERMISSION_NAV.devices.path}
               element={
-                <ProtectedRoute requiredRoles={['admin', 'superAdmin']}>
+                <ProtectedRoute requiredPermission={COMPANY_PERMISSION_NAV.devices.code}>
                   <Layout>
                     <Devices />
                   </Layout>
