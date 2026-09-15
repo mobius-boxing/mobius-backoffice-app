@@ -120,6 +120,30 @@ export interface Invitation {
   createdAt: string;
 }
 
+export type DeviceStatus = 'pending' | 'approved' | 'revoked';
+
+export interface UserRef {
+  uuid: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface UserDevice {
+  uuid: string;
+  status: DeviceStatus;
+  userAgent: string | null;
+  requestIp: string | null;
+  requestedAt: string;
+  approvedAt: string | null;
+  revokedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: UserRef;
+  approvedBy: UserRef | null;
+  revokedBy: UserRef | null;
+}
+
 export interface LoginCredentials {
   email: string;
   password: string;
