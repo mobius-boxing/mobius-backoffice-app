@@ -9,6 +9,7 @@ import { useConfirmModal } from '../hooks/useConfirmModal';
 import { usePermissions } from '../hooks/usePermissions';
 import { useAssignableRoles } from '../hooks/useAssignableRoles';
 import Button from '../components/ui/Button';
+import ActionButton from '../components/ui/ActionButton';
 import Table from '../components/ui/Table';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import InviteUserModal from '../components/modals/InviteUserModal';
@@ -192,37 +193,38 @@ const Users: React.FC = () => {
       accessor: (user: User) => (
         <div className="flex items-center space-x-2">
           {canEditUser(user) && (
-            <button
+            <ActionButton
               onClick={() => handleEditUser(user)}
               className="text-secondary-400 hover:text-primary-600 transition-colors"
-              title={t('common.edit')}
+              label={t('common.edit')}
             >
               <Edit className="h-4 w-4" />
-            </button>
+            </ActionButton>
           )}
           {canToggleActive(user) && (
-            <button
+            <ActionButton
               onClick={() => handleToggleActive(user)}
               disabled={statusLoading === user.uuid}
               className="text-secondary-400 hover:text-primary-600 transition-colors disabled:opacity-50"
-              title={user.isActive ? t('users.deactivate') : t('users.reactivate')}
+              label={user.isActive ? t('users.deactivate') : t('users.reactivate')}
             >
               {user.isActive ? (
                 <ToggleRight className="h-5 w-5 text-green-600" />
               ) : (
                 <ToggleLeft className="h-5 w-5" />
               )}
-            </button>
+            </ActionButton>
           )}
           {canDeleteUser(user) && (
-            <button
+            <ActionButton
               onClick={() => handleDeleteUser(user)}
               disabled={deleteLoading === user.uuid}
-              className="text-secondary-400 hover:text-red-600 transition-colors disabled:opacity-50"
-              title={t('common.delete')}
+              tone="danger"
+              className="disabled:opacity-50"
+              label={t('common.delete')}
             >
               <Trash2 className="h-4 w-4" />
-            </button>
+            </ActionButton>
           )}
         </div>
       ),

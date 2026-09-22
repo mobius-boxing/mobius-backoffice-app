@@ -8,6 +8,7 @@ import { usePermissions } from '../hooks/usePermissions';
 import { useEntityList } from '../hooks/useEntityList';
 import { useConfirmModal } from '../hooks/useConfirmModal';
 import Button from '../components/ui/Button';
+import ActionButton from '../components/ui/ActionButton';
 import Table from '../components/ui/Table';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import CreateRoleModal from '../components/modals/CreateRoleModal';
@@ -126,31 +127,32 @@ const Roles: React.FC = () => {
         const locked = !!role.systemKey;
         return (
           <div className="flex items-center space-x-2">
-            <button
+            <ActionButton
               onClick={() => handlePermissions(role)}
               className="text-secondary-400 hover:text-primary-600 transition-colors"
-              title={t('roles.editPermissions')}
+              label={t('roles.editPermissions')}
             >
               <KeyRound className="h-4 w-4" />
-            </button>
+            </ActionButton>
             {canWrite && (
               <>
-                <button
+                <ActionButton
                   onClick={() => handleEdit(role)}
                   disabled={locked}
                   className="text-secondary-400 hover:text-primary-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  title={t('roles.editRole')}
+                  label={t('roles.editRole')}
                 >
                   <Edit className="h-4 w-4" />
-                </button>
-                <button
+                </ActionButton>
+                <ActionButton
                   onClick={() => handleDelete(role)}
                   disabled={actionLoading === role.uuid || locked || role.userCount > 0}
-                  className="text-secondary-400 hover:text-red-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  title={t('roles.deleteRole')}
+                  tone="danger"
+                  className="disabled:opacity-40 disabled:cursor-not-allowed"
+                  label={t('roles.deleteRole')}
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </ActionButton>
               </>
             )}
           </div>

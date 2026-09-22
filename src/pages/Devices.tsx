@@ -7,6 +7,7 @@ import { devicesApi, companiesApi } from '../services/api';
 import { useEntityList, FetchParams } from '../hooks/useEntityList';
 import { useConfirmModal } from '../hooks/useConfirmModal';
 import Table from '../components/ui/Table';
+import ActionButton from '../components/ui/ActionButton';
 import ConfirmModal from '../components/ui/ConfirmModal';
 
 const USER_AGENT_MAX = 60;
@@ -214,22 +215,22 @@ const Devices: React.FC = () => {
       accessor: (device: UserDevice) => (
         <div className="flex items-center space-x-2">
           {device.status !== 'approved' && (
-            <button
+            <ActionButton
               onClick={() => handleApprove(device)}
               className="text-secondary-400 hover:text-green-600 transition-colors"
-              title={t('devices.approve.action')}
+              label={t('devices.approve.action')}
             >
               <Check className="h-4 w-4" />
-            </button>
+            </ActionButton>
           )}
           {device.status !== 'revoked' && (
-            <button
+            <ActionButton
               onClick={() => handleRevoke(device)}
-              className="text-secondary-400 hover:text-red-600 transition-colors"
-              title={t('devices.revoke.action')}
+              tone="danger"
+              label={t('devices.revoke.action')}
             >
               <Ban className="h-4 w-4" />
-            </button>
+            </ActionButton>
           )}
         </div>
       ),

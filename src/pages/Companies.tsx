@@ -6,6 +6,7 @@ import { companiesApi } from '../services/api';
 import { useEntityList } from '../hooks/useEntityList';
 import { useConfirmModal } from '../hooks/useConfirmModal';
 import Button from '../components/ui/Button';
+import ActionButton from '../components/ui/ActionButton';
 import Table from '../components/ui/Table';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import CreateCompanyModal from '../components/modals/CreateCompanyModal';
@@ -129,43 +130,44 @@ const Companies: React.FC = () => {
       header: t('common.actions'),
       accessor: (company: Company) => (
         <div className="flex items-center space-x-2">
-          <button
+          <ActionButton
             onClick={() => handleToggleStatus(company)}
             disabled={actionLoading === company.uuid}
             className="text-secondary-400 hover:text-primary-600 transition-colors disabled:opacity-50"
-            title={company.isActive ? t('companies.deactivate') : t('companies.activate')}
+            label={company.isActive ? t('companies.deactivate') : t('companies.activate')}
           >
             {company.isActive ? (
               <ToggleRight className="h-5 w-5 text-green-600" />
             ) : (
               <ToggleLeft className="h-5 w-5" />
             )}
-          </button>
-          <button
+          </ActionButton>
+          <ActionButton
             onClick={() => handleEditCompany(company)}
             className="text-secondary-400 hover:text-primary-600 transition-colors"
-            title={t('common.edit')}
+            label={t('common.edit')}
           >
             <Edit className="h-4 w-4" />
-          </button>
-          <button
+          </ActionButton>
+          <ActionButton
             onClick={() => {
               setSelectedCompany(company);
               setIsModulesModalOpen(true);
             }}
             className="text-secondary-400 hover:text-primary-600 transition-colors"
-            title={t('modules.manageButton')}
+            label={t('modules.manageButton')}
           >
             <SlidersHorizontal className="h-4 w-4" />
-          </button>
-          <button
+          </ActionButton>
+          <ActionButton
             onClick={() => handleDeleteCompany(company)}
             disabled={actionLoading === company.uuid}
-            className="text-secondary-400 hover:text-red-600 transition-colors disabled:opacity-50"
-            title={t('common.delete')}
+            tone="danger"
+            className="disabled:opacity-50"
+            label={t('common.delete')}
           >
             <Trash2 className="h-4 w-4" />
-          </button>
+          </ActionButton>
         </div>
       ),
     },
