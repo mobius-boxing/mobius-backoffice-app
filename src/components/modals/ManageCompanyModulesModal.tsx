@@ -7,6 +7,8 @@ import { buildModuleUrl } from '../../utils/moduleUrl';
 import CompanyBrandingSection from '../company/CompanyBrandingSection';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
+import ActionButton from '../ui/ActionButton';
+import Tooltip from '../ui/Tooltip';
 
 /** How long the "copied!" confirmation stays up. */
 const COPIED_FEEDBACK_MS = 2000;
@@ -99,27 +101,28 @@ const ModuleUrlRow: React.FC<{
       >
         {url}
       </code>
-      <button
-        type="button"
+      <ActionButton
         onClick={handleCopy}
         className="text-secondary-400 hover:text-primary-600 transition-colors"
-        title={t('modules.url.copy')}
-        aria-label={t('modules.url.copy')}
+        label={t('modules.url.copy')}
         data-testid={`module-url-copy-${mod.module.slug}`}
       >
         <Copy className="h-4 w-4" />
-      </button>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-secondary-400 hover:text-primary-600 transition-colors"
-        title={t('modules.url.open')}
-        aria-label={t('modules.url.open')}
-        data-testid={`module-url-open-${mod.module.slug}`}
-      >
-        <ExternalLink className="h-4 w-4" />
-      </a>
+      </ActionButton>
+      {/* Tooltip, not ActionButton: this trigger is a real <a> (new-tab
+          navigation), and ActionButton's contract is a <button> (D-14). */}
+      <Tooltip label={t('modules.url.open')}>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-secondary-400 hover:text-primary-600 transition-colors"
+          aria-label={t('modules.url.open')}
+          data-testid={`module-url-open-${mod.module.slug}`}
+        >
+          <ExternalLink className="h-4 w-4" />
+        </a>
+      </Tooltip>
       {copied && (
         <span
           className="text-xs text-green-600"
@@ -285,20 +288,18 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
                 />
               </div>
 
-              <button
+              <ActionButton
                 onClick={() => handleToggle(mod)}
                 disabled={togglingSlug === mod.module.slug}
                 className="text-secondary-400 hover:text-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-                aria-label={
-                  mod.enabled ? t('modules.disable') : t('modules.enable')
-                }
+                label={mod.enabled ? t('modules.disable') : t('modules.enable')}
               >
                 {mod.enabled ? (
                   <ToggleRight className="h-6 w-6 text-green-600" />
                 ) : (
                   <ToggleLeft className="h-6 w-6" />
                 )}
-              </button>
+              </ActionButton>
             </li>
           ))}
         </ul>
