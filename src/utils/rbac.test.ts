@@ -56,23 +56,24 @@ describe('canAccessBackoffice', () => {
     expect(canAccessBackoffice({ role: 'superAdmin', permissions: [] })).toBe(true);
   });
 
-  it('allows a company actor holding any of the four entry codes', () => {
-    expect(canAccessBackoffice({ role: 'member', permissions: ['users.edit'] })).toBe(true);
-    expect(canAccessBackoffice({ role: 'member', permissions: ['users.edit.readonly'] })).toBe(true);
-    expect(canAccessBackoffice({ role: 'member', permissions: ['roles.edit'] })).toBe(true);
-    expect(canAccessBackoffice({ role: 'member', permissions: ['roles.edit.readonly'] })).toBe(true);
+  it('denies a company actor holding the former entry codes', () => {
+    expect(canAccessBackoffice({ role: 'member', permissions: ['users.edit'] })).toBe(false);
+    expect(canAccessBackoffice({ role: 'member', permissions: ['users.edit.readonly'] })).toBe(false);
+    expect(canAccessBackoffice({ role: 'member', permissions: ['roles.edit'] })).toBe(false);
+    expect(canAccessBackoffice({ role: 'member', permissions: ['roles.edit.readonly'] })).toBe(false);
   });
 
-  it('allows a user with devices.approve', () => {
-    expect(canAccessBackoffice({ role: 'member', permissions: ['devices.approve'] })).toBe(true);
+  it('denies a user with devices.approve', () => {
+    expect(canAccessBackoffice({ role: 'member', permissions: ['devices.approve'] })).toBe(false);
   });
 
   it('denies a member with an unrelated code', () => {
     expect(canAccessBackoffice({ role: 'member', permissions: ['customers.edit'] })).toBe(false);
   });
 
-  it('denies a codeless admin', () => {
+  it('denies an admin, with or without codes', () => {
     expect(canAccessBackoffice({ role: 'admin', permissions: [] })).toBe(false);
+    expect(canAccessBackoffice({ role: 'admin', permissions: ['users.edit', 'roles.edit'] })).toBe(false);
   });
 
   it('denies a codeless plain member', () => {

@@ -198,21 +198,9 @@ const Dashboard: React.FC = () => {
           <p className="gd-panel__desc">{t('dashboard.quickActionsDesc')}</p>
         </div>
         <div className="gd-actions">
-          <a href="/users" className="gd-action">
-            <span className="gd-action__index">01</span>
-            <span className="gd-action__icon">
-              <Users className="h-5 w-5" />
-            </span>
-            <div className="gd-action__body">
-              <h3 className="gd-action__title">{t('dashboard.manageUsers')}</h3>
-              <p className="gd-action__desc">{t('dashboard.manageUsersDesc')}</p>
-            </div>
-            <ChevronRight className="h-5 w-5 gd-action__chevron" />
-          </a>
-
           {user?.role === 'superAdmin' && (
             <a href="/companies" className="gd-action">
-              <span className="gd-action__index">02</span>
+              <span className="gd-action__index">01</span>
               <span className="gd-action__icon">
                 <Building className="h-5 w-5" />
               </span>

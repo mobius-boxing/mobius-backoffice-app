@@ -1,18 +1,9 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Users,
-  Building,
-  Smartphone,
-  ShieldCheck,
-  LogOut,
-} from 'lucide-react';
+import { LayoutDashboard, Building, LogOut } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { usePermissions } from '../../hooks/usePermissions';
 import { NavItem } from '../../types';
-import { COMPANY_PERMISSION_NAV, COMPANY_PERMISSION_NAV_ORDER } from '../../config/companyPermissionNav';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 
 /**
@@ -27,7 +18,6 @@ let navScrollTop = 0;
 
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { has } = usePermissions();
   const location = useLocation();
   const navRef = useRef<HTMLElement | null>(null);
 
@@ -40,22 +30,6 @@ const Sidebar: React.FC = () => {
   const { t } = useTranslation();
 
   const isSuperAdmin = user?.role === 'superAdmin';
-  // Dashboard shows company-wide user stats — visible to superAdmin and to
-  // whoever holds full `users.edit` (the Admin role, or the pre-roleId
-  // legacy-admin fallback in utils/rbac.ts), same reach as before this was a
-  // permission code check rather than a `role` string comparison.
-  const canSeeDashboard = isSuperAdmin || has('users.edit');
-
-  const permissionNavItems: NavItem[] = COMPANY_PERMISSION_NAV_ORDER.map((id) => {
-    const entry = COMPANY_PERMISSION_NAV[id];
-    return {
-      id,
-      label: t(entry.labelKey),
-      path: entry.path,
-      icon: entry.icon,
-      visible: has(entry.code, { allowReadOnly: entry.allowReadOnly }),
-    };
-  });
 
   const navigationItems: NavItem[] = [
     {
@@ -63,9 +37,8 @@ const Sidebar: React.FC = () => {
       label: t('nav.dashboard'),
       path: '/dashboard',
       icon: 'LayoutDashboard',
-      visible: canSeeDashboard,
+      visible: isSuperAdmin,
     },
-    ...permissionNavItems,
     {
       id: 'companies',
       label: t('nav.companyManagement'),
@@ -78,10 +51,7 @@ const Sidebar: React.FC = () => {
   const getIcon = (iconName: string, className: string = "h-5 w-5") => {
     const icons: { [key: string]: React.FC<{ className?: string }> } = {
       LayoutDashboard,
-      Users,
-      ShieldCheck,
       Building,
-      Smartphone,
     };
     const IconComponent = icons[iconName];
     return IconComponent ? <IconComponent className={className} /> : null;

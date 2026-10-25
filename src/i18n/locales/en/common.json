@@ -20,10 +20,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
-    "userManagement": "User Management",
-    "roleManagement": "Roles",
     "companyManagement": "Company Management",
-    "devices": "Devices",
     "signOut": "Sign Out"
   },
   "login": {
@@ -89,66 +86,10 @@
     "totalCompanies": "Total Companies",
     "quickActions": "Quick Actions",
     "quickActionsDesc": "Shortcuts to frequently used features",
-    "manageUsers": "Manage Users",
-    "manageUsersDesc": "View, invite, and manage user accounts",
     "manageCompanies": "Manage Companies",
     "manageCompaniesDesc": "Create and manage companies",
     "lastUpdated": "Last updated",
     "refresh": "Refresh"
-  },
-  "users": {
-    "title": "User Management",
-    "subtitle": "Manage user accounts and permissions",
-    "name": "Name",
-    "email": "Email",
-    "role": "Role",
-    "company": "Company",
-    "status": "Status",
-    "active": "Active",
-    "inactive": "Inactive",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "firstNamePlaceholder": "Enter first name",
-    "lastNamePlaceholder": "Enter last name",
-    "emailPlaceholder": "Enter email address",
-    "selectRole": "Select a role",
-    "selectCompany": "Select a company",
-    "inviteUser": "Invite User",
-    "inviteTitle": "Invite New User",
-    "editTitle": "Edit User",
-    "sendInvitation": "Send Invitation",
-    "updateButton": "Update User",
-    "inviteFailed": "Failed to send invitation",
-    "updateFailed": "Failed to update user",
-    "deleteConfirm": "Are you sure you want to delete {{name}}?",
-    "noUsers": "No users found",
-    "searchPlaceholder": "Search users...",
-    "isActive": "User is active",
-    "newPassword": "New Password",
-    "newPasswordPlaceholder": "Leave blank to keep current password",
-    "passwordHint": "Leave blank to keep current password",
-    "superAdminNote": "Super Admins have access to all companies and system settings.",
-    "filterByRole": "All roles",
-    "assignRoleFailed": "Failed to assign role",
-    "statusFailed": "Failed to change user status",
-    "deactivate": "Deactivate",
-    "reactivate": "Reactivate",
-    "roles": {
-      "member": "Member",
-      "admin": "Admin",
-      "superAdmin": "Super Admin"
-    },
-    "validation": {
-      "firstNameRequired": "First name is required",
-      "firstNameMinLength": "First name must be at least 2 characters",
-      "lastNameRequired": "Last name is required",
-      "lastNameMinLength": "Last name must be at least 2 characters",
-      "emailRequired": "Email is required",
-      "emailInvalid": "Please enter a valid email",
-      "roleRequired": "Role is required",
-      "companyRequired": "Company is required",
-      "passwordMinLength": "Password must be at least 8 characters"
-    }
   },
   "companies": {
     "title": "Company Management",
@@ -179,94 +120,6 @@
       "nameMinLength": "Company name must be at least 2 characters",
       "nameMaxLength": "Company name must be less than 100 characters",
       "descriptionMaxLength": "Description must be less than 500 characters"
-    }
-  },
-  "devices": {
-    "title": "Devices",
-    "subtitle": "Approve the browsers your team signs in to Mobius from.",
-    "searchPlaceholder": "Search by name or email...",
-    "loading": "Loading devices...",
-    "empty": "No devices match these filters.",
-    "loadError": "Devices could not be loaded.",
-    "unknownUserAgent": "Unknown browser",
-    "selectCompany": "Select a company",
-    "filters": {
-      "statusAll": "All",
-      "statusPending": "Pending",
-      "statusApproved": "Approved",
-      "statusRevoked": "Revoked"
-    },
-    "status": {
-      "pending": "Pending",
-      "approved": "Approved",
-      "revoked": "Revoked"
-    },
-    "columns": {
-      "user": "User",
-      "device": "Browser",
-      "ip": "IP",
-      "requestedAt": "Requested",
-      "status": "Status"
-    },
-    "approve": {
-      "action": "Approve device",
-      "confirmTitle": "Approve device",
-      "confirmMessage": "{{email}} will be able to use Mobius from {{device}} (requested {{requestedAt}}). Confirm only if you recognise the machine and the request.",
-      "submit": "Approve",
-      "error": "The device could not be approved.",
-      "alreadyApproved": "This device was already approved. The list has been refreshed."
-    },
-    "revoke": {
-      "action": "Revoke device",
-      "confirmTitle": "Revoke device",
-      "confirmMessage": "{{email}} will not be able to use Mobius from {{device}} (requested {{requestedAt}}) until they request it again and you approve it.",
-      "submit": "Revoke",
-      "error": "The device could not be revoked.",
-      "alreadyRevoked": "This device was already revoked. The list has been refreshed."
-    }
-  },
-  "roles": {
-    "title": "Role Management",
-    "subtitle": "Manage roles and their permissions",
-    "name": "Role Name",
-    "namePlaceholder": "Enter a role name",
-    "addRole": "Add Role",
-    "createTitle": "Create Role",
-    "editTitle": "Rename Role",
-    "createButton": "Create Role",
-    "updateButton": "Save",
-    "editRole": "Rename role",
-    "deleteRole": "Delete role",
-    "editPermissions": "Edit permissions",
-    "searchPlaceholder": "Search roles...",
-    "noRoles": "No roles found",
-    "deleteConfirm": "Are you sure you want to delete {{name}}?",
-    "deleteFailed": "Failed to delete role",
-    "systemRoleLocked": "System roles cannot be renamed.",
-    "selectCompanyPrompt": "Select a company to see its roles.",
-    "columns": {
-      "name": "Name",
-      "userCount": "Users"
-    },
-    "systemKeys": {
-      "admin": "Admin",
-      "member": "Member"
-    },
-    "states": {
-      "none": "None",
-      "readOnly": "Read",
-      "full": "Full"
-    },
-    "areas": {
-      "masters": "Masters",
-      "actions": "Actions"
-    },
-    "permissionsModal": {
-      "title": "Permissions — {{name}}",
-      "loadFailed": "Failed to load permissions",
-      "saveFailed": "Failed to save permissions",
-      "protectedNote": "The Admin role's permissions cannot be edited.",
-      "save": "Save permissions"
     }
   },
   "auth": {
@@ -370,5 +223,10 @@
     "fields": {
       "code": "Code"
     }
+  },
+  "accessDenied": {
+    "title": "Access denied",
+    "message": "The backoffice is only for platform administrators. Users, roles and devices are now managed in the web app.",
+    "goToApp": "Go to the web app"
   }
 }

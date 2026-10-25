@@ -20,10 +20,7 @@
   },
   "nav": {
     "dashboard": "Panel",
-    "userManagement": "Gestión de Usuarios",
-    "roleManagement": "Roles",
     "companyManagement": "Gestión de Empresas",
-    "devices": "Dispositivos",
     "signOut": "Cerrar Sesión"
   },
   "login": {
@@ -89,66 +86,10 @@
     "totalCompanies": "Total de Empresas",
     "quickActions": "Acciones Rápidas",
     "quickActionsDesc": "Accesos directos a funciones frecuentes",
-    "manageUsers": "Gestionar Usuarios",
-    "manageUsersDesc": "Ver, invitar y gestionar cuentas de usuario",
     "manageCompanies": "Gestionar Empresas",
     "manageCompaniesDesc": "Crear y gestionar empresas",
     "lastUpdated": "Actualizado",
     "refresh": "Actualizar"
-  },
-  "users": {
-    "title": "Gestión de Usuarios",
-    "subtitle": "Gestionar cuentas de usuario y permisos",
-    "name": "Nombre",
-    "email": "Correo electrónico",
-    "role": "Rol",
-    "company": "Empresa",
-    "status": "Estado",
-    "active": "Activo",
-    "inactive": "Inactivo",
-    "firstName": "Nombre",
-    "lastName": "Apellido",
-    "firstNamePlaceholder": "Ingrese el nombre",
-    "lastNamePlaceholder": "Ingrese el apellido",
-    "emailPlaceholder": "Ingrese el correo electrónico",
-    "selectRole": "Seleccione un rol",
-    "selectCompany": "Seleccione una empresa",
-    "inviteUser": "Invitar Usuario",
-    "inviteTitle": "Invitar Nuevo Usuario",
-    "editTitle": "Editar Usuario",
-    "sendInvitation": "Enviar Invitación",
-    "updateButton": "Actualizar Usuario",
-    "inviteFailed": "Error al enviar la invitación",
-    "updateFailed": "Error al actualizar el usuario",
-    "deleteConfirm": "¿Está seguro de que desea eliminar a {{name}}?",
-    "noUsers": "No se encontraron usuarios",
-    "searchPlaceholder": "Buscar usuarios...",
-    "isActive": "Usuario activo",
-    "newPassword": "Nueva Contraseña",
-    "newPasswordPlaceholder": "Dejar en blanco para mantener la actual",
-    "passwordHint": "Dejar en blanco para mantener la contraseña actual",
-    "superAdminNote": "Los Super Administradores tienen acceso a todas las empresas y configuraciones del sistema.",
-    "filterByRole": "Todos los roles",
-    "assignRoleFailed": "Error al asignar el rol",
-    "statusFailed": "Error al cambiar el estado del usuario",
-    "deactivate": "Desactivar",
-    "reactivate": "Reactivar",
-    "roles": {
-      "member": "Miembro",
-      "admin": "Administrador",
-      "superAdmin": "Super Administrador"
-    },
-    "validation": {
-      "firstNameRequired": "El nombre es requerido",
-      "firstNameMinLength": "El nombre debe tener al menos 2 caracteres",
-      "lastNameRequired": "El apellido es requerido",
-      "lastNameMinLength": "El apellido debe tener al menos 2 caracteres",
-      "emailRequired": "El correo es requerido",
-      "emailInvalid": "Ingrese un correo válido",
-      "roleRequired": "El rol es requerido",
-      "companyRequired": "La empresa es requerida",
-      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres"
-    }
   },
   "companies": {
     "title": "Gestión de Empresas",
@@ -179,94 +120,6 @@
       "nameMinLength": "El nombre debe tener al menos 2 caracteres",
       "nameMaxLength": "El nombre debe tener menos de 100 caracteres",
       "descriptionMaxLength": "La descripción debe tener menos de 500 caracteres"
-    }
-  },
-  "devices": {
-    "title": "Dispositivos",
-    "subtitle": "Aprobá los navegadores desde los que tu equipo entra a Mobius.",
-    "searchPlaceholder": "Buscar por nombre o correo...",
-    "loading": "Cargando dispositivos...",
-    "empty": "No hay dispositivos para estos filtros.",
-    "loadError": "No se pudieron cargar los dispositivos.",
-    "unknownUserAgent": "Navegador desconocido",
-    "selectCompany": "Seleccioná una empresa",
-    "filters": {
-      "statusAll": "Todos",
-      "statusPending": "Pendientes",
-      "statusApproved": "Aprobados",
-      "statusRevoked": "Revocados"
-    },
-    "status": {
-      "pending": "Pendiente",
-      "approved": "Aprobado",
-      "revoked": "Revocado"
-    },
-    "columns": {
-      "user": "Usuario",
-      "device": "Navegador",
-      "ip": "IP",
-      "requestedAt": "Solicitado",
-      "status": "Estado"
-    },
-    "approve": {
-      "action": "Aprobar dispositivo",
-      "confirmTitle": "Aprobar dispositivo",
-      "confirmMessage": "{{email}} podrá usar Mobius desde {{device}} (solicitado {{requestedAt}}). Confirmá solo si reconocés el equipo y la solicitud.",
-      "submit": "Aprobar",
-      "error": "No se pudo aprobar el dispositivo.",
-      "alreadyApproved": "Este dispositivo ya estaba aprobado. Se actualizó la lista."
-    },
-    "revoke": {
-      "action": "Revocar dispositivo",
-      "confirmTitle": "Revocar dispositivo",
-      "confirmMessage": "{{email}} no podrá usar Mobius desde {{device}} (solicitado {{requestedAt}}) hasta que lo solicite otra vez y lo apruebes.",
-      "submit": "Revocar",
-      "error": "No se pudo revocar el dispositivo.",
-      "alreadyRevoked": "Este dispositivo ya estaba revocado. Se actualizó la lista."
-    }
-  },
-  "roles": {
-    "title": "Gestión de Roles",
-    "subtitle": "Gestionar roles y sus permisos",
-    "name": "Nombre del Rol",
-    "namePlaceholder": "Ingrese el nombre del rol",
-    "addRole": "Agregar Rol",
-    "createTitle": "Crear Rol",
-    "editTitle": "Renombrar Rol",
-    "createButton": "Crear Rol",
-    "updateButton": "Guardar",
-    "editRole": "Renombrar rol",
-    "deleteRole": "Eliminar rol",
-    "editPermissions": "Editar permisos",
-    "searchPlaceholder": "Buscar roles...",
-    "noRoles": "No se encontraron roles",
-    "deleteConfirm": "¿Está seguro de que desea eliminar {{name}}?",
-    "deleteFailed": "Error al eliminar el rol",
-    "systemRoleLocked": "Los roles del sistema no se pueden renombrar.",
-    "selectCompanyPrompt": "Seleccione una empresa para ver sus roles.",
-    "columns": {
-      "name": "Nombre",
-      "userCount": "Usuarios"
-    },
-    "systemKeys": {
-      "admin": "Administrador",
-      "member": "Miembro"
-    },
-    "states": {
-      "none": "Ninguno",
-      "readOnly": "Lectura",
-      "full": "Completo"
-    },
-    "areas": {
-      "masters": "Maestros",
-      "actions": "Acciones"
-    },
-    "permissionsModal": {
-      "title": "Permisos — {{name}}",
-      "loadFailed": "Error al cargar los permisos",
-      "saveFailed": "Error al guardar los permisos",
-      "protectedNote": "Los permisos del rol Administrador no se pueden editar.",
-      "save": "Guardar permisos"
     }
   },
   "auth": {
@@ -370,5 +223,10 @@
     "fields": {
       "code": "Código"
     }
+  },
+  "accessDenied": {
+    "title": "Acceso denegado",
+    "message": "El backoffice es solo para administradores de la plataforma. Los usuarios, roles y dispositivos ahora se gestionan en la aplicación web.",
+    "goToApp": "Ir a la aplicación web"
   }
 }

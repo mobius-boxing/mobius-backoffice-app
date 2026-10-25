@@ -6,28 +6,18 @@ import {
   LoginCredentials,
   LoginResponse,
   User,
-  UserDevice,
   Company,
   CompanyBranding,
   FileRecord,
-  Invitation,
   CreateCompanyForm,
-  InviteUserRequest,
-  InviteCompanyUserRequest,
-  UpdateUserRequest,
   ChangePasswordForm,
-  UserStats,
   CompanyStats,
-  InvitationStats,
   Module,
   CompanyModule,
   TenantDatabase,
   DbServer,
   DbServerKind,
   DbServerStatus,
-  Role,
-  CreateRoleForm,
-  Permission,
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
@@ -126,75 +116,6 @@ export const usersApi = {
       totalPages: backendData.totalPages,
     };
   },
-
-  getUserById: async (id: string): Promise<User> => {
-    const response: AxiosResponse<ApiResponse<User>> = await api.get(`/api/users/${id}`);
-    return response.data.data!;
-  },
-
-  inviteUser: async (data: InviteUserRequest): Promise<any> => {
-    const response: AxiosResponse<ApiResponse> = await api.post('/api/users/invite', data);
-    return response.data.data;
-  },
-
-  updateUser: async (id: string, data: UpdateUserRequest): Promise<User> => {
-    const response: AxiosResponse<ApiResponse<User>> = await api.put(`/api/users/${id}`, data);
-    return response.data.data!;
-  },
-
-  updateUserRole: async (id: string, role: 'member' | 'admin'): Promise<User> => {
-    const response: AxiosResponse<ApiResponse<User>> = await api.put(`/api/users/${id}/role`, { role });
-    return response.data.data!;
-  },
-
-  // Sends isActive only — the API ignores `role`/`roleId` in this body;
-  // assignment is the separate `/roles/assign` call below.
-  updateUserStatus: async (id: string, isActive: boolean): Promise<User> => {
-    const response: AxiosResponse<ApiResponse<User>> = await api.put(`/api/users/${id}`, { isActive });
-    return response.data.data!;
-  },
-
-  deleteUser: async (id: string): Promise<void> => {
-    await api.delete(`/api/users/${id}`);
-  },
-
-  getUserStats: async (companyId?: string): Promise<UserStats> => {
-    const params = companyId ? { companyId } : {};
-    const response: AxiosResponse<ApiResponse<UserStats>> = await api.get('/api/users/stats', { params });
-    return response.data.data!;
-  },
-};
-
-export const devicesApi = {
-  getDevices: async (params: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    status?: string;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    companyId?: string;
-  } = {}): Promise<PaginatedResponse<UserDevice>> => {
-    const response = await api.get('/api/devices', { params });
-    const backendData = response.data;
-    return {
-      data: backendData.data,
-      total: backendData.totalCount,
-      page: backendData.page,
-      limit: backendData.limit,
-      totalPages: backendData.totalPages,
-    };
-  },
-
-  approveDevice: async (uuid: string): Promise<UserDevice> => {
-    const response: AxiosResponse<ApiResponse<UserDevice>> = await api.patch(`/api/devices/${uuid}/approve`);
-    return response.data.data!;
-  },
-
-  revokeDevice: async (uuid: string): Promise<UserDevice> => {
-    const response: AxiosResponse<ApiResponse<UserDevice>> = await api.patch(`/api/devices/${uuid}/revoke`);
-    return response.data.data!;
-  },
 };
 
 export const companiesApi = {
@@ -258,23 +179,6 @@ export const companiesApi = {
         loginMessage: branding.loginMessage,
       });
     return response.data.data!;
-  },
-
-  getCompanyUsers: async (id: string, params: {
-    page?: number;
-    limit?: number;
-    role?: string;
-    isActive?: boolean;
-  } = {}): Promise<PaginatedResponse<User>> => {
-    const response = await api.get(`/api/companies/${id}/users`, { params });
-    const backendData = response.data;
-    return {
-      data: backendData.data,
-      total: backendData.totalCount,
-      page: backendData.page,
-      limit: backendData.limit,
-      totalPages: backendData.totalPages,
-    };
   },
 };
 
@@ -363,54 +267,6 @@ export const dbServersApi = {
   },
 };
 
-export const invitationsApi = {
-  getInvitations: async (params: {
-    page?: number;
-    limit?: number;
-    isUsed?: boolean;
-    includeExpired?: boolean;
-    companyId?: string;
-  } = {}): Promise<PaginatedResponse<Invitation>> => {
-    const response = await api.get('/api/invitations', { params });
-    const backendData = response.data;
-    return {
-      data: backendData.data,
-      total: backendData.totalCount,
-      page: backendData.page,
-      limit: backendData.limit,
-      totalPages: backendData.totalPages,
-    };
-  },
-
-  createInvitation: async (data: InviteUserRequest): Promise<Invitation> => {
-    const response: AxiosResponse<ApiResponse<Invitation>> = await api.post('/api/users/invite', data);
-    return response.data.data!;
-  },
-
-  // A company actor invites with roleUuid, gated `users.edit`. Separate from
-  // `createInvitation` above, which stays on the legacy superAdmin path
-  // (`/api/users/invite`, role enum incl. superAdmin).
-  createRoleInvitation: async (data: InviteCompanyUserRequest): Promise<Invitation> => {
-    const response: AxiosResponse<ApiResponse<Invitation>> = await api.post('/api/invitations', data);
-    return response.data.data!;
-  },
-
-  resendInvitation: async (id: string): Promise<any> => {
-    const response: AxiosResponse<ApiResponse> = await api.post(`/api/invitations/${id}/resend`);
-    return response.data.data;
-  },
-
-  cancelInvitation: async (id: string): Promise<void> => {
-    await api.delete(`/api/invitations/${id}`);
-  },
-
-  getInvitationStats: async (companyId?: string): Promise<InvitationStats> => {
-    const params = companyId ? { companyId } : {};
-    const response: AxiosResponse<ApiResponse<InvitationStats>> = await api.get('/api/invitations/stats', { params });
-    return response.data.data!;
-  },
-};
-
 // Maps the backend paginator shape to the app's PaginatedResponse (same unwrap as usersApi)
 const toPaginated = <T,>(backendData: any): PaginatedResponse<T> => ({
   data: backendData.data,
@@ -484,92 +340,6 @@ export const modulesApi = {
     const response: AxiosResponse<ApiResponse<CompanyModule>> =
       await api.delete(`/api/companies/${companyUuid}/modules/${slug}`);
     return response.data.data!;
-  },
-};
-
-// ── Role management ───────────────────────────────────────────────────────
-
-export const rolesApi = {
-  getRoles: async (params: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    // superAdmin has no company of their own — the Roles page scopes with
-    // this the same way companiesApi.getCompanyUsers already does.
-    companyId?: string;
-    // Server-side subset rule: only roles the caller may assign.
-    assignable?: boolean;
-  } = {}): Promise<PaginatedResponse<Role>> => {
-    const response = await api.get('/api/roles', { params });
-    const backendData = response.data;
-    return {
-      data: backendData.data,
-      total: backendData.totalCount,
-      page: backendData.page,
-      limit: backendData.limit,
-      totalPages: backendData.totalPages,
-    };
-  },
-
-  // Roles live in each company's tenant database, so every call below needs
-  // companyId from a superAdmin (400 COMPANY_REQUIRED otherwise); the API
-  // ignores it for everyone else.
-  getRole: async (uuid: string, companyId?: string): Promise<Role> => {
-    const params = companyId ? { companyId } : {};
-    const response: AxiosResponse<ApiResponse<Role>> = await api.get(`/api/roles/${uuid}`, { params });
-    return response.data.data!;
-  },
-
-  createRole: async (data: CreateRoleForm & { companyId?: string }): Promise<Role> => {
-    const response: AxiosResponse<ApiResponse<Role>> = await api.post('/api/roles', data);
-    return response.data.data!;
-  },
-
-  // 409 SYSTEM_ROLE when the role has a systemKey — caller disables the field instead of relying on this alone.
-  renameRole: async (uuid: string, name: string, companyId?: string): Promise<Role> => {
-    const params = companyId ? { companyId } : {};
-    const response: AxiosResponse<ApiResponse<Role>> = await api.put(`/api/roles/${uuid}`, { name }, { params });
-    return response.data.data!;
-  },
-
-  // 409 SYSTEM_ROLE (systemKey set) or ROLE_IN_USE (users/pending invitations reference it).
-  deleteRole: async (uuid: string, companyId?: string): Promise<void> => {
-    const params = companyId ? { companyId } : {};
-    await api.delete(`/api/roles/${uuid}`, { params });
-  },
-
-  // 400 UNKNOWN_PERMISSION, 403 GRANT_CEILING/OWN_ROLE.
-  setRolePermissions: async (uuid: string, codes: string[], companyId?: string): Promise<string[]> => {
-    const params = companyId ? { companyId } : {};
-    const response: AxiosResponse<ApiResponse<{ codes: string[] }>> = await api.put(
-      `/api/roles/${uuid}/permissions`,
-      { codes },
-      { params }
-    );
-    return response.data.data!.codes;
-  },
-
-  // roleUuid is required (null is a 400). 403 GRANT_CEILING/OWN_ROLE, 409 LAST_ADMIN.
-  assignRole: async (userUuid: string, roleUuid: string, companyId?: string): Promise<void> => {
-    const params = companyId ? { companyId } : {};
-    await api.put('/api/roles/assign', { userUuid, roleUuid }, { params });
-  },
-};
-
-export const permissionsApi = {
-  // The catalogue can exceed the API's page cap — page through until
-  // totalPages so the permissions grid always gets the full set (same
-  // approach as mobius-web-app's permissionsApi.getPermissions).
-  getPermissions: async (params: { companyId?: string } = {}): Promise<Permission[]> => {
-    const pageSize = 100;
-    const first = await api.get('/api/permissions', { params: { ...params, limit: pageSize, page: 1 } });
-    const all: Permission[] = [...first.data.data];
-    const totalPages: number = first.data.totalPages ?? 1;
-    for (let page = 2; page <= totalPages; page++) {
-      const next = await api.get('/api/permissions', { params: { ...params, limit: pageSize, page } });
-      all.push(...next.data.data);
-    }
-    return all;
   },
 };
 

@@ -16,15 +16,6 @@ export interface HasPermissionOptions {
   allowReadOnly?: boolean;
 }
 
-/** The codes that admit a company user into the backoffice at all. */
-export const BACKOFFICE_ENTRY_CODES = [
-  'users.edit',
-  'users.edit.readonly',
-  'roles.edit',
-  'roles.edit.readonly',
-  'devices.approve',
-] as const;
-
 export function hasPermissionCode(
   subject: PermissionSubject | null | undefined,
   code: string,
@@ -40,11 +31,10 @@ export function hasPermissionCode(
 }
 
 /**
- * Session-level gate: superAdmin, or any entry code (checked as an exact
- * code so a `.readonly` grant is enough on its own without `allowReadOnly`).
+ * Session-level gate: the backoffice is the platform-operator console, so only
+ * a superAdmin gets in. Company actors manage their users, roles and devices
+ * in the web app.
  */
 export function canAccessBackoffice(subject: PermissionSubject | null | undefined): boolean {
-  if (!subject) return false;
-  if (subject.role === 'superAdmin') return true;
-  return BACKOFFICE_ENTRY_CODES.some((code) => hasPermissionCode(subject, code));
+  return subject?.role === 'superAdmin';
 }
