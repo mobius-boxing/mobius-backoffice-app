@@ -38,8 +38,11 @@ export interface CompanyBranding {
 
 // db-per-company (T10, model): `db_servers.kind` / `.status`, `tenant_databases.status`.
 export type DbServerKind = 'shared_container' | 'rds' | 'external';
+
 export type DbServerSslMode = 'disable' | 'require' | 'verify-full';
+
 export type DbServerStatus = 'active' | 'draining' | 'retired';
+
 export type TenantDatabaseStatus =
   | 'provisioning'
   | 'failed'
@@ -47,6 +50,7 @@ export type TenantDatabaseStatus =
   | 'suspended'
   | 'decommissioning'
   | 'retired';
+
 export type TenantMigrationState = 'unknown' | 'current' | 'behind' | 'running' | 'failed';
 
 export interface Company {
@@ -117,45 +121,6 @@ export interface FileRecord {
   contentType?: string;
 }
 
-export interface Invitation {
-  id: string;
-  email: string;
-  role: 'member' | 'admin';
-  roleUuid?: string | null;
-  roleName?: string | null;
-  companyId: string;
-  companyName?: string;
-  inviterName?: string;
-  inviterEmail?: string;
-  expiresAt: string;
-  isUsed: boolean;
-  createdAt: string;
-}
-
-export type DeviceStatus = 'pending' | 'approved' | 'revoked';
-
-export interface UserRef {
-  uuid: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface UserDevice {
-  uuid: string;
-  status: DeviceStatus;
-  userAgent: string | null;
-  requestIp: string | null;
-  requestedAt: string;
-  approvedAt: string | null;
-  revokedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  user: UserRef;
-  approvedBy: UserRef | null;
-  revokedBy: UserRef | null;
-}
-
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -207,39 +172,6 @@ export interface CreateCompanyForm {
   description?: string;
 }
 
-export interface InviteUserForm {
-  email: string;
-  role: 'member' | 'admin';
-  companyId?: string;
-}
-
-export interface InviteUserRequest {
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: 'member' | 'admin' | 'superAdmin';
-  companyId?: string;
-}
-
-// A company actor invites with a role rather than the legacy `role` enum —
-// the API maps roleUuid to a company's Admin/Member/custom role directly.
-export interface InviteCompanyUserRequest {
-  email: string;
-  firstName: string;
-  lastName: string;
-  roleUuid: string;
-}
-
-export interface UpdateUserRequest {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: 'member' | 'admin' | 'superAdmin';
-  isActive: boolean;
-  companyId?: string;
-  password?: string;
-}
-
 export interface ChangePasswordForm {
   currentPassword: string;
   newPassword: string;
@@ -257,56 +189,11 @@ export interface NavItem {
   children?: NavItem[];
 }
 
-// ── Role management ───────────────────────────────────────────────────────
-
-export interface Role {
-  uuid: string;
-  name: string;
-  // 'admin' | 'member' for the two system roles, null for a custom role.
-  systemKey: 'admin' | 'member' | null;
-  // Admin's grants are locked (no rename, no grant edits, no delete).
-  isProtected: boolean;
-  // Computed by the API: users with this roleId.
-  userCount: number;
-  // Populated by GET /api/roles/:uuid only.
-  permissionCodes?: string[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CreateRoleForm {
-  name: string;
-}
-
-export interface Permission {
-  uuid: string;
-  code: string;
-  name: string;
-  description?: string;
-  readOnly: boolean;
-  area?: string;
-  deprecated?: boolean;
-}
-
-export interface UserStats {
-  totalUsers: number;
-  activeUsers: number;
-  usersByRole: { role: string; count: number }[];
-  recentInvitations: number;
-}
-
 export interface CompanyStats {
   totalCompanies: number;
   activeCompanies: number;
   companiesWithUsers: number;
   averageUsersPerCompany: number;
-}
-
-export interface InvitationStats {
-  totalInvitations: number;
-  pendingInvitations: number;
-  acceptedInvitations: number;
-  expiredInvitations: number;
 }
 
 export type SubscriptionStatus =

@@ -8,6 +8,8 @@ interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  /** A valid session exists but belongs to someone the backoffice does not admit. */
+  accessDenied: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: AuthUser) => void;
@@ -30,17 +32,20 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         if (getToken()) {
           const currentUser = await authApi.getCurrentUser();
-          // Grant access only to superAdmin or a code-holder (see utils/rbac). A user without
-          // backoffice access may hold a valid shared session from the main app — deny the
-          // backoffice UI, but do NOT clear the token or we'd log them out of the main app too.
+          // Grant access only to superAdmin (see utils/rbac). Anyone else may hold a valid shared
+          // session from the web app — deny the backoffice UI, but do NOT clear the token or we'd
+          // log them out of the web app too.
           if (canAccessBackoffice(currentUser)) {
             setUser(currentUser);
+          } else {
+            setAccessDenied(true);
           }
         }
       } catch (error) {
@@ -60,15 +65,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const sync = () => {
       const hasToken = !!getToken();
-      if (hasToken && !user) {
+      if (hasToken && !user && !accessDenied) {
         authApi
           .getCurrentUser()
           .then((u) => {
             if (canAccessBackoffice(u)) setUser(u);
+            else setAccessDenied(true);
           })
           .catch(() => {});
-      } else if (!hasToken && user) {
+      } else if (!hasToken && (user || accessDenied)) {
         setUser(null);
+        setAccessDenied(false);
       }
     };
     window.addEventListener('focus', sync);
@@ -77,19 +84,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.removeEventListener('focus', sync);
       document.removeEventListener('visibilitychange', sync);
     };
-  }, [user]);
+  }, [user, accessDenied]);
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
     const response: LoginResponse = await authApi.login(credentials);
 
-    // Backoffice is superAdmin/permission-code only. Reject everyone else without creating a
-    // shared session.
-    if (!canAccessBackoffice(response.user)) {
-      throw new Error('This portal is for administrators only. Please use the main application.');
-    }
-
+    // The credentials are valid, so the shared session is created either way: a non-superAdmin
+    // is sent on to the web app signed in. Only superAdmin gets a backoffice user.
     setToken(response.token);
-    setUser(response.user);
+    if (canAccessBackoffice(response.user)) {
+      setUser(response.user);
+    } else {
+      setAccessDenied(true);
+    }
   };
 
   const logout = async (): Promise<void> => {
@@ -101,6 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       clearToken();
       setUser(null);
+      setAccessDenied(false);
     }
   };
 
@@ -112,6 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isAuthenticated: !!user,
     isLoading,
+    accessDenied,
     login,
     logout,
     updateUser,

@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions, HasPermissionOptions } from '../hooks/usePermissions';
 import { clearToken } from '../utils/session';
+import AccessDenied from '../pages/AccessDenied';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -21,7 +22,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoles,
   requiredPermission,
 }) => {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, user, accessDenied } = useAuth();
   const { has } = usePermissions();
   const location = useLocation();
 
@@ -31,6 +32,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
       </div>
     );
+  }
+
+  if (!isAuthenticated && accessDenied) {
+    return <AccessDenied />;
   }
 
   if (!isAuthenticated) {
