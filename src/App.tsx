@@ -9,6 +9,7 @@ import ResetPassword from './pages/ResetPassword';
 import AccessDenied from './pages/AccessDenied';
 import Dashboard from './pages/Dashboard';
 import Companies from './pages/Companies';
+import SuperAdmins from './pages/SuperAdmins';
 import './i18n/config';
 
 const DefaultRedirect: React.FC = () => {
@@ -47,6 +48,17 @@ function App() {
                 <ProtectedRoute requiredRoles={['superAdmin']}>
                   <Layout>
                     <Companies />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/super-admins"
+              element={
+                <ProtectedRoute requiredRoles={['superAdmin']}>
+                  <Layout>
+                    <SuperAdmins />
                   </Layout>
                 </ProtectedRoute>
               }

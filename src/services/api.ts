@@ -6,6 +6,9 @@ import {
   LoginCredentials,
   LoginResponse,
   User,
+  Invitation,
+  InviteSuperAdminForm,
+  EditSuperAdminForm,
   Company,
   CompanyBranding,
   FileRecord,
@@ -115,6 +118,23 @@ export const usersApi = {
       limit: backendData.limit,
       totalPages: backendData.totalPages,
     };
+  },
+
+  inviteUser: async (data: InviteSuperAdminForm): Promise<Invitation> => {
+    const response: AxiosResponse<ApiResponse<Invitation>> = await api.post('/api/users/invite', {
+      ...data,
+      role: 'superAdmin',
+    });
+    return response.data.data!;
+  },
+
+  updateUser: async (uuid: string, data: EditSuperAdminForm): Promise<User> => {
+    const response: AxiosResponse<ApiResponse<User>> = await api.put(`/api/users/${uuid}`, data);
+    return response.data.data!;
+  },
+
+  deleteUser: async (uuid: string): Promise<void> => {
+    await api.delete(`/api/users/${uuid}`);
   },
 };
 

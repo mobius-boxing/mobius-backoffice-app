@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building, LogOut } from 'lucide-react';
+import { LayoutDashboard, Building, ShieldCheck, LogOut } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { NavItem } from '../../types';
@@ -46,12 +46,20 @@ const Sidebar: React.FC = () => {
       icon: 'Building',
       visible: isSuperAdmin,
     },
+    {
+      id: 'superAdmins',
+      label: t('nav.superAdmins'),
+      path: '/super-admins',
+      icon: 'ShieldCheck',
+      visible: isSuperAdmin,
+    },
   ];
 
   const getIcon = (iconName: string, className: string = "h-5 w-5") => {
     const icons: { [key: string]: React.FC<{ className?: string }> } = {
       LayoutDashboard,
       Building,
+      ShieldCheck,
     };
     const IconComponent = icons[iconName];
     return IconComponent ? <IconComponent className={className} /> : null;
