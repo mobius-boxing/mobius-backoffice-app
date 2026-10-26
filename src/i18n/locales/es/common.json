@@ -46,15 +46,12 @@
     "activate": "Activar",
     "deactivate": "Desactivar",
     "deleteConfirm": "¿Está seguro de que desea eliminar a {{name}}?",
-    "invitationLink": "Enlace de invitación",
-    "invitationLinkHint": "Copie este enlace para compartirlo con el nuevo super administrador.",
-    "copyLink": "Copiar enlace",
-    "copied": "Copiado",
     "inviteFailed": "No se pudo invitar al super administrador",
     "updateFailed": "No se pudo actualizar al super administrador",
     "deleteFailed": "No se pudo eliminar al super administrador",
     "selfSuperAdminChange": "No puede desactivar ni eliminar su propia cuenta de super administrador.",
-    "lastSuperAdmin": "Debe quedar al menos un super administrador activo."
+    "lastSuperAdmin": "Debe quedar al menos un super administrador activo.",
+    "invitationSent": "Invitación enviada a {{email}}. Es válida por 7 días."
   },
   "login": {
     "title": "Portal de Administración",

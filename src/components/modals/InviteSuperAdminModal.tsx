@@ -21,17 +21,15 @@ const InviteSuperAdminModal: React.FC<InviteSuperAdminModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [form, setForm] = useState<InviteSuperAdminForm>(EMPTY_FORM);
-  const [invitationLink, setInvitationLink] = useState('');
+  const [sentTo, setSentTo] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setForm(EMPTY_FORM);
-      setInvitationLink('');
+      setSentTo('');
       setError('');
-      setCopied(false);
     }
   }, [isOpen]);
 
@@ -44,8 +42,9 @@ const InviteSuperAdminModal: React.FC<InviteSuperAdminModalProps> = ({
     setLoading(true);
     setError('');
     try {
-      const invitation = await usersApi.inviteUser(form);
-      setInvitationLink(`${process.env.REACT_APP_WEB_APP_URL}/accept-invitation/${invitation.token}`);
+      // The API never returns the invitation token, so the email is the only way to deliver the link.
+      await usersApi.inviteUser(form);
+      setSentTo(form.email);
       onSuccess();
     } catch (err: unknown) {
       const response = err as { response?: { data?: { message?: string } } };
@@ -55,25 +54,13 @@ const InviteSuperAdminModal: React.FC<InviteSuperAdminModalProps> = ({
     }
   };
 
-  const copyLink = async () => {
-    await navigator.clipboard.writeText(invitationLink);
-    setCopied(true);
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={close} title={t('superAdmins.inviteTitle')}>
-      {invitationLink ? (
+      {sentTo ? (
         <div className="space-y-4">
-          <p className="text-sm text-secondary-500">{t('superAdmins.invitationLinkHint')}</p>
-          <Input
-            name="invitationLink"
-            data-testid="super-admin-invitation-link"
-            label={t('superAdmins.invitationLink')}
-            value={invitationLink}
-            readOnly
-          />
+          <p className="text-sm text-secondary-700" data-testid="super-admin-invitation-sent">{t('superAdmins.invitationSent', { email: sentTo })}</p>
           <div className="flex justify-end">
-            <Button type="button" onClick={copyLink}>{copied ? t('superAdmins.copied') : t('superAdmins.copyLink')}</Button>
+            <Button type="button" onClick={onClose}>{t('common.close')}</Button>
           </div>
         </div>
       ) : (

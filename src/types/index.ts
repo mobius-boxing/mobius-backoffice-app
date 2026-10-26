@@ -31,10 +31,6 @@ export interface EditSuperAdminForm {
   isActive: boolean;
 }
 
-export interface Invitation {
-  token: string;
-}
-
 // A company's whitelabel identity, shared by every module it has. Written by
 // PUT /api/companies/:uuid/branding — always every key, replaced wholesale.
 export interface CompanyBranding {

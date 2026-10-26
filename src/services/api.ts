@@ -6,7 +6,6 @@ import {
   LoginCredentials,
   LoginResponse,
   User,
-  Invitation,
   InviteSuperAdminForm,
   EditSuperAdminForm,
   Company,
@@ -120,12 +119,8 @@ export const usersApi = {
     };
   },
 
-  inviteUser: async (data: InviteSuperAdminForm): Promise<Invitation> => {
-    const response: AxiosResponse<ApiResponse<Invitation>> = await api.post('/api/users/invite', {
-      ...data,
-      role: 'superAdmin',
-    });
-    return response.data.data!;
+  inviteUser: async (data: InviteSuperAdminForm): Promise<void> => {
+    await api.post('/api/users/invite', { ...data, role: 'superAdmin' });
   },
 
   updateUser: async (uuid: string, data: EditSuperAdminForm): Promise<User> => {

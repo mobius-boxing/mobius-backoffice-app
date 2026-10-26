@@ -46,15 +46,12 @@
     "activate": "Activate",
     "deactivate": "Deactivate",
     "deleteConfirm": "Are you sure you want to delete {{name}}?",
-    "invitationLink": "Invitation link",
-    "invitationLinkHint": "Copy this link to share it with the new super admin.",
-    "copyLink": "Copy link",
-    "copied": "Copied",
     "inviteFailed": "Failed to invite super admin",
     "updateFailed": "Failed to update super admin",
     "deleteFailed": "Failed to delete super admin",
     "selfSuperAdminChange": "You cannot deactivate or delete your own super admin account.",
-    "lastSuperAdmin": "At least one active super admin must remain."
+    "lastSuperAdmin": "At least one active super admin must remain.",
+    "invitationSent": "Invitation sent to {{email}}. It is valid for 7 days."
   },
   "login": {
     "title": "Backoffice Portal",
