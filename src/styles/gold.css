@@ -675,6 +675,10 @@ body::after {
   width: 2.125rem;
   height: 2.125rem;
   flex: none;
+  padding: 0.25rem;
+  border-radius: 0.625rem;
+  /* The logo's navy blades vanish on the dark rail without a light tile. */
+  background: oklch(1 0 0);
 }
 
 .gd-sb-wordmark {
