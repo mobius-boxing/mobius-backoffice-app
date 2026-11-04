@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { NavItem } from '../../types';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
+import mobiusMark from '../../assets/mobius-mark.png';
 
 /**
  * Surviving remounts: every page renders its own <Layout>, and the routes are
@@ -78,7 +79,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="gd-sidebar flex flex-col h-full">
       <div className="gd-sb-brand">
-        <div className="gd-sb-mark">M</div>
+        <img className="gd-sb-mark" src={mobiusMark} alt="" />
         <div className="gd-sb-collapse">
           <span className="gd-sb-wordmark">Mobius</span>
           <span className="gd-sb-sub">Backoffice</span>

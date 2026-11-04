@@ -671,18 +671,10 @@ body::after {
 }
 
 .gd-sb-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 2.125rem;
   height: 2.125rem;
   flex: none;
-  border-radius: 0.625rem;
-  background: oklch(var(--p-500));
-  color: oklch(var(--n-950));
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.9375rem;
 }
 
 .gd-sb-wordmark {
@@ -1279,18 +1271,9 @@ body::after {
 .gd-auth__inner { width: 100%; max-width: 26rem; }
 
 .gd-auth__mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 3rem;
   height: 3rem;
-  border-radius: 0.875rem;
-  background: oklch(var(--n-950));
-  color: oklch(var(--p-400));
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  box-shadow: var(--gd-elev-lift);
 }
 
 .gd-auth__eyebrow {
