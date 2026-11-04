@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { NavItem } from '../../types';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
-import mobiusMark from '../../assets/mobius-mark.png';
+import mobiusMark from '../../assets/mobius-mark.svg';
 
 /**
  * Surviving remounts: every page renders its own <Layout>, and the routes are

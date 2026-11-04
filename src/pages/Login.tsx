@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import LanguageSwitcher from '../components/ui/LanguageSwitcher';
-import mobiusMark from '../assets/mobius-mark.png';
+import mobiusMark from '../assets/mobius-mark.svg';
 
 interface LoginForm {
   email: string;
