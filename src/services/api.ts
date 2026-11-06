@@ -67,10 +67,29 @@ api.interceptors.response.use(
   }
 );
 
+const avatarForm = (image: Blob): FormData => {
+  const formData = new FormData();
+  formData.append('file', image, 'avatar.jpg');
+  return formData;
+};
+
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     const response: AxiosResponse<ApiResponse<LoginResponse>> = await api.post('/api/auth/login', credentials);
     return response.data.data!;
+  },
+
+  uploadAvatar: async (image: Blob): Promise<string> => {
+    const response: AxiosResponse<ApiResponse<{ avatarUuid: string }>> = await api.put(
+      '/api/auth/avatar',
+      avatarForm(image),
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+    return response.data.data!.avatarUuid;
+  },
+
+  removeAvatar: async (): Promise<void> => {
+    await api.delete('/api/auth/avatar');
   },
 
   logout: async (): Promise<void> => {

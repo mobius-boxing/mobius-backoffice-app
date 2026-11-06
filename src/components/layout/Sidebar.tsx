@@ -1,8 +1,11 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Building, ShieldCheck, LogOut } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { authApi } from '../../services/api';
+import UserAvatar from '../ui/UserAvatar';
+import AvatarModal from '../profile/AvatarModal';
 import { NavItem } from '../../types';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 import mobiusMark from '../../assets/mobius-mark.svg';
@@ -18,7 +21,8 @@ import mobiusMark from '../../assets/mobius-mark.svg';
 let navScrollTop = 0;
 
 const Sidebar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const location = useLocation();
   const navRef = useRef<HTMLElement | null>(null);
 
@@ -87,9 +91,15 @@ const Sidebar: React.FC = () => {
       </div>
 
       <div className="gd-sb-user gd-sb-block">
-        <div className="gd-sb-avatar">
-          {user?.firstName?.[0]}{user?.lastName?.[0]}
-        </div>
+        <button
+          type="button"
+          className="gd-sb-avatar gd-sb-avatar-btn"
+          title={t('avatar.changePhoto')}
+          aria-label={t('avatar.changePhoto')}
+          onClick={() => setAvatarOpen(true)}
+        >
+          <UserAvatar user={user} className="gd-avatar-fill" />
+        </button>
         <div className="gd-sb-collapse min-w-0">
           <p className="gd-sb-name truncate">
             {user?.firstName} {user?.lastName}
@@ -140,6 +150,16 @@ const Sidebar: React.FC = () => {
           <span className="gd-sb-collapse">{t('nav.signOut')}</span>
         </button>
       </div>
+      {user && (
+        <AvatarModal
+          isOpen={avatarOpen}
+          onClose={() => setAvatarOpen(false)}
+          user={user}
+          upload={authApi.uploadAvatar}
+          remove={authApi.removeAvatar}
+          onChanged={(avatarUuid) => updateUser({ ...user, avatarUuid })}
+        />
+      )}
     </div>
   );
 };

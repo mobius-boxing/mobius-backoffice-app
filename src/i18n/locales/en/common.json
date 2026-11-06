@@ -258,5 +258,15 @@
     "title": "Access denied",
     "message": "The backoffice is only for platform administrators. Users, roles and devices are now managed in the web app.",
     "goToApp": "Go to the web app"
+  },
+  "avatar": {
+    "title": "Profile photo",
+    "changePhoto": "Change profile photo",
+    "changeUserPhoto": "Change photo",
+    "upload": "Upload photo",
+    "remove": "Remove photo",
+    "invalidImage": "The image could not be read. Use a PNG, JPEG or WebP file.",
+    "uploadFailed": "The photo could not be uploaded.",
+    "removeFailed": "The photo could not be removed."
   }
 }

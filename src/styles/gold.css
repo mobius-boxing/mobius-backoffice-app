@@ -726,6 +726,44 @@ body::after {
   letter-spacing: 0.02em;
 }
 
+.gd-sb-avatar-btn {
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gd-sb-avatar-btn:focus-visible {
+  outline: 2px solid oklch(var(--p-400));
+  outline-offset: 2px;
+}
+
+.gd-avatar-fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.gd-avatar-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9999px;
+}
+
+.gd-avatar-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  background: oklch(var(--p-500) / 0.16);
+  color: oklch(var(--p-600));
+}
+
 .gd-sb-name {
   font-size: 0.8125rem;
   font-weight: 600;

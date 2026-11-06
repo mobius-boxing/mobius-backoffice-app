@@ -149,6 +149,7 @@ export interface AuthUser {
   roleName?: string | null;
   companyId?: string;
   companyName?: string;
+  avatarUuid?: string | null;
   modules?: string[];
   permissions?: string[];
 }
