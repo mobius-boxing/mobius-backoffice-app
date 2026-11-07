@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import LanguageSwitcher from '../components/ui/LanguageSwitcher';
-import mobiusMark from '../assets/mobius-mark.svg';
+import mobiusLogoText from '../assets/mobius-logo-text.svg';
 
 interface LoginForm {
   email: string;
@@ -48,8 +48,8 @@ const Login: React.FC = () => {
   return (
     <div className="gd-auth">
       <div className="gd-auth__inner enter-up">
-        <img className="gd-auth__mark" src={mobiusMark} alt="" />
-        <span className="gd-auth__eyebrow">Mobius Backoffice</span>
+        <img className="gd-auth__logo" src={mobiusLogoText} alt="Mobius" />
+        <span className="gd-auth__eyebrow">{t('login.backoffice')}</span>
         <h1 className="gd-auth__title">{t('login.title')}</h1>
         <p className="gd-auth__sub">{t('login.subtitle')}</p>
 

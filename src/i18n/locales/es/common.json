@@ -54,6 +54,7 @@
     "invitationSent": "Invitación enviada a {{email}}. Es válida por 7 días."
   },
   "login": {
+    "backoffice": "Backoffice",
     "title": "Portal de Administración",
     "subtitle": "Inicie sesión para acceder al panel de administración",
     "email": "Correo electrónico",

@@ -645,7 +645,7 @@ body::after {
   flex: none;
   background: oklch(var(--p-950));
   border-right: 1px solid oklch(var(--p-900));
-  color: oklch(var(--n-300));
+  color: oklch(var(--n-100));
   color-scheme: dark;
   transition: width 0.35s var(--ease-snap);
 }
@@ -812,13 +812,13 @@ body::after {
 }
 
 .gd-sidebar .sidebar-item-inactive {
-  color: oklch(var(--n-400));
+  color: oklch(var(--n-200));
   background: transparent;
 }
 
 .gd-sidebar .sidebar-item-inactive:hover {
   background: oklch(1 0 0 / 0.05);
-  color: oklch(var(--n-100));
+  color: oklch(var(--white));
 }
 
 .gd-sidebar .sidebar-item-active {
@@ -846,7 +846,7 @@ body::after {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: oklch(var(--n-600));
+  color: oklch(var(--n-500));
   padding: 0 1rem 0.5rem;
 }
 
@@ -862,7 +862,7 @@ body::after {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: oklch(var(--n-500));
+  color: oklch(var(--n-400));
 }
 
 .gd-sidebar select {
@@ -887,7 +887,7 @@ body::after {
 }
 
 .gd-sidebar svg { color: inherit; }
-.gd-sidebar .text-secondary-500 { color: oklch(var(--n-500)); }
+.gd-sidebar .text-secondary-500 { color: oklch(var(--n-400)); }
 
 /* Sign-out gets a danger-leaning hover; it is the one destructive control here. */
 .gd-sb-signout:hover {
@@ -1132,7 +1132,7 @@ body::after {
    data underneath. Mono headers separate label from value at a glance. */
 .gd-table thead th {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1312,10 +1312,11 @@ body::after {
 
 .gd-auth__inner { width: 100%; max-width: 26rem; }
 
-.gd-auth__mark {
+.gd-auth__logo {
   display: block;
-  width: 3rem;
-  height: 3rem;
+  width: 15rem;
+  max-width: 100%;
+  height: auto;
 }
 
 .gd-auth__eyebrow {
