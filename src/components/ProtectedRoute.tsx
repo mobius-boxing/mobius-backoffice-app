@@ -2,7 +2,6 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions, HasPermissionOptions } from '../hooks/usePermissions';
-import { clearToken } from '../utils/session';
 import AccessDenied from '../pages/AccessDenied';
 
 interface ProtectedRouteProps {
@@ -22,7 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoles,
   requiredPermission,
 }) => {
-  const { isAuthenticated, isLoading, user, accessDenied } = useAuth();
+  const { isAuthenticated, isLoading, user, accessDenied, logout } = useAuth();
   const { has } = usePermissions();
   const location = useLocation();
 
@@ -65,8 +64,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             You don't have permission to access this page.
           </p>
           <button
-            onClick={() => {
-              clearToken();
+            onClick={async () => {
+              await logout();
               window.location.href = '/login';
             }}
             className="text-primary-600 hover:text-primary-700 font-medium"

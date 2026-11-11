@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthUser, LoginCredentials, LoginResponse } from '../types';
-import { authApi } from '../services/api';
-import { getToken, setToken, clearToken } from '../utils/session';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { AuthUser, LoginCredentials } from '../types';
+import { authApi, refreshSession } from '../services/api';
 import { canAccessBackoffice } from '../utils/rbac';
 
 interface AuthContextType {
@@ -34,49 +33,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        if (getToken()) {
-          const currentUser = await authApi.getCurrentUser();
-          // Grant access only to superAdmin (see utils/rbac). Anyone else may hold a valid shared
-          // session from the web app — deny the backoffice UI, but do NOT clear the token or we'd
-          // log them out of the web app too.
-          if (canAccessBackoffice(currentUser)) {
-            setUser(currentUser);
-          } else {
-            setAccessDenied(true);
-          }
-        }
-      } catch (error) {
-        clearToken();
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
+  // Grant access only to superAdmin (see utils/rbac). Anyone else may hold a valid shared
+  // session from the web app: deny the backoffice UI, but do NOT end the session or we'd
+  // log them out of the web app too.
+  const adoptSession = useCallback((session: { user: AuthUser }) => {
+    if (canAccessBackoffice(session.user)) {
+      setUser(session.user);
+    } else {
+      setAccessDenied(true);
+    }
   }, []);
 
-  // The session lives in a cookie shared across subdomains, so login/logout can happen in
-  // another tab or app (e.g. the main app). Re-sync local React state when this tab regains
-  // focus: adopt a session started elsewhere (backoffice-eligible only), or drop ours if it ended
-  // elsewhere.
+  // Bootstrap: the access token is memory-only, so every page load starts by trading the
+  // HttpOnly refresh cookie for one. refreshSession retries throttling/network failures itself;
+  // whatever still fails here leaves the user on the login page without touching the cookie.
+  useEffect(() => {
+    refreshSession()
+      .then(adoptSession)
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
+  }, [adoptSession]);
+
+  // The refresh cookie is shared across subdomains, so a login can happen in another tab or app
+  // (e.g. the web app). A signed-out tab regaining focus tries to adopt it. The reverse (a
+  // logout elsewhere) surfaces on this tab's next request, whose refresh 401s.
   useEffect(() => {
     const sync = () => {
-      const hasToken = !!getToken();
-      if (hasToken && !user && !accessDenied) {
-        authApi
-          .getCurrentUser()
-          .then((u) => {
-            if (canAccessBackoffice(u)) setUser(u);
-            else setAccessDenied(true);
-          })
-          .catch(() => {});
-      } else if (!hasToken && (user || accessDenied)) {
-        setUser(null);
-        setAccessDenied(false);
-      }
+      if (!user && !accessDenied) refreshSession().then(adoptSession).catch(() => {});
     };
     window.addEventListener('focus', sync);
     document.addEventListener('visibilitychange', sync);
@@ -84,19 +67,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.removeEventListener('focus', sync);
       document.removeEventListener('visibilitychange', sync);
     };
-  }, [user, accessDenied]);
+  }, [user, accessDenied, adoptSession]);
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
-    const response: LoginResponse = await authApi.login(credentials);
-
+    const response = await authApi.login(credentials);
     // The credentials are valid, so the shared session is created either way: a non-superAdmin
     // is sent on to the web app signed in. Only superAdmin gets a backoffice user.
-    setToken(response.token);
-    if (canAccessBackoffice(response.user)) {
-      setUser(response.user);
-    } else {
-      setAccessDenied(true);
-    }
+    adoptSession(response);
   };
 
   const logout = async (): Promise<void> => {
@@ -106,7 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Server-side logout may fail (network/expired token); local state must still be cleared
       console.error('Logout error:', error);
     } finally {
-      clearToken();
       setUser(null);
       setAccessDenied(false);
     }

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { getDeviceToken, getToken, clearToken } from '../utils/session';
+import { getDeviceToken, getToken, setToken, clearToken } from '../utils/session';
 import {
   ApiResponse,
   PaginatedResponse,
@@ -26,10 +26,107 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
+    // The API refuses refresh/logout without it; a cross-site form cannot set a custom header.
+    'X-Requested-With': 'mobius',
   },
 });
+
+/** Login, accept-invitation and refresh all answer with this shape. */
+export type SessionPayload = LoginResponse & { expiresIn: number };
+
+/** The refresh cookie is gone, expired or revoked: the user has to sign in again. */
+class SessionEndedError extends Error {}
+
+const MAX_TRANSIENT_RETRIES = 3;
+const REFRESH_LEAD_SECONDS = 60;
+const REFRESH_JITTER_SECONDS = 30;
+
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+let refreshInFlight: Promise<SessionPayload> | null = null;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isTransient = (error: unknown): boolean => {
+  if (!axios.isAxiosError(error)) return true;
+  const status = error.response?.status;
+  return status === undefined || status === 429 || status >= 500;
+};
+
+const retryDelayMs = (error: unknown, attempt: number): number => {
+  const retryAfter = axios.isAxiosError(error) ? Number(error.response?.headers?.['retry-after']) : NaN;
+  if (Number.isFinite(retryAfter) && retryAfter > 0) return Math.min(retryAfter, 10) * 1000;
+  return 500 * 2 ** attempt + Math.random() * 500;
+};
+
+export const cancelScheduledRefresh = (): void => {
+  if (refreshTimer !== null) clearTimeout(refreshTimer);
+  refreshTimer = null;
+};
+
+const redirectToLogin = (): void => {
+  if (window.location.pathname !== '/login') window.location.href = '/login';
+};
+
+const requestRefresh = async (): Promise<SessionPayload> => {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      // Bare axios: the instance's interceptors would attach the dead bearer and re-enter this flow.
+      const response: AxiosResponse<ApiResponse<SessionPayload>> = await axios.post(
+        `${API_BASE_URL}/api/auth/refresh`,
+        undefined,
+        { withCredentials: true, headers: { 'X-Requested-With': 'mobius' } }
+      );
+      return response.data.data!;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) throw new SessionEndedError();
+      if (!isTransient(error) || attempt >= MAX_TRANSIENT_RETRIES) throw error;
+      await sleep(retryDelayMs(error, attempt));
+    }
+  }
+};
+
+export const scheduleRefresh = (expiresIn: number): void => {
+  cancelScheduledRefresh();
+  const jitter = (Math.random() * 2 - 1) * REFRESH_JITTER_SECONDS;
+  const delayMs = Math.max(5, expiresIn - REFRESH_LEAD_SECONDS + jitter) * 1000;
+  refreshTimer = setTimeout(() => {
+    refreshSession().catch((error) => {
+      if (error instanceof SessionEndedError) redirectToLogin();
+    });
+  }, delayMs);
+};
+
+/** Single-flight: the timer, the bootstrap and the 401 interceptor share one request per tab. */
+export const refreshSession = (): Promise<SessionPayload> => {
+  if (refreshInFlight === null) {
+    refreshInFlight = requestRefresh()
+      .then((session) => {
+        adoptSessionToken(session);
+        return session;
+      })
+      .catch((error) => {
+        if (error instanceof SessionEndedError) {
+          clearToken();
+          cancelScheduledRefresh();
+        }
+        throw error;
+      })
+      .finally(() => {
+        refreshInFlight = null;
+      });
+  }
+  return refreshInFlight;
+};
+
+export const isSessionEnded = (error: unknown): boolean => error instanceof SessionEndedError;
+
+const adoptSessionToken = (session: SessionPayload): void => {
+  setToken(session.token);
+  scheduleRefresh(session.expiresIn);
+};
 
 api.interceptors.request.use((config) => {
   const token = getToken();
@@ -54,14 +151,35 @@ const SELF_HANDLED_401_PATHS = [
   '/api/auth/reset-password',
 ];
 
+const NEVER_REFRESH_PATHS = ['/api/auth/login', '/api/auth/refresh', '/api/auth/logout'];
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const url: string = error.config?.url || '';
     const isSelfHandled = SELF_HANDLED_401_PATHS.some((path) => url.includes(path));
+    // A self-handled 401 is normally a wrong password; only an expired token is worth a refresh.
+    const tokenFailure = !isSelfHandled || error.response?.data?.code === 'TOKEN_EXPIRED';
+    if (
+      error.response?.status === 401 &&
+      error.config &&
+      !error.config.retriedAfterRefresh &&
+      tokenFailure &&
+      !NEVER_REFRESH_PATHS.some((path) => url.includes(path))
+    ) {
+      try {
+        const session = await refreshSession();
+        error.config.retriedAfterRefresh = true;
+        error.config.headers.Authorization = `Bearer ${session.token}`;
+        return api.request(error.config);
+      } catch (refreshError) {
+        // Throttled or offline: the session may well be alive, so surface the original failure.
+        if (!isSessionEnded(refreshError)) return Promise.reject(error);
+      }
+    }
     if (error.response?.status === 401 && !isSelfHandled) {
       clearToken();
-      window.location.href = '/login';
+      redirectToLogin();
     }
     return Promise.reject(error);
   }
@@ -74,8 +192,9 @@ const avatarForm = (image: Blob): FormData => {
 };
 
 export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    const response: AxiosResponse<ApiResponse<LoginResponse>> = await api.post('/api/auth/login', credentials);
+  login: async (credentials: LoginCredentials): Promise<SessionPayload> => {
+    const response: AxiosResponse<ApiResponse<SessionPayload>> = await api.post('/api/auth/login', credentials);
+    adoptSessionToken(response.data.data!);
     return response.data.data!;
   },
 
@@ -93,8 +212,12 @@ export const authApi = {
   },
 
   logout: async (): Promise<void> => {
-    await api.post('/api/auth/logout');
-    clearToken();
+    try {
+      await api.post('/api/auth/logout');
+    } finally {
+      cancelScheduledRefresh();
+      clearToken();
+    }
   },
 
   getCurrentUser: async (): Promise<User> => {
