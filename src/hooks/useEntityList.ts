@@ -58,6 +58,10 @@ export function useEntityList<T extends object>(
   } = options;
 
   const [data, setData] = useState<T[]>([]);
+  // The server search term `data` was fetched with, set in the same render as
+  // the rows. This hook has no stale-response guard, so overlapping fetches can
+  // still land out of order.
+  const [dataSearch, setDataSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,6 +96,7 @@ export function useEntityList<T extends object>(
         const response = await fetchFn(params);
 
         setData(response.data || []);
+        setDataSearch(search);
         setTotal(response.total || 0);
         setTotalPages(response.totalPages || 0);
 
@@ -141,12 +146,14 @@ export function useEntityList<T extends object>(
     setPage(1);
   }, [defaultFilters]);
 
+  // Client-side narrowing applies only while `data` was fetched for a different
+  // term than the one typed; a response for the current term is shown untouched.
   const filteredData = useMemo(() => {
-    if (!search.trim() || searchFields.length === 0) {
+    const term = search.toLowerCase().trim();
+    if (!term || searchFields.length === 0 || dataSearch.trim().toLowerCase() === term) {
       return data;
     }
 
-    const term = search.toLowerCase().trim();
     return data.filter((item) =>
       searchFields.some((field) => {
         const value = (item as Record<string, unknown>)[field as string];
@@ -154,7 +161,7 @@ export function useEntityList<T extends object>(
         return String(value).toLowerCase().includes(term);
       })
     );
-  }, [data, search, searchFields]);
+  }, [data, dataSearch, search, searchFields]);
 
   useEffect(() => {
     if (autoFetch) {
