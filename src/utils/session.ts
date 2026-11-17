@@ -1,14 +1,14 @@
 // The access token lives in memory only: a page reload re-acquires it through the HttpOnly
 // refresh cookie that the API sets (POST /api/auth/refresh), so script on the page never
 // holds anything that outlives the tab. The device cookie below is the only cookie JS writes;
-// it is scoped to the parent domain (REACT_APP_COOKIE_DOMAIN, e.g. ".mobiusboxing.com") so one
+// it is scoped to the parent domain (REACT_APP_COOKIE_DOMAIN, e.g. ".mobius.box") so one
 // approval covers every Mobius origin. On localhost the domain is omitted (host-only cookie,
 // which browsers share across ports).
 
 // Dev builds set REACT_APP_COOKIE_PREFIX=mobius_dev so they never read a prod session.
 const COOKIE_PREFIX = process.env.REACT_APP_COOKIE_PREFIX || 'mobius';
 const COOKIE_NAME = `${COOKIE_PREFIX}_session`;
-const COOKIE_DOMAIN = process.env.REACT_APP_COOKIE_DOMAIN; // ".mobiusboxing.com" in prod; unset locally
+const COOKIE_DOMAIN = process.env.REACT_APP_COOKIE_DOMAIN; // ".mobius.box" in prod; unset locally
 
 const buildCookie = (nameValue: string, maxAge: number): string => {
   const parts = [nameValue, 'path=/', `max-age=${maxAge}`, 'samesite=lax'];

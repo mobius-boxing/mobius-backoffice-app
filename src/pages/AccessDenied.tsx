@@ -4,7 +4,7 @@ import { ShieldAlert } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/ui/Button';
 
-const WEB_APP_URL = process.env.REACT_APP_WEB_APP_URL || 'https://app.mobiusboxing.com';
+const WEB_APP_URL = process.env.REACT_APP_WEB_APP_URL || 'https://app.mobius.box';
 
 /**
  * Shown to a signed-in user the backoffice does not admit. The shared session
