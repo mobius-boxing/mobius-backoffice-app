@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CreateCompanyForm } from '../../types';
 import { companiesApi } from '../../services/api';
@@ -33,7 +33,14 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
     handleClose,
   } = useModalForm<CreateCompanyForm>({ onSuccess, onClose, schema: createCompanySchema(t) });
 
-  const onSubmit = handleSubmit((data) => companiesApi.createCompany(data));
+  // Kept outside the form schema: the resolver would strip a field it does not list.
+  const [isTerminadora, setIsTerminadora] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setIsTerminadora(false);
+  }, [isOpen]);
+
+  const onSubmit = handleSubmit((data) => companiesApi.createCompany({ ...data, isTerminadora }));
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={t('companies.createTitle')}>
@@ -65,6 +72,19 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
             <p className="mt-1 text-sm text-red-600">{errors.description.message as string}</p>
           )}
         </div>
+
+
+        <label className="flex items-center gap-2 text-sm text-secondary-700">
+          <input
+            type="checkbox"
+            checked={isTerminadora}
+            onChange={(e) => setIsTerminadora(e.target.checked)}
+            disabled={loading}
+            data-testid="company-terminadora-checkbox"
+          />
+          {t('companies.terminadora')}
+        </label>
+        <p className="-mt-2 text-xs text-secondary-500">{t('companies.terminadoraHint')}</p>
 
         <div className="flex justify-end space-x-3 pt-4">
           <Button

@@ -151,7 +151,9 @@
       "nameMinLength": "Company name must be at least 2 characters",
       "nameMaxLength": "Company name must be less than 100 characters",
       "descriptionMaxLength": "Description must be less than 500 characters"
-    }
+    },
+    "terminadora": "Finishing plant (terminadora)",
+    "terminadoraHint": "Enables Quotations, Supplier programs and Tracking for the company's users"
   },
   "auth": {
     "accessDenied": "Access Denied",

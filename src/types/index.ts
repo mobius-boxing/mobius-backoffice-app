@@ -74,6 +74,8 @@ export interface Company {
   slug: string;
   description?: string;
   isActive: boolean;
+  // Enables Cotizaciones / Programas proveedores / Seguimiento for the company's users.
+  isTerminadora?: boolean;
   // `{}` for a company that never set any branding, hence Partial.
   branding?: Partial<CompanyBranding>;
   // `null` = not registered (T10, model): `GET/POST /api/companies` left-joins
@@ -183,6 +185,7 @@ export interface ApiError {
 export interface CreateCompanyForm {
   name: string;
   description?: string;
+  isTerminadora?: boolean;
 }
 
 export interface ChangePasswordForm {

@@ -151,7 +151,9 @@
       "nameMinLength": "El nombre debe tener al menos 2 caracteres",
       "nameMaxLength": "El nombre debe tener menos de 100 caracteres",
       "descriptionMaxLength": "La descripción debe tener menos de 500 caracteres"
-    }
+    },
+    "terminadora": "Terminadora",
+    "terminadoraHint": "Habilita Cotizaciones, Programas proveedores y Seguimiento para los usuarios de la empresa"
   },
   "auth": {
     "accessDenied": "Acceso Denegado",
