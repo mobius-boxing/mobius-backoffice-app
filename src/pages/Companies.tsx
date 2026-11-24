@@ -46,7 +46,7 @@ const Companies: React.FC = () => {
     setActionLoading(company.uuid);
     setActionError(null);
     try {
-      await companiesApi.updateCompanyStatus(company.uuid, !company.isActive);
+      await companiesApi.updateCompanyStatus(company.uuid, !company.isActive, company.product);
       await refetch();
     } catch (err: any) {
       setActionError(
@@ -66,7 +66,7 @@ const Companies: React.FC = () => {
         setActionLoading(company.uuid);
         setActionError(null);
         try {
-          await companiesApi.deleteCompany(company.uuid);
+          await companiesApi.deleteCompany(company.uuid, company.product);
           await refetch();
         } catch (err: any) {
           setActionError(
@@ -102,6 +102,17 @@ const Companies: React.FC = () => {
             </div>
           )}
         </div>
+      ),
+    },
+    {
+      header: t('companies.product'),
+      accessor: (company: Company) => (
+        <span
+          className={`gd-badge ${company.product === 'lite' ? 'gd-badge-info' : ''}`}
+          data-testid={`company-product-${company.uuid}`}
+        >
+          {company.product === 'lite' ? t('companies.productLite') : t('companies.productFull')}
+        </span>
       ),
     },
     {

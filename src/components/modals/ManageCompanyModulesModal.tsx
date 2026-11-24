@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Copy, ExternalLink, ToggleLeft, ToggleRight } from 'lucide-react';
-import { Company, CompanyModule, SubscriptionStatus } from '../../types';
+import { Company, CompanyModule, Product, SubscriptionStatus } from '../../types';
 import { companiesApi, modulesApi } from '../../services/api';
+import { webAppUrlFor } from '../../utils/webAppUrl';
 import { buildModuleUrl } from '../../utils/moduleUrl';
 import CompanyBrandingSection from '../company/CompanyBrandingSection';
 import Modal from '../ui/Modal';
@@ -152,13 +153,13 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const fetchAll = useCallback(
-    async (companyUuid: string) => {
+    async (companyUuid: string, product: Product) => {
       setLoading(true);
       setError(null);
       try {
         const [companyData, moduleData] = await Promise.all([
           companiesApi.getCompanyById(companyUuid),
-          modulesApi.getCompanyModules(companyUuid),
+          modulesApi.getCompanyModules(companyUuid, product),
         ]);
         setCurrent(companyData);
         setModules(moduleData);
@@ -175,7 +176,7 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
 
   useEffect(() => {
     if (isOpen && company) {
-      fetchAll(company.uuid);
+      fetchAll(company.uuid, company.product);
     } else if (!isOpen) {
       // Clear state on close so the next open starts clean.
       setModules([]);
@@ -192,12 +193,12 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
     setError(null);
     try {
       if (mod.enabled) {
-        await modulesApi.disableModule(company.uuid, mod.module.slug);
+        await modulesApi.disableModule(company.uuid, mod.module.slug, company.product);
       } else {
-        await modulesApi.enableModule(company.uuid, mod.module.slug);
+        await modulesApi.enableModule(company.uuid, mod.module.slug, company.product);
       }
       // Refetch to pick up fresh audit timestamps and subscription state.
-      await fetchAll(company.uuid);
+      await fetchAll(company.uuid, company.product);
     } catch (err: any) {
       setError(
         err?.response?.data?.message || t('modules.error.toggleFailed')
@@ -208,6 +209,7 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
   };
 
   if (!company) return null;
+  const isLite = company.product === 'lite';
 
   return (
     <Modal
@@ -250,7 +252,7 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
         </div>
       ) : (
         <ul className="divide-y divide-secondary-200">
-          {modules.map((mod) => (
+          {modules.filter((mod) => !isLite || mod.module.isCore).map((mod) => (
             <li
               key={mod.module.slug}
               className="py-4 flex items-start justify-between gap-4"
@@ -305,11 +307,25 @@ const ManageCompanyModulesModal: React.FC<ManageCompanyModulesModalProps> = ({
         </ul>
       )}
 
+      {isLite && (
+        <p className="mt-3 text-sm text-secondary-500" data-testid="modules-lite-note">
+          {t('modules.liteUnavailable')}{' '}
+          <a
+            href={webAppUrlFor('lite')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-600 hover:text-primary-700"
+          >
+            {t('modules.openWebApp')}
+          </a>
+        </p>
+      )}
+
       {/* Branding is per company, so it shows regardless of which modules are
           enabled (D-4) — including for a company with none. */}
       <CompanyBrandingSection
         company={current ?? company}
-        onSaved={() => fetchAll(company.uuid)}
+        onSaved={() => fetchAll(company.uuid, company.product)}
       />
 
       <div className="flex justify-end pt-4 border-t border-secondary-200 mt-4">

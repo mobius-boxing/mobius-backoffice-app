@@ -123,6 +123,9 @@
     "refresh": "Refresh"
   },
   "companies": {
+    "product": "Product",
+    "productFull": "Mobius",
+    "productLite": "Mobius Lite",
     "title": "Company Management",
     "subtitle": "Create and manage companies",
     "name": "Company Name",
@@ -161,6 +164,8 @@
     "returnToLogin": "Return to Login"
   },
   "modules": {
+    "liteUnavailable": "Modules are not available in Mobius Lite",
+    "openWebApp": "Open the web app",
     "manageButton": "Manage Modules",
     "title": "Modules for {{companyName}}",
     "core": "Core",

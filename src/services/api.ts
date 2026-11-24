@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getDeviceToken, getToken, setToken, clearToken } from '../utils/session';
 import {
   ApiResponse,
@@ -20,19 +20,30 @@ import {
   DbServer,
   DbServerKind,
   DbServerStatus,
+  Product,
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    // The API refuses refresh/logout without it; a cross-site form cannot set a custom header.
-    'X-Requested-With': 'mobius',
-  },
-});
+const LITE_API_BASE_URL = process.env.REACT_APP_LITE_API_URL || 'http://localhost:3998';
+
+const createApiInstance = (baseURL: string) =>
+  axios.create({
+    baseURL,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      // The API refuses refresh/logout without it; a cross-site form cannot set a custom header.
+      'X-Requested-With': 'mobius',
+    },
+  });
+
+const api = createApiInstance(API_BASE_URL);
+/** Lite companies' calls. The token is the Full-minted one; refresh never runs here (C-4). */
+const liteApi = createApiInstance(LITE_API_BASE_URL);
+
+/** The API instance that serves a company of `product` (D-3). Lists, users and auth stay on `api`. */
+export const apiFor = (product: Product | undefined) => (product === 'lite' ? liteApi : api);
 
 /** Login, accept-invitation and refresh all answer with this shape. */
 export type SessionPayload = LoginResponse & { expiresIn: number };
@@ -128,7 +139,7 @@ const adoptSessionToken = (session: SessionPayload): void => {
   scheduleRefresh(session.expiresIn);
 };
 
-api.interceptors.request.use((config) => {
+const attachCredentials = (config: InternalAxiosRequestConfig) => {
   const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -138,7 +149,10 @@ api.interceptors.request.use((config) => {
     config.headers['X-Device-Token'] = deviceToken;
   }
   return config;
-});
+};
+
+api.interceptors.request.use(attachCredentials);
+liteApi.interceptors.request.use(attachCredentials);
 
 // A 401 from these endpoints is an expected response the calling component renders inline
 // (bad credentials, wrong current password, invalid/expired reset token), NOT a stale
@@ -178,6 +192,29 @@ api.interceptors.response.use(
       }
     }
     if (error.response?.status === 401 && !isSelfHandled) {
+      clearToken();
+      redirectToLogin();
+    }
+    return Promise.reject(error);
+  }
+);
+
+// The Lite API cannot refresh the session (its cookie is not ours), so an expired
+// token is renewed on Full and the call is retried once against Lite.
+liteApi.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && error.config && !error.config.retriedAfterRefresh) {
+      try {
+        const session = await refreshSession();
+        error.config.retriedAfterRefresh = true;
+        error.config.headers.Authorization = `Bearer ${session.token}`;
+        return liteApi.request(error.config);
+      } catch (refreshError) {
+        if (!isSessionEnded(refreshError)) return Promise.reject(error);
+      }
+    }
+    if (error.response?.status === 401) {
       clearToken();
       redirectToLogin();
     }
@@ -292,28 +329,29 @@ export const companiesApi = {
     };
   },
 
+  // Core read: either API answers it for every company (I-6), so no product argument.
   getCompanyById: async (id: string): Promise<Company> => {
     const response: AxiosResponse<ApiResponse<Company>> = await api.get(`/api/companies/${id}`);
     return response.data.data!;
   },
 
   createCompany: async (data: CreateCompanyForm): Promise<Company> => {
-    const response: AxiosResponse<ApiResponse<Company>> = await api.post('/api/companies', data);
+    const response: AxiosResponse<ApiResponse<Company>> = await apiFor(data.product).post('/api/companies', data);
     return response.data.data!;
   },
 
-  updateCompany: async (id: string, data: Partial<CreateCompanyForm>): Promise<Company> => {
-    const response: AxiosResponse<ApiResponse<Company>> = await api.put(`/api/companies/${id}`, data);
+  updateCompany: async (id: string, data: Partial<CreateCompanyForm>, product?: Product): Promise<Company> => {
+    const response: AxiosResponse<ApiResponse<Company>> = await apiFor(product).put(`/api/companies/${id}`, data);
     return response.data.data!;
   },
 
-  updateCompanyStatus: async (id: string, isActive: boolean): Promise<Company> => {
-    const response: AxiosResponse<ApiResponse<Company>> = await api.put(`/api/companies/${id}`, { isActive });
+  updateCompanyStatus: async (id: string, isActive: boolean, product?: Product): Promise<Company> => {
+    const response: AxiosResponse<ApiResponse<Company>> = await apiFor(product).put(`/api/companies/${id}`, { isActive });
     return response.data.data!;
   },
 
-  deleteCompany: async (id: string): Promise<void> => {
-    await api.delete(`/api/companies/${id}`);
+  deleteCompany: async (id: string, product?: Product): Promise<void> => {
+    await apiFor(product).delete(`/api/companies/${id}`);
   },
 
   getCompanyStats: async (): Promise<CompanyStats> => {
@@ -324,9 +362,9 @@ export const companiesApi = {
   // Whitelabel identity of the company. Sent WHOLESALE: the API replaces every
   // field, so an omitted key clears the stored value — the form always submits
   // the complete set.
-  updateBranding: async (uuid: string, branding: CompanyBranding): Promise<Company> => {
+  updateBranding: async (uuid: string, branding: CompanyBranding, product?: Product): Promise<Company> => {
     const response: AxiosResponse<ApiResponse<Company>> =
-      await api.put(`/api/companies/${uuid}/branding`, {
+      await apiFor(product).put(`/api/companies/${uuid}/branding`, {
         displayName: branding.displayName,
         brandColor: branding.brandColor,
         accentColor: branding.accentColor,
@@ -344,17 +382,18 @@ export const companiesApi = {
 // this client adds no screen, no nav entry (D-47's "types and API client
 // only" — a future feature wires these into the UI).
 export const tenantDatabaseApi = {
-  getTenantDatabase: async (companyUuid: string): Promise<TenantDatabase> => {
+  getTenantDatabase: async (companyUuid: string, product?: Product): Promise<TenantDatabase> => {
     const response: AxiosResponse<ApiResponse<TenantDatabase>> =
-      await api.get(`/api/companies/${companyUuid}/tenant-database`);
+      await apiFor(product).get(`/api/companies/${companyUuid}/tenant-database`);
     return response.data.data!;
   },
 
   provisionTenantDatabase: async (
     companyUuid: string,
-    serverUuid?: string
+    serverUuid?: string,
+    product?: Product
   ): Promise<TenantDatabase> => {
-    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await api.post(
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await apiFor(product).post(
       `/api/companies/${companyUuid}/tenant-database/provision`,
       serverUuid ? { serverUuid } : {}
     );
@@ -363,17 +402,18 @@ export const tenantDatabaseApi = {
 
   suspendTenantDatabase: async (
     companyUuid: string,
-    reason: string
+    reason: string,
+    product?: Product
   ): Promise<TenantDatabase> => {
-    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await api.post(
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await apiFor(product).post(
       `/api/companies/${companyUuid}/tenant-database/suspend`,
       { reason }
     );
     return response.data.data!;
   },
 
-  resumeTenantDatabase: async (companyUuid: string): Promise<TenantDatabase> => {
-    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await api.post(
+  resumeTenantDatabase: async (companyUuid: string, product?: Product): Promise<TenantDatabase> => {
+    const response: AxiosResponse<ApiResponse<TenantDatabase>> = await apiFor(product).post(
       `/api/companies/${companyUuid}/tenant-database/resume`
     );
     return response.data.data!;
@@ -441,7 +481,7 @@ export const filesApi = {
   // companyUuid travels in the multipart BODY: the API honours it only for
   // superAdmins (who have no company of their own) and ignores it for everyone
   // else, who always get their JWT company.
-  uploadFile: async (file: File, companyUuid: string): Promise<FileRecord> => {
+  uploadFile: async (file: File, companyUuid: string, product?: Product): Promise<FileRecord> => {
     if (file.size > MAX_FILE_SIZE_BYTES) {
       throw new Error('FILE_TOO_LARGE');
     }
@@ -451,7 +491,7 @@ export const filesApi = {
 
     // The API resolves the company before it reads the multipart body, so a
     // superAdmin's target company must travel in the query string.
-    const response: AxiosResponse<ApiResponse<FileRecord>> = await api.post(
+    const response: AxiosResponse<ApiResponse<FileRecord>> = await apiFor(product).post(
       '/api/files',
       formData,
       {
@@ -464,10 +504,10 @@ export const filesApi = {
 
   // Used to show the name of an already-referenced logo. Returns null rather
   // than throwing: a missing or unreadable file must not break the form.
-  getFile: async (uuid: string, companyUuid: string): Promise<FileRecord | null> => {
+  getFile: async (uuid: string, companyUuid: string, product?: Product): Promise<FileRecord | null> => {
     try {
       const response: AxiosResponse<ApiResponse<FileRecord>> =
-        await api.get(`/api/files/${uuid}`, { params: { companyId: companyUuid } });
+        await apiFor(product).get(`/api/files/${uuid}`, { params: { companyId: companyUuid } });
       return response.data.data ?? null;
     } catch {
       return null;
@@ -481,21 +521,21 @@ export const modulesApi = {
     return response.data.data!;
   },
 
-  getCompanyModules: async (companyUuid: string): Promise<CompanyModule[]> => {
+  getCompanyModules: async (companyUuid: string, product?: Product): Promise<CompanyModule[]> => {
     const response: AxiosResponse<ApiResponse<CompanyModule[]>> =
-      await api.get(`/api/companies/${companyUuid}/modules`);
+      await apiFor(product).get(`/api/companies/${companyUuid}/modules`);
     return response.data.data!;
   },
 
-  enableModule: async (companyUuid: string, slug: string): Promise<CompanyModule> => {
+  enableModule: async (companyUuid: string, slug: string, product?: Product): Promise<CompanyModule> => {
     const response: AxiosResponse<ApiResponse<CompanyModule>> =
-      await api.post(`/api/companies/${companyUuid}/modules/${slug}`);
+      await apiFor(product).post(`/api/companies/${companyUuid}/modules/${slug}`);
     return response.data.data!;
   },
 
-  disableModule: async (companyUuid: string, slug: string): Promise<CompanyModule> => {
+  disableModule: async (companyUuid: string, slug: string, product?: Product): Promise<CompanyModule> => {
     const response: AxiosResponse<ApiResponse<CompanyModule>> =
-      await api.delete(`/api/companies/${companyUuid}/modules/${slug}`);
+      await apiFor(product).delete(`/api/companies/${companyUuid}/modules/${slug}`);
     return response.data.data!;
   },
 };

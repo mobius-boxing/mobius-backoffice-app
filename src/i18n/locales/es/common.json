@@ -123,6 +123,9 @@
     "refresh": "Actualizar"
   },
   "companies": {
+    "product": "Producto",
+    "productFull": "Mobius",
+    "productLite": "Mobius Lite",
     "title": "Gestión de Empresas",
     "subtitle": "Crear y gestionar empresas",
     "name": "Nombre de la Empresa",
@@ -161,6 +164,8 @@
     "returnToLogin": "Volver al Inicio de Sesión"
   },
   "modules": {
+    "liteUnavailable": "Los módulos no están disponibles en Mobius Lite",
+    "openWebApp": "Abrir la app web",
     "manageButton": "Gestionar Módulos",
     "title": "Módulos de {{companyName}}",
     "core": "Núcleo",

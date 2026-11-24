@@ -65,6 +65,8 @@ export type TenantDatabaseStatus =
 
 export type TenantMigrationState = 'unknown' | 'current' | 'behind' | 'running' | 'failed';
 
+export type Product = 'full' | 'lite';
+
 export interface Company {
   id: string;
   uuid: string;
@@ -76,6 +78,8 @@ export interface Company {
   isActive: boolean;
   // Enables Cotizaciones / Programas proveedores / Seguimiento for the company's users.
   isTerminadora?: boolean;
+  // Which product's API serves the company; fixed at creation.
+  product: Product;
   // `{}` for a company that never set any branding, hence Partial.
   branding?: Partial<CompanyBranding>;
   // `null` = not registered (T10, model): `GET/POST /api/companies` left-joins
@@ -186,6 +190,8 @@ export interface CreateCompanyForm {
   name: string;
   description?: string;
   isTerminadora?: boolean;
+  // Outside the zod schema (like isTerminadora); the create modal always sends it.
+  product?: Product;
 }
 
 export interface ChangePasswordForm {

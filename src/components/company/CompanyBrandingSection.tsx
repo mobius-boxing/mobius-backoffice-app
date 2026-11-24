@@ -148,7 +148,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
       setLogoFile(null);
       return;
     }
-    filesApi.getFile(logoFileUuid, company.uuid).then((file) => {
+    filesApi.getFile(logoFileUuid, company.uuid, company.product).then((file) => {
       if (!cancelled) setLogoFile(file);
     });
     return () => {
@@ -173,7 +173,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
     try {
       // superAdmins carry no company of their own, so the target company is
       // named explicitly; the API ignores it for every other role.
-      const created = await filesApi.uploadFile(file, company.uuid);
+      const created = await filesApi.uploadFile(file, company.uuid, company.product);
       setLogoFileUuid(created.uuid);
       setLogoFile(created);
       setLogoDirty(true);
@@ -213,7 +213,7 @@ const CompanyBrandingSection: React.FC<CompanyBrandingSectionProps> = ({
     setSaving(true);
     setError('');
     try {
-      const updated = await companiesApi.updateBranding(company.uuid, branding);
+      const updated = await companiesApi.updateBranding(company.uuid, branding, company.product);
       // Show what the server actually stored (it lower-cases the colour), and
       // clear the dirty flags so the parent's refetch may refill freely.
       fillForm(updated.branding);

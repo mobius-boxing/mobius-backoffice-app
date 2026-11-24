@@ -48,7 +48,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
   }, [isOpen, company, setValue]);
 
   const onSubmit = handleSubmit((data) =>
-    companiesApi.updateCompany(company!.uuid, { ...data, isTerminadora })
+    companiesApi.updateCompany(company!.uuid, { ...data, isTerminadora }, company!.product)
   );
 
   if (!company) return null;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CreateCompanyForm } from '../../types';
+import { CreateCompanyForm, Product } from '../../types';
 import { companiesApi } from '../../services/api';
 import { useModalForm } from '../../hooks/useModalForm';
 import { createCompanySchema } from '../../validation/schemas/company';
@@ -35,12 +35,16 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
 
   // Kept outside the form schema: the resolver would strip a field it does not list.
   const [isTerminadora, setIsTerminadora] = useState(false);
+  const [product, setProduct] = useState<Product>('full');
 
   useEffect(() => {
-    if (isOpen) setIsTerminadora(false);
+    if (isOpen) {
+      setIsTerminadora(false);
+      setProduct('full');
+    }
   }, [isOpen]);
 
-  const onSubmit = handleSubmit((data) => companiesApi.createCompany({ ...data, isTerminadora }));
+  const onSubmit = handleSubmit((data) => companiesApi.createCompany({ ...data, isTerminadora, product }));
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={t('companies.createTitle')}>
@@ -57,6 +61,23 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
           placeholder={t('companies.namePlaceholder')}
           error={errors.name?.message as string}
         />
+
+        <div>
+          <label className="gd-label" htmlFor="company-product">
+            {t('companies.product')}
+          </label>
+          <select
+            id="company-product"
+            value={product}
+            onChange={(e) => setProduct(e.target.value as Product)}
+            disabled={loading}
+            data-testid="company-product-select"
+            className="w-full border border-secondary-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          >
+            <option value="full">{t('companies.productFull')}</option>
+            <option value="lite">{t('companies.productLite')}</option>
+          </select>
+        </div>
 
         <div>
           <label className="gd-label">
